@@ -1,0 +1,165 @@
+// includes baseline colors augmented-ui dom fonts scrollbar buttons toolkit list tags calendar
+
+div#wrapper {
+	height: 100%;
+
+	.fs-xxxl {
+		font-size: 42px;
+	}
+	.fs-xxl {
+		font-size: 38px;
+	}
+	.fs-xl {
+		font-size: 32px;
+	}
+	.fs-l {
+		font-size: 28px;
+	}
+	.fs-s {
+		font-size: 16px;
+	}
+	.fs-xs {
+		font-size: 12px;
+	}
+}
+
+li#edit {
+	cursor: default;
+	border: none;
+	text-align: center;
+
+	button.dueDate {
+		display: block;
+		margin: 1% auto;
+	}
+
+	label {
+		position: relative;
+		display: block;
+		font-size: 4vw;
+		width: 80%;
+		margin: 0 auto 2%;
+
+		&.showTagAdd {
+			button#tagAdd {
+				display: block;
+			}
+
+			input[type="text"] {
+				margin: 1% 0;
+				width: 80%;
+			}
+		}
+
+		button#tagAdd {
+			display: none;
+			position: absolute;
+			top: 2.46em;
+			right: 0;
+
+			&:before {
+				@mixin fontAwesome;
+				@mixin fontAwesomeSolid;
+
+				pointer-events: none;
+				content: "\f067";
+			}
+
+			&:hover {
+				top: 2.38em;
+			}
+
+			&:active, &.active, &.pressed {
+				top: 2.52em;
+			}
+		}
+
+		input[type="text"] {
+			display: block;
+			margin: 1% auto;
+			width: 95%;
+			padding: 1%;
+			font-size: 4vw;
+		}
+
+		textarea {
+			display: block;
+			width: 95%;
+			margin: 1% auto;
+			resize: vertical;
+			padding: 1%;
+			font-size: 4vw;
+		}
+	}
+}
+
+@media (max-width: 900px) {
+	div#toolkit {
+		div {
+			font-size: 4vw;
+			line-height: 8vw;
+		}
+
+		button {
+			font-size: 4vw;
+			width: 8vw;
+			height: 8vw;
+		}
+	}
+
+	ul#list li.list, ul#list li.listItem {
+		font-size: 3vw;
+
+		div.edit {
+			width: 5vw;
+
+			&:before {
+				margin: 1.4vw 1.5vw;
+			}
+		}
+	}
+}
+
+@media (max-width: 600px) {
+	div#toolkit button {
+		font-size: 5vw;
+		width: 10vw;
+		height: 10vw;
+	}
+
+	ul#list li.list, ul#list li.listItem {
+		font-size: 4vw;
+		padding: 1vw;
+
+		div.edit {
+			width: 6vw;
+
+			&:before {
+				font-size: 3vw;
+				margin: 1.9vw 1.5vw;
+			}
+		}
+	}
+}
+
+@media (max-width: 500px) {
+	div#toolkit button {
+		font-size: 6vw;
+		width: 12vw;
+		height: 12vw;
+	}
+
+	ul#list li.list, ul#list li.listItem {
+		font-size: 5.5vw;
+		padding: 1.5vw;
+
+		div.edit {
+			width: 9vw;
+
+			&:before {
+				font-size: 4vw;
+				margin: 2.8vw 2.5vw;
+			}
+		}
+	}
+}

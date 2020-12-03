@@ -1,0 +1,56 @@
+// includes colors
+
+ul#list {
+	height: 100%;
+	overflow-y: auto;
+
+	li {
+		position: relative;
+		font-size: 2vw;
+		border: 0.2vw solid $white;
+		margin: 2vw;
+		padding: 0.6vw;
+
+		&.listItem, &.list {
+			cursor: pointer;
+
+			div.description, div.dueDate {
+				pointer-events: none;
+			}
+
+			div.edit {
+				position: absolute;
+				right: 0;
+				top: 0;
+				cursor: pointer;
+				height: 100%;
+				float: right;
+				width: 4vw;
+				background-color: $blue;
+
+				&:before {
+					@mixin fontAwesome;
+					@mixin fontAwesomeSolid;
+
+					pointer-events: none;
+					content: "\f044";
+					font-size: 2vw;
+					margin: 0.7vw 1vw;
+				}
+			}
+		}
+
+		&.listItem {
+			div.edit {
+				height: 3.5vw;
+				border-bottom-left-radius: 3px;
+			}
+
+			&.pointerHold {
+				background-color: $green;
+				transform: scale(1.3);
+				transition: all 2s;
+			}
+		}
+	}
+}

@@ -1,0 +1,52 @@
+// includes colors calendar
+
+li#calendar {
+	height: 85%;
+	background-color: $grey-darkest;
+
+	div.control-bar button.set-day {
+		display: none;
+	}
+
+	div.calendar.select {
+		div.control-bar button.left {
+			display: none;
+		}
+
+		.selected {
+			outline: 2px dashed $red;
+
+			&:after {
+				content: "";
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background-color: $red;
+				opacity: 0.3;
+				pointer-events: none;
+			}
+		}
+
+		div.event-container {
+			pointer-events: none;
+		}
+	}
+
+	.today {
+		background-color: $blue;
+	}
+
+	div.event {
+		text-align: center;
+		padding: 2px;
+		margin: 2px;
+		border: 2px solid $black;
+		background-color: $teal;
+
+		div.time {
+			display: none;
+		}
+	}
+}

@@ -1,0 +1,10 @@
+{
+  "lang": "en-US",
+  "orientation": "any",
+  "display": "standalone",
+  "theme_color": "#BADA55",
+  "background_color": "#000",
+  "name": "listi",
+  "short_name": "listi",
+  "start_url": "/home"
+}
