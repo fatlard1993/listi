@@ -1,6 +1,6 @@
 # listi
 
-Like lists, but better
+Like "lists", but better because it uses "i" to pluralize.
 
 
 ## Lists
