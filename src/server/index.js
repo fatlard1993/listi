@@ -3,11 +3,6 @@
 const path = require('path');
 
 const yargs = require('yargs');
-const rootFolder = require('find-root')(__dirname);
-
-function rootPath(){ return path.join(rootFolder, ...arguments); }
-
-process.chdir(rootFolder);
 
 yargs.parserConfiguration({
 	'camel-case-expansion': false
@@ -40,7 +35,7 @@ const args = yargs.argv;
 
 ['_', '$0', 'v', 'p', 'P'].forEach((item) => { delete args[item]; });
 
-const opts = Object.assign(args, { args: Object.assign({}, args), rootFolder, verbosity: Number(args.verbosity) });
+const opts = Object.assign(args, { args: Object.assign({}, args), verbosity: Number(args.verbosity) });
 
 const log = new (require('log'))({ tag: 'listi', color: true, defaultVerbosity: opts.verbosity, colorMap: { listi: '\x1b[36m' } });
 

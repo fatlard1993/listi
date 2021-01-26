@@ -28,7 +28,6 @@
 		"augmented-ui": "^2.0.0",
 		"calendar": "github:fatlard1993/calendar",
 		"dom": "github:fatlard1993/dom#2.x.x",
-		"find-root": "^1.1.0",
 		"@fortawesome/fontawesome-free": "^5.15.1",
 		"http-server": "github:fatlard1993/http-server#4.x.x",
 		"log": "github:fatlard1993/log#3.x.x",

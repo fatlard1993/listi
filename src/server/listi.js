@@ -9,17 +9,16 @@ const listi = {
 	init: function(opts){
 		this.opts = opts;
 
-		this.rootPath = function rootPath(){ return path.join(opts.rootFolder, ...arguments); };
-
 		this.lists = new (require('config-manager'))(path.join(os.homedir(), '.listi.json'));
 
-		const fontAwesomePath = this.rootPath('node_modules/@fortawesome/fontawesome-free/webfonts');
-		const { app, staticServer } = require('http-server').init(opts.port, opts.rootFolder);
+		const { app, staticServer } = require('http-server').init(opts.port, path.resolve('./'));
 
 		this.socketServer = new SocketServer({ server: app.server });
 
-		app.use('/resources', staticServer(path.join(opts.rootFolder, 'client/resources')));
-		app.use('/fonts', staticServer(path.join(opts.rootFolder, 'client/fonts')));
+		app.use('/resources', staticServer(path.resolve('./src/client/resources')));
+		app.use('/fonts', staticServer(path.resolve('./src/client/fonts')));
+
+		const fontAwesomePath = path.resolve('./node_modules/@fortawesome/fontawesome-free/webfonts');
 
 		if(fs.existsSync(fontAwesomePath)) app.use('/webfonts', staticServer(fontAwesomePath));
 
