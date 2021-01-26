@@ -26,13 +26,13 @@
 	},
 	"dependencies": {
 		"augmented-ui": "^2.0.0",
+		"argi": "github:fatlard1993/argi",
 		"calendar": "github:fatlard1993/calendar",
 		"dom": "github:fatlard1993/dom#2.x.x",
 		"@fortawesome/fontawesome-free": "^5.15.1",
 		"http-server": "github:fatlard1993/http-server#4.x.x",
 		"log": "github:fatlard1993/log#3.x.x",
 		"socket-client": "github:fatlard1993/socket-client#2.x.x",
-		"websocket-server": "github:fatlard1993/websocket-server#2.x.x",
-		"yargs": "^16.1.0"
+		"websocket-server": "github:fatlard1993/websocket-server#2.x.x"
 	}
 }
