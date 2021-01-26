@@ -22,7 +22,7 @@ argi.parse({
 });
 
 const options = argi.options.named;
-const log = new (require('log'))({ tag: 'listi', color: true, defaultVerbosity: options.verbosity, colorMap: { listi: '\x1b[36m' } });
+const log = new (require('log'))({ tag: 'listi', defaults: { verbosity: options.verbosity, color: true }, colorMap: { listi: '\x1b[36m' } });
 
 log(1)('Options', options);
 
