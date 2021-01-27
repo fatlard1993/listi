@@ -22,7 +22,7 @@ const listi = {
 
 		if(fs.existsSync(fontAwesomePath)) app.use('/webfonts', staticServer(fontAwesomePath));
 
-		app.get('/home', (req, res, next) => { res.sendPage('index'); });
+		app.get('/home', (req, res, next) => { res.sendPage('listi'); });
 
 		this.socketServer.registerEndpoints(this.socketEndpoints);
 
