@@ -233,21 +233,34 @@ const listi = {
 		});
 
 		if(item.due){
-			dom.createElem('label', {
-				textContent: 'Recurring',
-				appendTo: editWrapper,
+			dom.createElem('label', { textContent: 'Recurring', appendTo: editWrapper });
+
+			let recurringRadioPress = ({ target }) => {
+				if(target.classList.contains('pressed')) return;
+
+				Array.from(target.parentElement.children).forEach((elem, index) => {
+					if(elem === target) target.parentElement.setAttribute('data-radioValue', index);
+
+					elem.classList[elem === target ? 'add' : 'remove']('pressed');
+				})
+			};
+
+			dom.createElem('div', {
+				id: 'recurringRadio',
+				className: 'postLabel',
 				appendChildren: [
-					dom.createElem('button', {
-						textContent: 'Off'
-					}),
-					dom.createElem('button', {
-						textContent: 'Absolute'
-					}),
-					dom.createElem('button', {
-						textContent: 'Relative'
-					})
-				]
+					dom.createElem('button', { textContent: 'Off', className: !item.recurring || item.recurring === 'off' ? 'pressed' : '', onPointerPress: recurringRadioPress }),
+					dom.createElem('button', { textContent: 'Absolute', className: item.recurring === 'absolute' ? 'pressed' : '', onPointerPress: recurringRadioPress }),
+					dom.createElem('button', { textContent: 'Relative', className: item.recurring === 'relative' ? 'pressed' : '', onPointerPress: recurringRadioPress })
+				],
+				appendTo: editWrapper
 			});
+
+			//todo absolute configuration: interval (X days from last due date), count (how many times to reschedule? X - Infinity)
+
+			//todo relative configuration: delay (X days from last completion), due window (X days long window to complete), count (how many times to reschedule? X - Infinity)
+
+			//todo maybe absolute is the only recurring option with a single date, and relative is the only option when using a range?
 		}
 
 		//todo linked list, complete action
@@ -260,7 +273,8 @@ const listi = {
 					summary: summaryInput.value,
 					description: descriptionInput.value,
 					tags: Array.from(tagList.children).map((elem) => { return elem.textContent; }),
-					due: dueDate.textContent === 'Set' ? undefined : dueDate.textContent.split(' - ')
+					due: dueDate.textContent === 'Set' ? undefined : dueDate.textContent.split(' - '),
+					recurring: ['off', 'absolute', 'relative'][document.getElementById('recurringRadio').getAttribute('data-radioValue')]
 				}
 			});
 		};

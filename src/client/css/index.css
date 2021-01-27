@@ -91,6 +91,10 @@ li#edit {
 			font-size: 4vw;
 		}
 	}
+
+	div.postLabel {
+		margin-top: -1%;
+	}
 }
 
 @media (max-width: 900px) {
