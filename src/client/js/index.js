@@ -41,10 +41,6 @@ const listi = {
 				else if(typeof listi.save === 'function') listi.save();
 			}
 		});
-
-		log('simple', 1, {});
-		log.error('simple named', [], 2);
-		log(1)('verbose', 9, [1]);
 	},
 	draw: function(view, arg){
 		if(!view || !listi[`draw_${view}`]) return log.error()(`"${view}" is an invalid view`);
@@ -60,7 +56,7 @@ const listi = {
 	draw_lists: function(lists){
 		if(!lists) return log.error()(`No lists`);
 
-		log()(lists);
+		log()('lists', lists);
 
 		var listFragment = dom.createFragment();
 
@@ -70,6 +66,10 @@ const listi = {
 				onPointerPress: listi.draw.bind(this, 'list_edit')
 			}
 		]);
+
+		if(!lists.length){
+			return dom.createElem('li', { textContent: 'No lists yet .. Create some with the + button above', appendTo: dom.getElemById('list') });
+		}
 
 		lists.forEach((name) => {
 			dom.createElem('li', {
@@ -103,6 +103,10 @@ const listi = {
 			{ type: 'div', textContent: list.name }
 		]);
 
+		if(!list.arr.length){
+			return dom.createElem('li', { textContent: 'No list items yet .. Create some with the + button above', appendTo: dom.getElemById('list') });
+		}
+
 		list.arr.forEach((item, index) => {
 			var tagList = listi.createTagList(item.tags);
 			tagList.classList.add('displayOnly');
@@ -135,13 +139,15 @@ const listi = {
 		dom.getElemById('list').appendChild(listFragment);
 	},
 	draw_list_edit: function(name){
+		if(typeof name !== 'string') name = '';
+
 		log()(name);
 
 		var listFragment = dom.createFragment();
 
 		var editWrapper = dom.createElem('li', { id: 'edit', className: 'listItem', appendTo: listFragment });
 
-		var nameInput = dom.createElem('input', { type: 'text', value: name || '', appendTo: dom.createElem('label', { textContent: 'Name', appendTo: editWrapper }) });
+		var nameInput = dom.createElem('input', { type: 'text', value: name, appendTo: dom.createElem('label', { textContent: 'Name', appendTo: editWrapper }) });
 
 		listi.save = () => { socketClient.reply('list_edit', { name, new: { name: nameInput.value } }); };
 

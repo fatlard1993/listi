@@ -9,7 +9,7 @@ const listi = {
 	init: function(opts){
 		this.opts = opts;
 
-		this.lists = new (require('config-manager'))(path.join(os.homedir(), '.listi.json'));
+		this.lists = new (require('config-manager'))(path.join(os.homedir(), '.listi.json'), {});
 
 		const { app, staticServer } = require('http-server').init(opts.port, path.resolve('./'));
 
