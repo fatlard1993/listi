@@ -6,12 +6,12 @@ const SocketServer = require('websocket-server');
 
 const listi = {
 	rootPath: function(){ return path.join(__dirname, '../..', ...arguments); },
-	init: function(opts){
-		this.opts = opts;
+	init: function(options){
+		this.options = options;
 
 		this.lists = new (require('config-manager'))(path.join(os.homedir(), '.listi.json'), {});
 
-		const { app } = require('http-server').init(opts.port, this.rootPath(), '/');
+		const { app } = require('http-server').init(options.port, this.rootPath(), '/');
 
 		require('./router');
 
@@ -47,7 +47,7 @@ const listi = {
 				delete listi.lists.current[list.name];
 			}
 
-			if(listi.opts.persistent) listi.lists.save();
+			if(listi.options.persistent) listi.lists.save();
 
 			this.reply('lists', Object.keys(listi.lists.current));
 		},
@@ -60,7 +60,7 @@ const listi = {
 
 			else listi.lists.current[item.listName].push(item.new);
 
-			if(listi.opts.persistent) listi.lists.save();
+			if(listi.options.persistent) listi.lists.save();
 
 			this.reply('list', { name: item.listName, arr: listi.lists.current[item.listName] });
 		}
