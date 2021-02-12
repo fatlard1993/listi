@@ -11,7 +11,7 @@ argi.parse({
 	port: {
 		type: 'int',
 		alias: 'p',
-		defaultValue: 80
+		defaultValue: 11571
 	},
 	persistent: {
 		type: 'boolean',
