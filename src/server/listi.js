@@ -1,29 +1,21 @@
 const os = require('os');
-const fs = require('fs');
 const path = require('path');
 
 const log = new (require('log'))({ tag: 'listi' });
 const SocketServer = require('websocket-server');
 
 const listi = {
+	rootPath: function(){ return path.join(__dirname, '../..', ...arguments); },
 	init: function(opts){
 		this.opts = opts;
 
 		this.lists = new (require('config-manager'))(path.join(os.homedir(), '.listi.json'), {});
 
-		const { app, staticServer } = require('http-server').init(opts.port, path.resolve('./'));
+		const { app } = require('http-server').init(opts.port, this.rootPath(), '/');
+
+		require('./router');
 
 		this.socketServer = new SocketServer({ server: app.server });
-
-		app.use('/resources', staticServer(path.resolve('./src/client/resources')));
-		app.use('/fonts', staticServer(path.resolve('./src/client/fonts')));
-
-		const fontAwesomePath = path.resolve('./node_modules/@fortawesome/fontawesome-free/webfonts');
-
-		if(fs.existsSync(fontAwesomePath)) app.use('/webfonts', staticServer(fontAwesomePath));
-
-		app.get('/home', (req, res, next) => { res.sendPage('listi'); });
-
 		this.socketServer.registerEndpoints(this.socketEndpoints);
 
 		log.info('Initialized');
