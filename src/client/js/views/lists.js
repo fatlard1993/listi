@@ -1,6 +1,8 @@
 import dom from 'dom';
 import socketClient from 'socket-client';
 
+import listi from 'listi';
+
 listi.views.lists = function(lists){
 	if(!lists) return listi.log.error()(`No lists`);
 

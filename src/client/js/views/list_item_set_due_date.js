@@ -1,6 +1,7 @@
 import dom from 'dom';
-import socketClient from 'socket-client';
 import Calendar from 'calendar';
+
+import listi from 'listi';
 
 listi.views.list_item_set_due_date = function(item){
 	var listFragment = dom.createFragment(), dueDate;

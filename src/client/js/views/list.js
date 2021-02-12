@@ -1,6 +1,8 @@
 import dom from 'dom';
 import socketClient from 'socket-client';
 
+import listi from 'listi';
+
 listi.views.list = function(list){
 	if(!list) return listi.log.error()(`No current selected list`);
 

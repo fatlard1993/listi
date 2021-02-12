@@ -1,6 +1,8 @@
 import dom from 'dom';
 import socketClient from 'socket-client';
 
+import listi from 'listi';
+
 listi.views.list_edit = function(name){
 	if(typeof name !== 'string') name = '';
 

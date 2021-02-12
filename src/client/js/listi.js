@@ -1,7 +1,6 @@
 import Log from 'log';
 import dom from 'dom';
 import socketClient from 'socket-client';
-import Calendar from 'calendar';
 
 const log = new Log({ verbosity: parseInt(dom.storage.get('logVerbosity') || 0) });
 

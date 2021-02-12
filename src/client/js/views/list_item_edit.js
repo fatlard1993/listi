@@ -1,6 +1,8 @@
 import dom from 'dom';
 import socketClient from 'socket-client';
 
+import listi from 'listi';
+
 listi.views.list_item_edit = function(item = {}){
 	listi.log()(item);
 
@@ -52,14 +54,14 @@ listi.views.list_item_edit = function(item = {}){
 	if(item.due){
 		dom.createElem('label', { textContent: 'Recurring', appendTo: editWrapper });
 
-		let recurringRadioPress = ({ target }) => {
+		const recurringRadioPress = ({ target }) => {
 			if(target.classList.contains('pressed')) return;
 
 			Array.from(target.parentElement.children).forEach((elem, index) => {
 				if(elem === target) target.parentElement.setAttribute('data-radioValue', index);
 
 				elem.classList[elem === target ? 'add' : 'remove']('pressed');
-			})
+			});
 		};
 
 		dom.createElem('div', {

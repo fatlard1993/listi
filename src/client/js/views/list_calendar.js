@@ -2,6 +2,8 @@ import dom from 'dom';
 import socketClient from 'socket-client';
 import Calendar from 'calendar';
 
+import listi from 'listi';
+
 listi.views.list_calendar = function(list){
 	var listFragment = dom.createFragment();
 

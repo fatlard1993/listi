@@ -1,5 +1,6 @@
-import dom from 'dom';
 import socketClient from 'socket-client';
+
+import listi from 'listi';
 
 listi.views.sort_edit = function(list){
 	listi.drawToolkit([
