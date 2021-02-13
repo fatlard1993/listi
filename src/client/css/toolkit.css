@@ -24,7 +24,6 @@ div#toolkit {
 
 
 		&:before {
-			@mixin fontAwesome;
 			@mixin fontAwesomeSolid;
 
 			pointer-events: none;

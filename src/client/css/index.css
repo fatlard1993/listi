@@ -58,7 +58,6 @@ li#edit {
 			right: 0;
 
 			&:before {
-				@mixin fontAwesome;
 				@mixin fontAwesomeSolid;
 
 				pointer-events: none;

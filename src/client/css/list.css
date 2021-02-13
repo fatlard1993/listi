@@ -29,7 +29,6 @@ ul#list {
 				background-color: $blue;
 
 				&:before {
-					@mixin fontAwesome;
 					@mixin fontAwesomeSolid;
 
 					pointer-events: none;
