@@ -41,7 +41,7 @@ listi.views.list_item_edit = function(item = {}){
 		className: 'dueDate',
 		appendTo: dom.createElem('label', { textContent: 'Due Date', appendTo: editWrapper }),
 		onPointerPress: () => {
-			this.draw('list_item_set_due_date', {
+			listi.draw('list_item_set_due_date', {
 				index: item.index,
 				listName: item.listName,
 				summary: summaryInput.value,
@@ -93,7 +93,7 @@ listi.views.list_item_edit = function(item = {}){
 				description: descriptionInput.value,
 				tags: Array.from(tagList.children).map((elem) => { return elem.textContent; }),
 				due: dueDate.textContent === 'Set' ? undefined : dueDate.textContent.split(' - '),
-				recurring: ['off', 'absolute', 'relative'][document.getElementById('recurringRadio').getAttribute('data-radioValue')]
+				recurring: item.due ? ['off', 'absolute', 'relative'][document.getElementById('recurringRadio').getAttribute('data-radioValue')] : false
 			}
 		});
 	};
