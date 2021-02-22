@@ -36,6 +36,12 @@ listi.views.list_item_edit = function(item = {}){
 
 	dom.createElem('label', { textContent: 'Tags', appendChildren: [tagInput, tagAdd, tagList], appendTo: editWrapper });
 
+	const completeAction = dom.createElem('select', { appendTo: dom.createElem('label', { textContent: 'Complete Action', appendTo: editWrapper }) });
+
+	['Add Tag', 'Delete'].forEach((option) => {
+		dom.createElem('option', { appendTo: completeAction, textContent: option });
+	});
+
 	var dueDate = dom.createElem('button', {
 		textContent: item.due ? (item.due instanceof Array ? item.due.join(' - ') : item.due) : 'Set',
 		className: 'dueDate',
