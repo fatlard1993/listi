@@ -42,10 +42,12 @@ listi.views.list_item_edit = function(item = {}){
 		dom.createElem('option', { appendTo: completeAction, textContent: option });
 	});
 
+	dom.createElem('label', { textContent: 'Due Date', appendTo: editWrapper });
+
 	var dueDate = dom.createElem('button', {
 		textContent: item.due ? (item.due instanceof Array ? item.due.join(' - ') : item.due) : 'Set',
-		className: 'dueDate',
-		appendTo: dom.createElem('label', { textContent: 'Due Date', appendTo: editWrapper }),
+		className: 'dueDate postLabel',
+		appendTo: editWrapper,
 		onPointerPress: () => {
 			listi.draw('list_item_set_due_date', {
 				index: item.index,

@@ -26,7 +26,7 @@ listi.views.lists = function(lists){
 			textContent: name,
 			className: 'list',
 			appendTo: listFragment,
-			appendChild: dom.createElem('div', { className: 'edit', onPointerPress: () => { listi.draw('list_edit', name);} }),
+			appendChild: dom.createElem('button', { className: 'edit', onPointerPress: () => { listi.draw('list_edit', name);} }),
 			onPointerPress: () => { socketClient.reply('list', name); }
 		});
 	});

@@ -1,8 +1,14 @@
 // includes colors calendar
 
-li#calendar {
-	height: 85%;
+ul#list li#calendar {
+	height: 97%;
+	margin: 1%;
+	min-height: 16cm;
 	background-color: $grey-darkest;
+
+	* {
+		font-size: 16px;
+	}
 
 	div.control-bar button.set-day {
 		display: none;

@@ -1,6 +1,6 @@
 // includes baseline colors augmented-ui dom fonts scrollbar buttons toolkit list tags calendar
 
-div#wrapper {
+/* div#wrapper {
 	height: 100%;
 
 	.fs-xxxl {
@@ -21,7 +21,7 @@ div#wrapper {
 	.fs-xs {
 		font-size: 12px;
 	}
-}
+} */
 
 li#edit {
 	cursor: default;
@@ -36,9 +36,9 @@ li#edit {
 	label {
 		position: relative;
 		display: block;
-		font-size: 4vw;
+		font-size: 1cm;
 		width: 80%;
-		margin: 0 auto 2%;
+		margin: 0 auto 0.1cm;
 
 		&.showTagAdd {
 			button#tagAdd {
@@ -46,7 +46,7 @@ li#edit {
 			}
 
 			input[type="text"] {
-				margin: 1% 0;
+				margin: 0 2.5%;
 				width: 80%;
 			}
 		}
@@ -54,8 +54,9 @@ li#edit {
 		button#tagAdd {
 			display: none;
 			position: absolute;
-			top: 2.46em;
-			right: 0;
+			top: 1.42cm;
+			right: 2.5%;
+			margin: 0;
 
 			&:before {
 				@mixin fontAwesomeSolid;
@@ -74,95 +75,113 @@ li#edit {
 		}
 
 		input[type="text"] {
-			display: block;
-			margin: 1% auto;
+			margin: 0 auto;
 			width: 95%;
-			padding: 1%;
-			font-size: 4vw;
+			font-size: 0.8cm;
 		}
 
 		textarea {
-			display: block;
 			width: 95%;
-			margin: 1% auto;
+			margin: 0 auto;
 			resize: vertical;
-			padding: 1%;
-			font-size: 4vw;
+			font-size: 0.8cm;
 		}
 	}
 
-	div.postLabel {
-		margin-top: -1%;
+	div.postLabel, button.postLabel {
+		margin-top: 0;
 	}
 }
 
-@media (max-width: 900px) {
+@media (min-height: 18cm) {
 	div#toolkit {
+		height: 10%;
+
+		div, button {
+			height: 8vh;
+			font-size: 5vh;
+		}
+
 		div {
-			font-size: 4vw;
-			line-height: 8vw;
+			line-height: 8vh;
 		}
 
 		button {
-			font-size: 4vw;
-			width: 8vw;
-			height: 8vw;
+			width: 8vh;
 		}
 	}
 
-	ul#list li.list, ul#list li.listItem {
-		font-size: 3vw;
-
-		div.edit {
-			width: 5vw;
-
-			&:before {
-				margin: 1.4vw 1.5vw;
-			}
-		}
+	ul#list {
+		height: 90%;
 	}
 }
 
-@media (max-width: 600px) {
-	div#toolkit button {
-		font-size: 5vw;
-		width: 10vw;
-		height: 10vw;
+@media (min-height: 22cm) {
+	div#toolkit {
+		height: 7%;
+
+		div, button {
+			height: 5vh;
+			font-size: 3vh;
+		}
+
+		div {
+			line-height: 5vh;
+		}
+
+		button {
+			width: 5vh;
+		}
 	}
 
-	ul#list li.list, ul#list li.listItem {
-		font-size: 4vw;
-		padding: 1vw;
-
-		div.edit {
-			width: 6vw;
-
-			&:before {
-				font-size: 3vw;
-				margin: 1.9vw 1.5vw;
-			}
-		}
+	ul#list {
+		height: 93%;
 	}
 }
 
-@media (max-width: 500px) {
-	div#toolkit button {
-		font-size: 6vw;
-		width: 12vw;
-		height: 12vw;
+@media (min-height: 32cm) {
+	div#toolkit {
+		height: 5%;
+
+		div, button {
+			height: 3vh;
+			font-size: 2vh;
+		}
+
+		div {
+			line-height: 3vh;
+		}
+
+		button {
+			width: 3vh;
+		}
 	}
 
-	ul#list li.list, ul#list li.listItem {
-		font-size: 5.5vw;
-		padding: 1.5vw;
+	ul#list {
+		height: 95%;
+	}
+}
 
-		div.edit {
-			width: 9vw;
+@media (min-height: 44cm) {
+	div#toolkit {
+		height: 3%;
 
-			&:before {
-				font-size: 4vw;
-				margin: 2.8vw 2.5vw;
-			}
+		div, button {
+			height: 2vh;
+			font-size: 1vh;
+			margin: 0.5vh;
 		}
+
+		div {
+			line-height: 2vh;
+		}
+
+		button {
+			width: 2vh;
+		}
+	}
+
+	ul#list {
+		height: 97%;
 	}
 }

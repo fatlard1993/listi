@@ -1,8 +1,12 @@
 // includes colors
 
-ul.tagList {
-	background-color: $grey-darker;
-	padding: 1%;
+ul#list ul.tagList {
+	background-color: $grey-darkest;
+	margin: 1% auto;
+	width: 95%;
+	border-radius: 0.1cm;
+	box-sizing: border-box;
+	border: inset 0.1cm $grey-light;
 
 	&:after {
 		content: "";
@@ -12,14 +16,22 @@ ul.tagList {
 
 	&.displayOnly {
 		pointer-events: none;
+		border: none;
+    background: none;
+		width: 100%;
+    margin: 0;
 	}
 
 	li.tag {
 		border: 1px solid white;
-		padding: 1%;
-		margin: 1%;
+		padding: 0 0.3cm;
+		margin: 0.2cm;
 		display: inline-block;
 		float: left;
+		border-radius: 0.1cm;
+		border-top-left-radius: 0;
+		font-size: 0.5cm;
+		background-color: $black;
 
 		&.pointerHold {
 			background-color: $red;

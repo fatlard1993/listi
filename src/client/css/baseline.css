@@ -9,40 +9,8 @@ input, textarea, select {
 	padding: 0;
 	border: 0;
 	font: inherit;
-	font-size: 16px;
+	font-size: 0.8cm;
 	vertical-align: baseline;
-}
-
-input[type="checkbox"], input[type="radio"] {
-	cursor: pointer;
-	position: relative;
-	top: 2px;
-}
-
-input:disabled {
-	color: $black;
-	background-color: $grey-darker;
-}
-
-ol, ul {
-	list-style: none;
-	padding: 0;
-}
-
-button,
-select {
-	text-transform: none;
-}
-
-button {
-	cursor: pointer;
-}
-
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
-	-webkit-appearance: none;
-	margin: 0;
-	height: auto;
 }
 
 html {
@@ -52,7 +20,7 @@ html {
 	overflow: hidden;
 
 	* {
-		font: 400 16px "Source Sans Pro";
+		font: 400 0.8cm "Source Sans Pro";
 		font-family: "Source Sans Pro", sans-serif;
 		touch-action: manipulation;
 		-webkit-text-size-adjust: none;
@@ -83,6 +51,48 @@ body {
 	background: $black;
 	color: $white;
 	margin: 0;
+}
+
+div#wrapper {
+	height: 100%;
+}
+
+input[type="checkbox"], input[type="radio"] {
+	cursor: pointer;
+	position: relative;
+	top: 2px;
+}
+
+input:disabled {
+	color: $black;
+	background-color: $grey-darker;
+}
+
+ol, ul {
+	list-style: none;
+	padding: 0;
+}
+
+button,
+select {
+	text-transform: none;
+	cursor: pointer;
+	border-radius: 0.1cm;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+	height: auto;
+}
+
+input[type="text"], textarea {
+	display: block;
+	border-radius: 0.1cm;
+	text-indent: 0.1cm;
+	border: inset 0.1cm $grey-light;
+	box-sizing: border-box;
 }
 
 @viewport {

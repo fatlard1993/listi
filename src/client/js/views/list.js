@@ -31,14 +31,14 @@ listi.views.list = function(list){
 			textContent: item.summary,
 			className: 'listItem',
 			appendChildren: [
-				dom.createElem('div', {
+				dom.createElem('button', {
 					className: 'edit',
 					onPointerPress: () => {
 						listi.draw('list_item_edit', Object.assign({ index, listName: list.name }, item));
 					}
 				}),
 				dom.createElem('div', { textContent: item.description, className: 'description' }),
-				dom.createElem('div', { textContent: item.due, className: 'dueDate' }),
+				dom.createElem('div', { textContent: `Due: ${item.due}`, className: 'dueDate' }),
 				tagList
 			],
 			appendTo: listFragment,
