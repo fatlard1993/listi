@@ -4,11 +4,6 @@ import listi from 'listi';
 
 listi.views.filter_edit = function(list){
 	listi.drawToolkit([
-		{
-			id: 'lists',
-			onPointerPress: () => {
-				socketClient.reply('list', list.name);
-			}
-		}
+		{ id: 'lists', onPointerPress: socketClient.reply.bind(this, 'list', list.name) }
 	]);
 };

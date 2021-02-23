@@ -7,12 +7,7 @@ listi.views.list_item_set_due_date = function(item){
 	var listFragment = dom.createFragment(), dueDate;
 
 	listi.drawToolkit([
-		{
-			id: 'lists',
-			onPointerPress: () => {
-				listi.draw('list_item_edit', item);
-			}
-		},
+		{ id: 'lists', onPointerPress: listi.draw.bind(this, 'list_item_edit', item) },
 		{
 			id: 'save',
 			onPointerPress: () => {

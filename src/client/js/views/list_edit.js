@@ -17,18 +17,8 @@ listi.views.list_edit = function(name){
 	listi.save = () => { socketClient.reply('list_edit', { name, new: { name: nameInput.value } }); };
 
 	var toolkit = [
-		{
-			id: 'lists',
-			onPointerPress: () => {
-				socketClient.reply('lists');
-			}
-		},
-		{
-			id: 'save',
-			onPointerPress: () => {
-				listi.save();
-			}
-		},
+		{ id: 'lists', onPointerPress: socketClient.reply.bind(this, 'lists') },
+		{ id: 'save', onPointerPress: listi.save.bind(this) },
 		{ type: 'div', textContent: `${name ? 'Edit' : 'Create new'} list` }
 	];
 

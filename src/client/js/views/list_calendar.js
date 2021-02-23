@@ -8,12 +8,7 @@ listi.views.list_calendar = function(list){
 	var listFragment = dom.createFragment();
 
 	listi.drawToolkit([
-		{
-			id: 'lists',
-			onPointerPress: () => {
-				socketClient.reply('list', list.name);
-			}
-		}
+		{ id: 'lists', onPointerPress: socketClient.reply.bind(this, 'list', list.name) }
 	]);
 
 	listi.calendar = new Calendar();

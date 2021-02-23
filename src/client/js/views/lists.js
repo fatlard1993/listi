@@ -11,10 +11,7 @@ listi.views.lists = function(lists){
 	var listFragment = dom.createFragment();
 
 	listi.drawToolkit([
-		{
-			id: 'add',
-			onPointerPress: listi.draw.bind(this, 'list_edit')
-		}
+		{ id: 'add', onPointerPress: listi.draw.bind(this, 'list_edit') }
 	]);
 
 	if(!lists.length){
