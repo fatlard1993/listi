@@ -75,9 +75,7 @@ const listi = {
 		return dom.createElem('li', {
 			className: 'tag',
 			textContent: name,
-			onPointerPressAndHold: (evt) => {
-				dom.remove(evt.target);
-			}
+			onPointerPressAndHold: (evt) => { dom.remove(evt.target); }
 		});
 	},
 	createTagList: function(list = []){
