@@ -83,7 +83,11 @@ listi.views.list_item_edit = function(item = {}){
 				tags: Array.from(tagList.children).map((elem) => { return elem.textContent; }),
 				due: dueDate.textContent === 'Set' ? undefined : dueDate.textContent.split(' - '),
 				completeAction: completeAction.value,
-				recurring: item.due ? ['off', 'absolute', 'relative'][document.getElementById('recurringRadio').getAttribute('data-radioValue')] : false
+				reschedule: {
+					from: rescheduleFrom.value,
+					times: rescheduleTimes.value,
+					days: rescheduleDays.value
+				}
 			}
 		});
 	};
