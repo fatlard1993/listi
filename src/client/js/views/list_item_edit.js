@@ -36,15 +36,9 @@ listi.views.list_item_edit = function(item = {}){
 
 	dom.createElem('label', { textContent: 'Tags', appendChildren: [tagInput, tagAdd, tagList], appendTo: editWrapper });
 
-	const completeAction = dom.createElem('select', { appendTo: dom.createElem('label', { textContent: 'Complete Action', appendTo: editWrapper }) });
-
-	['Add Tag', 'Delete'].forEach((option) => {
-		dom.createElem('option', { appendTo: completeAction, textContent: option });
-	});
-
 	dom.createElem('label', { textContent: 'Due Date', appendTo: editWrapper });
 
-	var dueDate = dom.createElem('button', {
+	const dueDate = dom.createElem('button', {
 		textContent: item.due ? (item.due instanceof Array ? item.due.join(' - ') : item.due) : 'Set',
 		className: 'dueDate postLabel',
 		appendTo: editWrapper,
@@ -59,38 +53,25 @@ listi.views.list_item_edit = function(item = {}){
 		}
 	});
 
-	if(item.due){
-		dom.createElem('label', { textContent: 'Recurring', appendTo: editWrapper });
+	const schedulingContainer = dom.createElem('div', { className: 'disappear' });
 
-		const recurringRadioPress = ({ target }) => {
-			if(target.classList.contains('pressed')) return;
+	const completeAction = dom.createElem('select', {
+		appendTo: dom.createElem('label', { textContent: 'Complete Action', appendTo: editWrapper }),
+		options: ['Add Tag', 'Delete', 'Reschedule'],
+		onChange: (evt) => { dom[evt.value === 'Reschedule' ? 'show' : 'disappear'](schedulingContainer); }
+	});
 
-			Array.from(target.parentElement.children).forEach((elem, index) => {
-				if(elem === target) target.parentElement.setAttribute('data-radioValue', index);
+	editWrapper.appendChild(schedulingContainer);
 
-				elem.classList[elem === target ? 'add' : 'remove']('pressed');
-			});
-		};
+	const rescheduleFrom = dom.createElem('select', {
+		appendTo: dom.createElem('label', { textContent: 'Reschedule From', appendTo: schedulingContainer }),
+		options: ['Completion Date', 'Last Due Date']
+	});
 
-		dom.createElem('div', {
-			id: 'recurringRadio',
-			className: 'postLabel',
-			appendChildren: [
-				dom.createElem('button', { textContent: 'Off', className: !item.recurring || item.recurring === 'off' ? 'pressed' : '', onPointerPress: recurringRadioPress }),
-				dom.createElem('button', { textContent: 'Absolute', className: item.recurring === 'absolute' ? 'pressed' : '', onPointerPress: recurringRadioPress }),
-				dom.createElem('button', { textContent: 'Relative', className: item.recurring === 'relative' ? 'pressed' : '', onPointerPress: recurringRadioPress })
-			],
-			appendTo: editWrapper
-		});
+	const rescheduleDays = dom.createElem('input', { type: 'number', value: 7, appendTo: dom.createElem('label', { textContent: 'How Many Days After', appendTo: schedulingContainer }) });
+	const rescheduleTimes = dom.createElem('input', { type: 'number', placeholder: 'Infinity', appendTo: dom.createElem('label', { textContent: 'How Many Times To Reschedule', appendTo: schedulingContainer }) });
 
-		//todo absolute configuration: interval (X days from last due date), count (how many times to reschedule? X - Infinity)
-
-		//todo relative configuration: delay (X days from last completion), due window (X days long window to complete), count (how many times to reschedule? X - Infinity)
-
-		//todo maybe absolute is the only recurring option with a single date, and relative is the only option when using a range?
-	}
-
-	//todo linked list, complete action
+	//todo linked list
 
 	listi.save = () => {
 		socketClient.reply('list_item_edit', {
