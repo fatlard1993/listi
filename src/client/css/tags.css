@@ -7,6 +7,7 @@ ul#list ul.tagList {
 	border-radius: 0.1cm;
 	box-sizing: border-box;
 	border: inset 0.1cm $grey-light;
+	min-height: 1cm;
 
 	&:after {
 		content: "";

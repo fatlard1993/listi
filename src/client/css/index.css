@@ -74,10 +74,14 @@ li#edit {
 			}
 		}
 
-		input[type="text"] {
+		input[type="text"], input[type="number"] {
 			margin: 0 auto;
 			width: 95%;
 			font-size: 0.8cm;
+		}
+
+		input[type="number"] {
+			width: 40%;
 		}
 
 		textarea {
