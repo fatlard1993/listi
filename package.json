@@ -25,6 +25,7 @@
 		"argi": "github:fatlard1993/argi",
 		"augmented-ui": "^2.0.0",
 		"calendar": "github:fatlard1993/calendar",
+		"config-manager": "github:fatlard1993/config-manager#2.x.x",
 		"dom": "github:fatlard1993/dom#2.x.x",
 		"http-server": "github:fatlard1993/http-server#4.x.x",
 		"log": "github:fatlard1993/log#3.x.x",

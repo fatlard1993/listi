@@ -2,7 +2,7 @@
 
 const argi = require('argi');
 
-argi.parse({
+const { options } = argi.parse({
 	verbosity: {
 		type: 'int',
 		alias: 'v',
@@ -21,7 +21,6 @@ argi.parse({
 	}
 });
 
-const options = argi.options.named;
 const log = new (require('log'))({ tag: 'listi', defaults: { verbosity: options.verbosity, color: true }, colorMap: { listi: '\x1b[36m' } });
 
 log(1)('Options', options);
