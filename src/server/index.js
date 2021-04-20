@@ -4,12 +4,12 @@ const argi = require('argi');
 
 const { options } = argi.parse({
 	verbosity: {
-		type: 'int',
+		type: 'number',
 		alias: 'v',
 		defaultValue: 1
 	},
 	port: {
-		type: 'int',
+		type: 'number',
 		alias: 'p',
 		defaultValue: 11571
 	},
