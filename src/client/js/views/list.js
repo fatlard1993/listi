@@ -3,8 +3,8 @@ import socketClient from 'socket-client';
 
 import listi from 'listi';
 
-listi.views.list = function(list){
-	if(!list) return listi.log.error()(`No current selected list`);
+listi.views.list = function (list) {
+	if (!list) return listi.log.error()(`No current selected list`);
 
 	listi.log()('draw_list', list);
 
@@ -16,10 +16,10 @@ listi.views.list = function(list){
 		{ id: 'add', onPointerPress: listi.draw.bind(this, 'list_item_edit', { listName: list.name }) },
 		{ id: 'filter', onPointerPress: listi.draw.bind(this, 'filter_edit', list) },
 		{ id: 'sort', onPointerPress: listi.draw.bind(this, 'sort_edit', list) },
-		{ type: 'div', textContent: list.name }
+		{ type: 'div', textContent: list.name },
 	]);
 
-	if(!list.arr.length){
+	if (!list.arr.length) {
 		return dom.createElem('li', { textContent: 'No list items yet .. Create some with the + button above', appendTo: dom.getElemById('list') });
 	}
 
@@ -35,11 +35,11 @@ listi.views.list = function(list){
 					className: 'edit',
 					onPointerPress: () => {
 						listi.draw('list_item_edit', Object.assign({ index, listName: list.name }, item));
-					}
+					},
 				}),
 				dom.createElem('div', { textContent: item.description, className: 'description' }),
 				dom.createElem('div', { textContent: `Due: ${item.due}`, className: 'dueDate' }),
-				tagList
+				tagList,
 			],
 			appendTo: listFragment,
 			onPointerPressAndHold: () => {
@@ -48,7 +48,7 @@ listi.views.list = function(list){
 				item.tags.push('completed');
 
 				socketClient.reply('list_item_edit', { index, listName: list.name, new: item });
-			}
+			},
 		});
 	});
 

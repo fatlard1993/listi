@@ -1,10 +1,33 @@
 // includes colors fonts
 
-html, body, div, span, button,
-h1, h2, h3, h4, h5, h6, p, pre,
-a, img, small, strong, b, u, i,
-ol, ul, li, label, canvas,
-input, textarea, select {
+html,
+body,
+div,
+span,
+button,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+pre,
+a,
+img,
+small,
+strong,
+b,
+u,
+i,
+ol,
+ul,
+li,
+label,
+canvas,
+input,
+textarea,
+select {
 	margin: 0;
 	padding: 0;
 	border: 0;
@@ -20,8 +43,8 @@ html {
 	overflow: hidden;
 
 	* {
-		font: 400 0.8cm "Source Sans Pro";
-		font-family: "Source Sans Pro", sans-serif;
+		font: 400 0.8cm 'Source Sans Pro';
+		font-family: 'Source Sans Pro', sans-serif;
 		touch-action: manipulation;
 		-webkit-text-size-adjust: none;
 	}
@@ -57,7 +80,8 @@ div#wrapper {
 	height: 100%;
 }
 
-input[type="checkbox"], input[type="radio"] {
+input[type='checkbox'],
+input[type='radio'] {
 	cursor: pointer;
 	position: relative;
 	top: 2px;
@@ -68,7 +92,8 @@ input:disabled {
 	background-color: $grey-darker;
 }
 
-ol, ul {
+ol,
+ul {
 	list-style: none;
 	padding: 0;
 }
@@ -80,14 +105,16 @@ select {
 	border-radius: 0.1cm;
 }
 
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
 	-webkit-appearance: none;
 	margin: 0;
 	height: auto;
 }
 
-input[type="text"], input[type="number"], textarea {
+input[type='text'],
+input[type='number'],
+textarea {
 	display: block;
 	border-radius: 0.1cm;
 	text-indent: 0.1cm;
@@ -97,7 +124,7 @@ input[type="text"], input[type="number"], textarea {
 
 @viewport {
 	width: device-width;
-	zoom: 1.0;
-	min-zoom: 1.0;
-	max-zoom: 1.0;
+	zoom: 1;
+	min-zoom: 1;
+	max-zoom: 1;
 }

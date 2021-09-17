@@ -45,7 +45,7 @@ li#edit {
 				display: block;
 			}
 
-			input[type="text"] {
+			input[type='text'] {
 				margin: 0 2.5%;
 				width: 80%;
 			}
@@ -62,25 +62,28 @@ li#edit {
 				@mixin fontAwesomeSolid;
 
 				pointer-events: none;
-				content: "\f067";
+				content: '\f067';
 			}
 
 			&:hover {
 				top: 2.38em;
 			}
 
-			&:active, &.active, &.pressed {
+			&:active,
+			&.active,
+			&.pressed {
 				top: 2.52em;
 			}
 		}
 
-		input[type="text"], input[type="number"] {
+		input[type='text'],
+		input[type='number'] {
 			margin: 0 auto;
 			width: 95%;
 			font-size: 0.8cm;
 		}
 
-		input[type="number"] {
+		input[type='number'] {
 			width: 40%;
 		}
 
@@ -92,7 +95,8 @@ li#edit {
 		}
 	}
 
-	div.postLabel, button.postLabel {
+	div.postLabel,
+	button.postLabel {
 		margin-top: 0;
 	}
 }
@@ -101,7 +105,8 @@ li#edit {
 	div#toolkit {
 		height: 10%;
 
-		div, button {
+		div,
+		button {
 			height: 8vh;
 			font-size: 5vh;
 		}
@@ -124,7 +129,8 @@ li#edit {
 	div#toolkit {
 		height: 7%;
 
-		div, button {
+		div,
+		button {
 			height: 5vh;
 			font-size: 3vh;
 		}
@@ -147,7 +153,8 @@ li#edit {
 	div#toolkit {
 		height: 5%;
 
-		div, button {
+		div,
+		button {
 			height: 3vh;
 			font-size: 1.5vh;
 		}
@@ -170,7 +177,8 @@ li#edit {
 	div#toolkit {
 		height: 3%;
 
-		div, button {
+		div,
+		button {
 			height: 2vh;
 			font-size: 1vh;
 			margin: 0.5vh;

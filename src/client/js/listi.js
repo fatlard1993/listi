@@ -9,42 +9,42 @@ const listi = {
 	tapAndHoldTime: 900,
 	lists: {},
 	views: {},
-	isEditingText: function(){
-		const activeElem = document.activeElement, activeNode = activeElem.nodeName;
+	isEditingText: function () {
+		const activeElem = document.activeElement,
+			activeNode = activeElem.nodeName;
 
-		if(activeNode && (activeNode === 'textarea' || (activeNode === 'input' && activeElem.getAttribute('type') === 'text'))) return true;
+		if (activeNode && (activeNode === 'textarea' || (activeNode === 'input' && activeElem.getAttribute('type') === 'text'))) return true;
 
 		return false;
 	},
-	init: function(){
+	init: function () {
 		dom.mobile.detect();
 
 		socketClient.init();
 
-		socketClient.on('lists', (lists) => {
+		socketClient.on('lists', lists => {
 			listi.draw('lists', lists);
 		});
 
-		socketClient.on('list', (list) => {
+		socketClient.on('list', list => {
 			listi.lists[list.name] = list;
 
 			listi.draw('list', list);
 		});
 
-		dom.interact.on('keyUp', (evt) => {
+		dom.interact.on('keyUp', evt => {
 			var { key } = evt;
 
 			log(1)(key);
 
-			if(key === 'Enter' && (listi.isEditingText() || evt.ctrlKey)){
-				if(document.getElementsByClassName('showTagAdd').length) document.getElementById('tagAdd').pointerPressFunction();
-
-				else if(typeof listi.save === 'function') listi.save();
+			if (key === 'Enter' && (listi.isEditingText() || evt.ctrlKey)) {
+				if (document.getElementsByClassName('showTagAdd').length) document.getElementById('tagAdd').pointerPressFunction();
+				else if (typeof listi.save === 'function') listi.save();
 			}
 		});
 	},
-	draw: function(view, arg){
-		if(!view || !listi.views[view]) return log.error()(`"${view}" is an invalid view`);
+	draw: function (view, arg) {
+		if (!view || !listi.views[view]) return log.error()(`"${view}" is an invalid view`);
 
 		dom.empty(dom.getElemById('toolkit'));
 		dom.empty(dom.getElemById('list'));
@@ -54,31 +54,38 @@ const listi = {
 
 		listi.views[view](arg);
 	},
-	drawToolkit: function(items){
+	drawToolkit: function (items) {
 		var toolkitFragment = dom.createFragment();
 
-		items.forEach((opts) => {
+		items.forEach(opts => {
 			var elemType = 'button';
 
-			if(opts.type){
+			if (opts.type) {
 				elemType = opts.type;
 
 				delete opts.type;
 			}
 
-			dom.createElem(elemType, Object.assign({ appendTo: toolkitFragment	}, opts));
+			dom.createElem(elemType, Object.assign({ appendTo: toolkitFragment }, opts));
 		});
 
 		dom.getElemById('toolkit').appendChild(toolkitFragment);
 	},
-	createTag: function(name){
+	createTag: function (name) {
 		return dom.createElem('li', {
 			className: 'tag',
 			textContent: name,
-			onPointerPressAndHold: (evt) => { dom.remove(evt.target); }
+			onPointerPressAndHold: evt => {
+				dom.remove(evt.target);
+			},
 		});
 	},
-	createTagList: function(list = []){
-		return dom.createElem('ul', { className: 'tagList', appendChildren: list.map((name) => { return listi.createTag(name); }) });
-	}
+	createTagList: function (list = []) {
+		return dom.createElem('ul', {
+			className: 'tagList',
+			appendChildren: list.map(name => {
+				return listi.createTag(name);
+			}),
+		});
+	},
 };

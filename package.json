@@ -7,7 +7,9 @@
 	"license": "ISC",
 	"scripts": {
 		"start": "node ./src/server/index.js",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"lint": "eslint",
+		"lint:fix": "eslint --fix --ext .js .",
+		"pretty": "prettier --write ."
 	},
 	"repository": {
 		"type": "git",
@@ -17,11 +19,8 @@
 		"url": "https://github.com/fatlard1993/listi/issues"
 	},
 	"homepage": "https://github.com/fatlard1993/listi#readme",
-	"devDependencies": {
-		"eslint": "^7.19.0"
-	},
 	"dependencies": {
-		"@fortawesome/fontawesome-free": "^5.15.2",
+		"@fortawesome/fontawesome-free": "^5.15.4",
 		"argi": "github:fatlard1993/argi",
 		"augmented-ui": "^2.0.0",
 		"calendar": "github:fatlard1993/calendar",
@@ -32,5 +31,17 @@
 		"socket-client": "github:fatlard1993/socket-client#2.x.x",
 		"source-sans-pro": "^3.6.0",
 		"websocket-server": "github:fatlard1993/websocket-server#2.x.x"
+	},
+	"devDependencies": {
+		"eslint": "^7.32.0",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-cypress": "^2.12.1",
+		"eslint-plugin-prettier": "^4.0.0",
+		"husky": "^7.0.2",
+		"lint-staged": "^11.1.2",
+		"prettier": "2.4.1"
+	},
+	"lint-staged": {
+		"**/*": "prettier --write --ignore-unknown"
 	}
 }

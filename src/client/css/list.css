@@ -11,10 +11,12 @@ ul#list {
 		margin: 0.2cm;
 		padding: 0.1cm;
 
-		&.listItem, &.list {
+		&.listItem,
+		&.list {
 			cursor: pointer;
 
-			div.description, div.dueDate {
+			div.description,
+			div.dueDate {
 				pointer-events: none;
 				font-size: 0.4cm;
 			}
@@ -34,7 +36,7 @@ ul#list {
 					@mixin fontAwesomeSolid;
 
 					pointer-events: none;
-					content: "\f044";
+					content: '\f044';
 					position: absolute;
 					top: 0.25cm;
 					left: 0.25cm;
@@ -43,7 +45,7 @@ ul#list {
 		}
 
 		&.list {
-			text-indent: 0.1cm
+			text-indent: 0.1cm;
 		}
 
 		&.listItem {

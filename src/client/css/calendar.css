@@ -23,7 +23,7 @@ ul#list li#calendar {
 			outline: 2px dashed $red;
 
 			&:after {
-				content: "";
+				content: '';
 				position: absolute;
 				top: 0;
 				left: 0;

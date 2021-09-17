@@ -3,8 +3,8 @@ import socketClient from 'socket-client';
 
 import listi from 'listi';
 
-listi.views.list_edit = function(name){
-	if(typeof name !== 'string') name = '';
+listi.views.list_edit = function (name) {
+	if (typeof name !== 'string') name = '';
 
 	listi.log()(name);
 
@@ -14,22 +14,24 @@ listi.views.list_edit = function(name){
 
 	var nameInput = dom.createElem('input', { type: 'text', value: name, appendTo: dom.createElem('label', { textContent: 'Name', appendTo: editWrapper }) });
 
-	listi.save = () => { socketClient.reply('list_edit', { name, new: { name: nameInput.value } }); };
+	listi.save = () => {
+		socketClient.reply('list_edit', { name, new: { name: nameInput.value } });
+	};
 
 	var toolkit = [
 		{ id: 'lists', onPointerPress: socketClient.reply.bind(this, 'lists') },
 		{ id: 'save', onPointerPress: listi.save.bind(this) },
-		{ type: 'div', textContent: `${name ? 'Edit' : 'Create new'} list` }
+		{ type: 'div', textContent: `${name ? 'Edit' : 'Create new'} list` },
 	];
 
-	if(name){
+	if (name) {
 		toolkit.splice(toolkit.length - 1, 0, {
 			id: 'delete',
-			onPointerPress: (evt) => {
+			onPointerPress: evt => {
 				listi.log()(evt);
 
 				socketClient.reply('list_edit', { name, delete: true });
-			}
+			},
 		});
 	}
 

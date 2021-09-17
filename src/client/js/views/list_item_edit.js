@@ -3,7 +3,7 @@ import socketClient from 'socket-client';
 
 import listi from 'listi';
 
-listi.views.list_item_edit = function(item = {}){
+listi.views.list_item_edit = function (item = {}) {
 	listi.log()(item);
 
 	var listFragment = dom.createFragment();
@@ -17,21 +17,29 @@ listi.views.list_item_edit = function(item = {}){
 	var tagAdd = dom.createElem('button', {
 		id: 'tagAdd',
 		onPointerPress: () => {
-			if(tagInput.value.length < 2 || Array.from(tagList.children).map((elem) => { return elem.textContent; }).includes(tagInput.value)) return;
+			if (
+				tagInput.value.length < 2 ||
+				Array.from(tagList.children)
+					.map(elem => {
+						return elem.textContent;
+					})
+					.includes(tagInput.value)
+			)
+				return;
 
 			tagList.appendChild(listi.createTag(tagInput.value));
 
 			tagAdd.parentElement.classList.remove('showTagAdd');
 
 			tagInput.value = '';
-		}
+		},
 	});
 	var tagInput = dom.createElem('input', {
 		type: 'text',
 		placeholder: 'Add new tags',
 		onKeyUp: () => {
 			tagAdd.parentElement.classList[tagInput.value.length > 1 ? 'add' : 'remove']('showTagAdd');
-		}
+		},
 	});
 
 	dom.createElem('label', { textContent: 'Tags', appendChildren: [tagInput, tagAdd, tagList], appendTo: editWrapper });
@@ -48,9 +56,11 @@ listi.views.list_item_edit = function(item = {}){
 				listName: item.listName,
 				summary: summaryInput.value,
 				description: descriptionInput.value,
-				tags: Array.from(tagList.children).map((elem) => { return elem.textContent; })
+				tags: Array.from(tagList.children).map(elem => {
+					return elem.textContent;
+				}),
 			});
-		}
+		},
 	});
 
 	const schedulingContainer = dom.createElem('div', { className: 'disappear' });
@@ -58,18 +68,24 @@ listi.views.list_item_edit = function(item = {}){
 	const completeAction = dom.createElem('select', {
 		appendTo: dom.createElem('label', { textContent: 'Complete Action', appendTo: editWrapper }),
 		options: ['Add Tag', 'Delete', 'Reschedule'],
-		onChange: (evt) => { dom[evt.value === 'Reschedule' ? 'show' : 'disappear'](schedulingContainer); }
+		onChange: evt => {
+			dom[evt.value === 'Reschedule' ? 'show' : 'disappear'](schedulingContainer);
+		},
 	});
 
 	editWrapper.appendChild(schedulingContainer);
 
 	const rescheduleFrom = dom.createElem('select', {
 		appendTo: dom.createElem('label', { textContent: 'Reschedule From', appendTo: schedulingContainer }),
-		options: ['Completion Date', 'Last Due Date']
+		options: ['Completion Date', 'Last Due Date'],
 	});
 
 	const rescheduleDays = dom.createElem('input', { type: 'number', value: 7, appendTo: dom.createElem('label', { textContent: 'How Many Days After', appendTo: schedulingContainer }) });
-	const rescheduleTimes = dom.createElem('input', { type: 'number', placeholder: 'Infinity', appendTo: dom.createElem('label', { textContent: 'How Many Times To Reschedule', appendTo: schedulingContainer }) });
+	const rescheduleTimes = dom.createElem('input', {
+		type: 'number',
+		placeholder: 'Infinity',
+		appendTo: dom.createElem('label', { textContent: 'How Many Times To Reschedule', appendTo: schedulingContainer }),
+	});
 
 	//todo linked list
 
@@ -80,30 +96,32 @@ listi.views.list_item_edit = function(item = {}){
 			new: {
 				summary: summaryInput.value,
 				description: descriptionInput.value,
-				tags: Array.from(tagList.children).map((elem) => { return elem.textContent; }),
+				tags: Array.from(tagList.children).map(elem => {
+					return elem.textContent;
+				}),
 				due: dueDate.textContent === 'Set' ? undefined : dueDate.textContent.split(' - '),
 				completeAction: completeAction.value,
 				reschedule: {
 					from: rescheduleFrom.value,
 					times: rescheduleTimes.value,
-					days: rescheduleDays.value
-				}
-			}
+					days: rescheduleDays.value,
+				},
+			},
 		});
 	};
 
 	var toolkit = [
 		{ id: 'lists', onPointerPress: socketClient.reply.bind(this, 'list', item.listName) },
 		{ id: 'save', onPointerPress: listi.save.bind(this) },
-		{ type: 'div', textContent: `${item.summary ? 'Edit' : 'Create new'} list item` }
+		{ type: 'div', textContent: `${item.summary ? 'Edit' : 'Create new'} list item` },
 	];
 
-	if(item.summary){
+	if (item.summary) {
 		toolkit.splice(toolkit.length - 1, 0, {
 			id: 'delete',
 			onPointerPress: () => {
 				socketClient.reply('list_item_edit', { index: item.index, listName: item.listName, delete: true });
-			}
+			},
 		});
 	}
 

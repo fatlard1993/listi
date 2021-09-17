@@ -10,7 +10,7 @@ ul#list ul.tagList {
 	min-height: 1cm;
 
 	&:after {
-		content: "";
+		content: '';
 		clear: both;
 		display: table;
 	}
@@ -18,9 +18,9 @@ ul#list ul.tagList {
 	&.displayOnly {
 		pointer-events: none;
 		border: none;
-    background: none;
+		background: none;
 		width: 100%;
-    margin: 0;
+		margin: 0;
 	}
 
 	li.tag {
