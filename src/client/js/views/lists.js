@@ -24,7 +24,7 @@ listi.views.lists = function (lists) {
 			appendChild: dom.createElem('button', {
 				className: 'edit',
 				onPointerPress: () => {
-					listi.draw('list_edit', name);
+					listi.draw('list_edit', { name, ...lists[name] });
 				},
 			}),
 			onPointerPress: () => {

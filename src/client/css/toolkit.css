@@ -48,12 +48,16 @@ div#toolkit {
 			content: '\f067';
 		}
 
-		&#filter:before {
-			content: '\f0b0';
+		&#edit {
+			float: right;
+
+			&:before {
+				content: '\f044';
+			}
 		}
 
-		&#sort:before {
-			content: '\f0dc';
+		&#filter:before {
+			content: '\f0b0';
 		}
 
 		&#save:before {

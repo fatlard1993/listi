@@ -3,22 +3,22 @@ import socketClient from 'socket-client';
 
 import listi from 'listi';
 
-listi.views.list_edit = function (name) {
+listi.views.list_edit = function ({ name } = {}) {
 	if (typeof name !== 'string') name = '';
 
 	listi.log()(name);
 
-	var listFragment = dom.createFragment();
+	const listFragment = dom.createFragment();
 
-	var editWrapper = dom.createElem('li', { id: 'edit', className: 'listItem', appendTo: listFragment });
+	const editWrapper = dom.createElem('li', { id: 'edit', className: 'listItem', appendTo: listFragment });
 
-	var nameInput = dom.createElem('input', { type: 'text', value: name, appendTo: dom.createElem('label', { textContent: 'Name', appendTo: editWrapper }) });
+	const nameInput = dom.createElem('input', { type: 'text', value: name, appendTo: dom.createElem('label', { textContent: 'Name', appendTo: editWrapper }) });
 
 	listi.save = () => {
 		socketClient.reply('list_edit', { name, new: { name: nameInput.value } });
 	};
 
-	var toolkit = [
+	const toolkit = [
 		{ id: 'lists', onPointerPress: socketClient.reply.bind(this, 'lists') },
 		{ id: 'save', onPointerPress: listi.save.bind(this) },
 		{ type: 'div', textContent: `${name ? 'Edit' : 'Create new'} list` },
@@ -30,7 +30,7 @@ listi.views.list_edit = function (name) {
 			onPointerPress: evt => {
 				listi.log()(evt);
 
-				socketClient.reply('list_edit', { name, delete: true });
+				socketClient.reply('list_edit', { name, remove: true });
 			},
 		});
 	}

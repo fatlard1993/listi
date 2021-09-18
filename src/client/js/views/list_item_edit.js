@@ -3,18 +3,18 @@ import socketClient from 'socket-client';
 
 import listi from 'listi';
 
-listi.views.list_item_edit = function (item = {}) {
-	listi.log()(item);
+listi.views.list_item_edit = function ({ summary, description, tags, due, index, listName } = {}) {
+	listi.log()({ summary, description, tags, due, index, listName });
 
-	var listFragment = dom.createFragment();
+	const listFragment = dom.createFragment();
 
-	var editWrapper = dom.createElem('li', { id: 'edit', className: 'listItem', appendTo: listFragment });
+	const editWrapper = dom.createElem('li', { id: 'edit', className: 'listItem', appendTo: listFragment });
 
-	var summaryInput = dom.createElem('input', { type: 'text', value: item.summary || '', appendTo: dom.createElem('label', { textContent: 'Summary', appendTo: editWrapper }) });
-	var descriptionInput = dom.createElem('textarea', { value: item.description || '', appendTo: dom.createElem('label', { textContent: 'Description', appendTo: editWrapper }) });
+	const summaryInput = dom.createElem('input', { type: 'text', value: summary || '', appendTo: dom.createElem('label', { textContent: 'Summary', appendTo: editWrapper }) });
+	const descriptionInput = dom.createElem('textarea', { value: description || '', appendTo: dom.createElem('label', { textContent: 'Description', appendTo: editWrapper }) });
 
-	var tagList = listi.createTagList(item.tags);
-	var tagAdd = dom.createElem('button', {
+	const tagList = listi.createTagList(tags);
+	const tagAdd = dom.createElem('button', {
 		id: 'tagAdd',
 		onPointerPress: () => {
 			if (
@@ -34,7 +34,7 @@ listi.views.list_item_edit = function (item = {}) {
 			tagInput.value = '';
 		},
 	});
-	var tagInput = dom.createElem('input', {
+	const tagInput = dom.createElem('input', {
 		type: 'text',
 		placeholder: 'Add new tags',
 		onKeyUp: () => {
@@ -47,13 +47,13 @@ listi.views.list_item_edit = function (item = {}) {
 	dom.createElem('label', { textContent: 'Due Date', appendTo: editWrapper });
 
 	const dueDate = dom.createElem('button', {
-		textContent: item.due ? (item.due instanceof Array ? item.due.join(' - ') : item.due) : 'Set',
+		textContent: due ? (due instanceof Array ? due.join(' - ') : due) : 'Set',
 		className: 'dueDate postLabel',
 		appendTo: editWrapper,
 		onPointerPress: () => {
 			listi.draw('list_item_set_due_date', {
-				index: item.index,
-				listName: item.listName,
+				index,
+				listName,
 				summary: summaryInput.value,
 				description: descriptionInput.value,
 				tags: Array.from(tagList.children).map(elem => {
@@ -75,24 +75,24 @@ listi.views.list_item_edit = function (item = {}) {
 
 	editWrapper.appendChild(schedulingContainer);
 
-	const rescheduleFrom = dom.createElem('select', {
-		appendTo: dom.createElem('label', { textContent: 'Reschedule From', appendTo: schedulingContainer }),
-		options: ['Completion Date', 'Last Due Date'],
-	});
+	// const rescheduleFrom = dom.createElem('select', {
+	// 	appendTo: dom.createElem('label', { textContent: 'Reschedule From', appendTo: schedulingContainer }),
+	// 	options: ['Completion Date', 'Last Due Date'],
+	// });
 
-	const rescheduleDays = dom.createElem('input', { type: 'number', value: 7, appendTo: dom.createElem('label', { textContent: 'How Many Days After', appendTo: schedulingContainer }) });
-	const rescheduleTimes = dom.createElem('input', {
-		type: 'number',
-		placeholder: 'Infinity',
-		appendTo: dom.createElem('label', { textContent: 'How Many Times To Reschedule', appendTo: schedulingContainer }),
-	});
+	// const rescheduleDays = dom.createElem('input', { type: 'number', value: 7, appendTo: dom.createElem('label', { textContent: 'How Many Days After', appendTo: schedulingContainer }) });
+	// const rescheduleTimes = dom.createElem('input', {
+	// 	type: 'number',
+	// 	placeholder: 'Infinity',
+	// 	appendTo: dom.createElem('label', { textContent: 'How Many Times To Reschedule', appendTo: schedulingContainer }),
+	// });
 
 	//todo linked list
 
 	listi.save = () => {
 		socketClient.reply('list_item_edit', {
-			index: item.index,
-			listName: item.listName,
+			index: index,
+			listName: listName,
 			new: {
 				summary: summaryInput.value,
 				description: descriptionInput.value,
@@ -100,27 +100,27 @@ listi.views.list_item_edit = function (item = {}) {
 					return elem.textContent;
 				}),
 				due: dueDate.textContent === 'Set' ? undefined : dueDate.textContent.split(' - '),
-				completeAction: completeAction.value,
-				reschedule: {
-					from: rescheduleFrom.value,
-					times: rescheduleTimes.value,
-					days: rescheduleDays.value,
+				complete: {
+					action: completeAction.value,
+					// type
+					// nextDue
 				},
+				// repeat: waitMs
 			},
 		});
 	};
 
-	var toolkit = [
-		{ id: 'lists', onPointerPress: socketClient.reply.bind(this, 'list', item.listName) },
+	const toolkit = [
+		{ id: 'lists', onPointerPress: socketClient.reply.bind(this, 'list', listName) },
 		{ id: 'save', onPointerPress: listi.save.bind(this) },
-		{ type: 'div', textContent: `${item.summary ? 'Edit' : 'Create new'} list item` },
+		{ type: 'div', textContent: `${summary ? 'Edit' : 'Create new'} list item` },
 	];
 
-	if (item.summary) {
+	if (summary) {
 		toolkit.splice(toolkit.length - 1, 0, {
 			id: 'delete',
 			onPointerPress: () => {
-				socketClient.reply('list_item_edit', { index: item.index, listName: item.listName, delete: true });
+				socketClient.reply('list_item_edit', { index: index, listName: listName, remove: true });
 			},
 		});
 	}

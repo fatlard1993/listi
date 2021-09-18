@@ -3,32 +3,30 @@ import Calendar from 'calendar';
 
 import listi from 'listi';
 
-listi.views.list_item_set_due_date = function (item) {
-	var listFragment = dom.createFragment(),
-		dueDate;
+listi.views.list_item_set_due_date = function ({ index, listName, summary, description, tags }) {
+	const listFragment = dom.createFragment();
+	let due;
 
 	listi.drawToolkit([
-		{ id: 'lists', onPointerPress: listi.draw.bind(this, 'list_item_edit', item) },
+		{ id: 'lists', onPointerPress: listi.draw.bind(this, 'list_item_edit', { index, listName, summary, description, tags, due }) },
 		{
 			id: 'save',
 			onPointerPress: () => {
-				item.due = dueDate;
-
-				listi.draw('list_item_edit', item);
+				listi.draw('list_item_edit', { index, listName, summary, description, tags, due });
 			},
 		},
 	]);
 
 	listi.calendar = new Calendar();
 
-	listi.lists[item.listName].arr.forEach((item, index) => {
-		if (item.due) listi.calendar.addEvent({ index, label: item.summary, at: item.due });
+	listi.lists[listName].items.forEach(({ due: at }, index) => {
+		if (at) listi.calendar.addEvent({ index, at, label: summary });
 	});
 
 	listi.calendar.elem.classList.add('select');
 
 	listi.calendar.on('selectDay', evt => {
-		var selectedItems = listi.calendar.elem.querySelectorAll('.selected');
+		let selectedItems = listi.calendar.elem.querySelectorAll('.selected');
 
 		if (evt.target.classList.contains('selected') || selectedItems.length > 1) dom.classList(selectedItems, 'remove', 'selected');
 
@@ -36,7 +34,7 @@ listi.views.list_item_set_due_date = function (item) {
 
 		selectedItems = listi.calendar.elem.querySelectorAll('.selected');
 
-		dueDate = selectedItems.length > 1 ? `${selectedItems[0].dataset.fullDate} - ${selectedItems[1].dataset.fullDate}` : evt.target.dataset.fullDate;
+		due = selectedItems.length > 1 ? `${selectedItems[0].dataset.fullDate} - ${selectedItems[1].dataset.fullDate}` : evt.target.dataset.fullDate;
 	});
 
 	dom.getElemById('toolkit').appendChild(listi.calendar.title);

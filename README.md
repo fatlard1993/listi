@@ -24,5 +24,147 @@ cache tags for quickly adding common ones allow for index sorting (drag and drop
   - List | Delete, Add a new item, edit an item, complete item, edit filter, edit sort, calendar view
     - Create/Edit List Item | Edit: summary, description, tags, due date, recurring, linked list
     - Edit filter | (includes|excludes) tags, due date (optional range w/ easy presets eg: Today / This week / This month), (summary, description, tags) (includes|excludes) user input
-    - Edit sort | due date (Past due X days / Due today / Due in X days), index (reverse)
     - Calendar | See/create/edit items from a calendar interface
+
+
+## Use Cases
+
+- shopping list
+- housekeeping list
+- project/todo list
+
+----
+
+- List
+	- Name
+	- Default list item options
+	- Sort by due date: Past due X days / Due today / Due in X days / No due date
+	- Filter
+		- Contains text: Summary/Description/Tags :: Includes/Excludes X (maybe suggest tags that exist in the list?)
+		- Due Date: Today, This week/month/year
+		- Include unscheduled: true/false
+
+- List item
+	- Summary
+	- Description
+	- Tags
+	- Due date
+	- Recurring
+		- Absolute: Every X day/week/month/year(s) @12:00AM
+	- Overdue markings (include stacking missed items)
+	- Complete Action
+		- Add/Remove Tag X
+		- Delete list item
+		- Reschedule
+			- Relative (Completion Date/Last Due Date): X day/week/month/year(s) after I last completed it
+
+
+
+```
+{
+	lists: {
+		housekeeping: {
+			filter: {
+				showUnscheduled: true,
+				due: 'month'
+			},
+			items: [
+				{
+					summary: 'Feed Dogs',
+					description: '1 scoop each',
+					due: [
+						'9/4/20'
+					],
+					repeat: waitMs (Ex. 1 day)
+				},
+				{
+					summary: 'Bathe Dogs',
+					due: [
+						'9/4/20'
+					],
+					complete: {
+						action: 'reschedule',
+						type: 'completion',
+						nextDue: waitMs
+					}
+				},
+				{
+					summary: 'Water houseplants',
+					due: [
+						'9/4/20'
+					],
+					complete: {
+						action: 'reschedule',
+						type: 'completion',
+						nextDue: waitMs
+					}
+				},
+				{
+					summary: 'Paint back room',
+					due: [
+						'9/4/20'
+					],
+					complete: {
+						action: 'delete'
+					}
+				}
+			]
+		},
+		shopping: {
+			filter: {
+				showUnscheduled: true,
+				contains: [
+					{
+						keys: ['tags'],
+						strings: ['Grocery']
+					}
+				]
+			},
+			items: [
+				{
+					summary: 'Milk',
+					description: 'Whole',
+					tags: ['Grocery'],
+					due: [
+						'9/4/20'
+					],
+					complete: {
+						action: 'reschedule',
+						type: 'completion',
+						nextDue: waitMs
+					}
+				},
+				{
+					summary: 'Pineapple',
+					description: 'Canned rings (for pineapple upside down cake)',
+					tags: ['Grocery'],
+					complete: {
+						action: 'delete'
+					}
+				},
+				{
+					summary: 'Dog Food',
+					description: '2 Bags',
+					tags: ['Pet'],
+					due: [
+						'9/4/20'
+					],
+					complete: {
+						action: 'reschedule',
+						type: 'completion',
+						nextDue: waitMs
+					}
+				}
+			]
+		}
+	}
+}
+```
+
+
+
+## TODO
+
+- add a top-level calendar that shows items from all lists (maybe with options to toggle certain ones?)
+- change config file structure to support the above configuration features
+- linkable paths for each unique view

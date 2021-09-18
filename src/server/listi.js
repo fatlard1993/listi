@@ -11,9 +11,11 @@ const listi = {
 	init: function (options) {
 		this.options = options;
 
-		this.lists = new (require('config-manager'))(path.join(os.homedir(), '.listi.json'), {});
+		this.config = new (require('config-manager'))(path.join(os.homedir(), '.listi.json'), {});
 
-		const { app } = require('http-server').init(options.port, this.rootPath(), '/');
+		if (!this.config.current.lists) this.config.current.lists = {};
+
+		const { app } = require('http-server').init(this.config.current.port || options.port, this.rootPath(), '/');
 
 		require('./router');
 
@@ -26,42 +28,46 @@ const listi = {
 		client_connect: function () {
 			log('Client connected');
 
-			this.reply('lists', Object.keys(listi.lists.current));
+			this.reply('lists', Object.keys(listi.config.current.lists));
 		},
 		lists: function () {
 			log('Requested lists');
 
-			this.reply('lists', Object.keys(listi.lists.current));
+			this.reply('lists', Object.keys(listi.config.current.lists));
 		},
 		list: function (name) {
 			log(`Requested list: ${name}`);
 
-			this.reply('list', { name, arr: listi.lists.current[name] });
+			this.reply('list', { name, list: listi.config.current.lists[name] });
 		},
-		list_edit: function (list) {
-			log(`${list.name ? (list.delete ? 'Delete' : 'Edit') : 'Create'} list: ${list.name || list.new.name}`);
+		list_edit: function ({ remove, name, new: newList }) {
+			log(`${name ? (remove ? 'Delete' : 'Edit') : 'Create'} list: ${name || newList.name}`);
 
-			if (!list.name) listi.lists.current[list.new.name] = [];
+			if (!name) listi.config.current.lists[newList.name] = { filter: {}, list: [] };
 			else {
-				if (!list.delete) listi.lists.current[list.new.name] = listi.lists.current[list.name];
+				if (!remove) {
+					listi.config.current.lists[newList.name] = listi.config.current.lists[name];
 
-				delete listi.lists.current[list.name];
+					if (newList.filter) listi.config.current.lists[newList.name].filter = Object.assign(listi.config.current.lists[newList.name].filter, newList.filter);
+				}
+
+				delete listi.config.current.lists[name];
 			}
 
-			if (listi.options.persistent) listi.lists.save();
+			if (listi.options.persistent) listi.config.save();
 
-			this.reply('lists', Object.keys(listi.lists.current));
+			this.reply('lists', Object.keys(listi.config.current.lists));
 		},
-		list_item_edit: function (item) {
-			log(`${typeof item.index === 'number' ? (item.delete ? 'Delete' : 'Edit') : 'Create'} list item: ${item.summary || (item.new && item.new.summary) || item.index}`);
+		list_item_edit: function ({ remove, index, listName, summary, new: newItem }) {
+			log(`${typeof index === 'number' ? (remove ? 'Delete' : 'Edit') : 'Create'} list item: ${summary || (newItem && newItem.summary) || index}`);
 
-			if (item.delete) listi.lists.current[item.listName].splice(item.index, 1);
-			else if (typeof item.index === 'number') listi.lists.current[item.listName][item.index] = item.new;
-			else listi.lists.current[item.listName].push(item.new);
+			if (remove) listi.config.current.lists[listName].items.splice(index, 1);
+			else if (typeof index === 'number') listi.config.current.lists[listName].items[index] = newItem;
+			else listi.config.current.lists[listName].items.push(newItem);
 
-			if (listi.options.persistent) listi.lists.save();
+			if (listi.options.persistent) listi.config.save();
 
-			this.reply('list', { name: item.listName, arr: listi.lists.current[item.listName] });
+			this.reply('list', { name: listName, list: listi.config.current.lists[listName] });
 		},
 	},
 };

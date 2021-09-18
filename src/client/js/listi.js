@@ -26,8 +26,8 @@ const listi = {
 			listi.draw('lists', lists);
 		});
 
-		socketClient.on('list', list => {
-			listi.lists[list.name] = list;
+		socketClient.on('list', ({ name, list }) => {
+			listi.lists[name] = list;
 
 			listi.draw('list', list);
 		});
