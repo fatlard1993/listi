@@ -72,38 +72,28 @@ cache tags for quickly adding common ones allow for index sorting (drag and drop
 				{
 					summary: 'Feed Dogs',
 					description: '1 scoop each',
-					due: [
-						'9/4/20'
-					],
+					due: '9/4/20',
 					repeat: waitMs (Ex. 1 day)
 				},
 				{
 					summary: 'Bathe Dogs',
-					due: [
-						'9/4/20'
-					],
+					due: '9/4/20',
 					complete: {
 						action: 'reschedule',
-						type: 'completion',
-						nextDue: waitMs
+						gap: waitMs
 					}
 				},
 				{
 					summary: 'Water houseplants',
-					due: [
-						'9/4/20'
-					],
+					due: '9/4/20',
 					complete: {
 						action: 'reschedule',
-						type: 'completion',
-						nextDue: waitMs
+						gap: waitMs
 					}
 				},
 				{
 					summary: 'Paint back room',
-					due: [
-						'9/4/20'
-					],
+					due: '9/4/20',
 					complete: {
 						action: 'delete'
 					}
@@ -125,13 +115,10 @@ cache tags for quickly adding common ones allow for index sorting (drag and drop
 					summary: 'Milk',
 					description: 'Whole',
 					tags: ['Grocery'],
-					due: [
-						'9/4/20'
-					],
+					due: '9/4/20',
 					complete: {
 						action: 'reschedule',
-						type: 'completion',
-						nextDue: waitMs
+						gap: waitMs
 					}
 				},
 				{
@@ -146,13 +133,10 @@ cache tags for quickly adding common ones allow for index sorting (drag and drop
 					summary: 'Dog Food',
 					description: '2 Bags',
 					tags: ['Pet'],
-					due: [
-						'9/4/20'
-					],
+					due: '9/4/20',
 					complete: {
 						action: 'reschedule',
-						type: 'completion',
-						nextDue: waitMs
+						gap: waitMs
 					}
 				}
 			]
@@ -168,3 +152,5 @@ cache tags for quickly adding common ones allow for index sorting (drag and drop
 - add a top-level calendar that shows items from all lists (maybe with options to toggle certain ones?)
 - change config file structure to support the above configuration features
 - linkable paths for each unique view
+- tag colors?
+- everything as tags? (due dates, etc.)

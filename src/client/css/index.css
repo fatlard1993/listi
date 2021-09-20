@@ -27,6 +27,7 @@ li#edit {
 	cursor: default;
 	border: none;
 	text-align: center;
+	padding-bottom: 20px !important;
 
 	button.dueDate {
 		display: block;
@@ -105,12 +106,14 @@ li#edit {
 	div#toolkit {
 		height: 10%;
 
+		h1,
 		div,
 		button {
 			height: 8vh;
 			font-size: 5vh;
 		}
 
+		h1,
 		div {
 			line-height: 8vh;
 		}
@@ -129,12 +132,14 @@ li#edit {
 	div#toolkit {
 		height: 7%;
 
+		h1,
 		div,
 		button {
 			height: 5vh;
 			font-size: 3vh;
 		}
 
+		h1,
 		div {
 			line-height: 5vh;
 		}
@@ -153,12 +158,14 @@ li#edit {
 	div#toolkit {
 		height: 5%;
 
+		h1,
 		div,
 		button {
 			height: 3vh;
 			font-size: 1.5vh;
 		}
 
+		h1,
 		div {
 			line-height: 3vh;
 		}
@@ -177,6 +184,7 @@ li#edit {
 	div#toolkit {
 		height: 3%;
 
+		h1,
 		div,
 		button {
 			height: 2vh;
@@ -184,6 +192,7 @@ li#edit {
 			margin: 0.5vh;
 		}
 
+		h1,
 		div {
 			line-height: 2vh;
 		}

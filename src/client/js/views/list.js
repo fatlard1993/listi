@@ -3,20 +3,29 @@ import socketClient from 'socket-client';
 
 import listi from 'listi';
 
-listi.views.list = function ({ name, items } = {}) {
-	if (!items) return listi.log.error()(`No current selected list`);
+listi.views.list = name => {
+	const list = listi.state.lists[name] || {};
+	const { items, filter } = list;
 
-	listi.log()('draw_list', name, items);
+	if (!items) {
+		listi.log.error()(`No current selected list`);
 
-	var listFragment = dom.createFragment();
+		listi.draw('lists');
+
+		return;
+	}
+
+	listi.log()('draw_list', name, items, filter);
+
+	const listFragment = dom.createFragment();
 
 	listi.drawToolkit([
-		{ id: 'lists', onPointerPress: socketClient.reply.bind(this, 'lists') },
-		{ id: 'calendar', onPointerPress: listi.draw.bind(this, 'list_calendar', items) },
-		{ id: 'add', onPointerPress: listi.draw.bind(this, 'list_item_edit', { listName: name }) },
-		{ id: 'filter', onPointerPress: listi.draw.bind(this, 'filter_edit', items) },
-		{ type: 'div', textContent: name },
-		{ id: 'edit', onPointerPress: listi.draw.bind(this, 'list_edit', { name }) },
+		{ id: 'lists', onPointerPress: () => socketClient.reply('lists') },
+		{ id: 'calendar', onPointerPress: () => listi.draw('list_calendar', name) },
+		{ id: 'filter', onPointerPress: () => listi.draw('filter_edit', name) },
+		{ id: 'edit', onPointerPress: () => listi.draw('list_edit', name) },
+		{ type: 'h1', textContent: name },
+		{ id: 'add', className: 'right', onPointerPress: () => listi.draw('list_item_edit', { listName: name }) },
 	]);
 
 	if (!items.length) {
@@ -24,30 +33,63 @@ listi.views.list = function ({ name, items } = {}) {
 	}
 
 	items.forEach((item, index) => {
-		var tagList = listi.createTagList(item.tags);
-		tagList.classList.add('displayOnly');
+		const tagList = listi.createTagList(item.tags);
+		tagList.classList.add('readOnly');
+
+		const dueWrapper = dom.createElem('div');
+		let overdue;
+		let dueSoon;
+
+		if (item.due) {
+			const dueDateDiff = listi.dayDiff(item.due);
+
+			overdue = dueDateDiff < 0;
+			dueSoon = !overdue && dueDateDiff < 7;
+
+			dom.createElem('div', { textContent: `${overdue ? '(Overdue) ' : ''}Due: ${listi.dayCountName(dueDateDiff)} (${item.due})`, className: 'dueDate', appendTo: dueWrapper });
+		}
 
 		dom.createElem('li', {
 			textContent: item.summary,
-			className: 'listItem',
+			className: `listItem${overdue ? ' overdue' : dueSoon ? ' dueSoon' : ''}`,
 			appendChildren: [
 				dom.createElem('button', {
 					className: 'edit',
 					onPointerPress: () => {
-						listi.draw('list_item_edit', Object.assign({ index, listName: name }, item));
+						listi.draw('list_item_edit', { index, listName: name });
 					},
 				}),
 				dom.createElem('div', { textContent: item.description, className: 'description' }),
-				dom.createElem('div', { textContent: `Due: ${item.due}`, className: 'dueDate' }),
+				dueWrapper,
 				tagList,
 			],
 			appendTo: listFragment,
 			onPointerPressAndHold: () => {
-				item.tags = item.tags || [];
+				if (item.complete?.action === 'Delete') return socketClient.reply('list_item_edit', { index, listName: name, remove: true });
 
-				item.tags.push('completed');
+				if (item.due?.length) {
+					const newDue = item.due.filter(due => listi.dayDiff(due) > 0);
 
-				socketClient.reply('list_item_edit', { index, listName: name, new: item });
+					item.due = newDue;
+				}
+
+				if (item.complete?.action.includes('Tag')) {
+					item.tags = item.tags || [];
+
+					const tagName = item.complete.tagName || 'Complete';
+
+					if (item.complete?.action === 'Add Tag' && !item.tags.includes(tagName)) item.tags.push(tagName);
+					else if (item.complete?.action === 'Remove Tag' && item.tags.includes(tagName)) item.tags.splice(item.tags.indexOf(tagName), 1);
+				} else if (item.complete?.action === 'Reschedule') {
+					const now = new Date();
+					let nextDue = new Date(now.getTime() + item.complete.gap);
+
+					nextDue = `${nextDue.getMonth() + 1}/${nextDue.getDate()}/${nextDue.getFullYear()}`;
+
+					if (item.due.includes(nextDue)) item.due.push(nextDue);
+				}
+
+				socketClient.reply('list_item_edit', { index, listName: name, update: item });
 			},
 		});
 	});

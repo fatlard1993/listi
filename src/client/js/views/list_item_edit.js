@@ -3,8 +3,10 @@ import socketClient from 'socket-client';
 
 import listi from 'listi';
 
-listi.views.list_item_edit = function ({ summary, description, tags, due, index, listName } = {}) {
-	listi.log()({ summary, description, tags, due, index, listName });
+listi.views.list_item_edit = ({ listName, index, listItem }) => {
+	const { summary, description, tags, due, complete } = listItem || listi.state.lists[listName].items[index];
+
+	listi.log()(listItem);
 
 	const listFragment = dom.createFragment();
 
@@ -17,15 +19,9 @@ listi.views.list_item_edit = function ({ summary, description, tags, due, index,
 	const tagAdd = dom.createElem('button', {
 		id: 'tagAdd',
 		onPointerPress: () => {
-			if (
-				tagInput.value.length < 2 ||
-				Array.from(tagList.children)
-					.map(elem => {
-						return elem.textContent;
-					})
-					.includes(tagInput.value)
-			)
-				return;
+			const tags = Array.from(tagList.children).map(elem => elem.textContent);
+
+			if (tagInput.value.length < 2 || tags.includes(tagInput.value)) return;
 
 			tagList.appendChild(listi.createTag(tagInput.value));
 
@@ -37,9 +33,7 @@ listi.views.list_item_edit = function ({ summary, description, tags, due, index,
 	const tagInput = dom.createElem('input', {
 		type: 'text',
 		placeholder: 'Add new tags',
-		onKeyUp: () => {
-			tagAdd.parentElement.classList[tagInput.value.length > 1 ? 'add' : 'remove']('showTagAdd');
-		},
+		onKeyUp: () => tagAdd.parentElement.classList[tagInput.value.length > 1 ? 'add' : 'remove']('showTagAdd'),
 	});
 
 	dom.createElem('label', { textContent: 'Tags', appendChildren: [tagInput, tagAdd, tagList], appendTo: editWrapper });
@@ -47,53 +41,67 @@ listi.views.list_item_edit = function ({ summary, description, tags, due, index,
 	dom.createElem('label', { textContent: 'Due Date', appendTo: editWrapper });
 
 	const dueDate = dom.createElem('button', {
-		textContent: due ? (due instanceof Array ? due.join(' - ') : due) : 'Set',
+		textContent: due || 'Set',
 		className: 'dueDate postLabel',
 		appendTo: editWrapper,
-		onPointerPress: () => {
-			listi.draw('list_item_set_due_date', {
-				index,
-				listName,
-				summary: summaryInput.value,
-				description: descriptionInput.value,
-				tags: Array.from(tagList.children).map(elem => {
-					return elem.textContent;
-				}),
-			});
-		},
+		onPointerPress: () => listi.draw('list_item_set_due_date', { index, listName, listItem: buildListItem() }),
 	});
-
-	const schedulingContainer = dom.createElem('div', { className: 'disappear' });
 
 	const completeAction = dom.createElem('select', {
 		appendTo: dom.createElem('label', { textContent: 'Complete Action', appendTo: editWrapper }),
-		options: ['Add Tag', 'Delete', 'Reschedule'],
+		options: ['Add Tag', 'Remove Tag', 'Delete', 'Reschedule'],
+		value: complete?.action || 'Add Tag',
 		onChange: evt => {
+			dom[evt.value.includes('Tag') ? 'show' : 'disappear'](tagContainer);
 			dom[evt.value === 'Reschedule' ? 'show' : 'disappear'](schedulingContainer);
 		},
 	});
 
+	const tagContainer = dom.createElem('div', { className: !complete?.action || complete?.action?.includes('Tag') ? 'show' : 'disappear', appendTo: editWrapper });
+	const schedulingContainer = dom.createElem('div', { className: complete?.action === 'Reschedule' ? 'show' : 'disappear', appendTo: editWrapper });
 	editWrapper.appendChild(schedulingContainer);
 
-	// const rescheduleFrom = dom.createElem('select', {
-	// 	appendTo: dom.createElem('label', { textContent: 'Reschedule From', appendTo: schedulingContainer }),
-	// 	options: ['Completion Date', 'Last Due Date'],
-	// });
+	const tagName = dom.createElem('input', {
+		type: 'text',
+		value: complete?.tagName || 'Complete',
+		appendTo: dom.createElem('label', { textContent: 'Tag Name', placeholder: 'Complete', appendTo: tagContainer }),
+	});
 
-	// const rescheduleDays = dom.createElem('input', { type: 'number', value: 7, appendTo: dom.createElem('label', { textContent: 'How Many Days After', appendTo: schedulingContainer }) });
-	// const rescheduleTimes = dom.createElem('input', {
-	// 	type: 'number',
-	// 	placeholder: 'Infinity',
-	// 	appendTo: dom.createElem('label', { textContent: 'How Many Times To Reschedule', appendTo: schedulingContainer }),
-	// });
+	const rescheduleUnit = dom.createElem('select', {
+		appendTo: dom.createElem('label', { textContent: 'Unit', appendTo: schedulingContainer }),
+		options: ['Day', 'Week', 'Month', 'Year'],
+		value: complete?.unit || 'Day',
+	});
 
-	//todo linked list
+	const rescheduleFrequency = dom.createElem('input', {
+		type: 'number',
+		value: complete?.frequency || 1,
+		appendTo: dom.createElem('label', { textContent: 'How Many Units After', appendTo: schedulingContainer }),
+	});
+	const rescheduleCount = dom.createElem('input', {
+		type: 'number',
+		value: complete?.count,
+		placeholder: 'Infinity',
+		appendTo: dom.createElem('label', { textContent: 'How Many Times To Reschedule', appendTo: schedulingContainer }),
+	});
 
-	listi.save = () => {
-		socketClient.reply('list_item_edit', {
-			index: index,
-			listName: listName,
-			new: {
+	// todo add choice for reschedule: base from last due or completion date
+	// todo linked list
+
+	// todo better time gap creation (consider leap years and months with differing days)
+	const oneDay = 1000 * 60 * 60 * 24;
+	const unitMultipliers = {
+		Day: 1,
+		Week: 7,
+		Month: 30,
+		Year: 365,
+	};
+
+	const buildListItem = () => {
+		return {
+			index,
+			listName,
+			update: {
 				summary: summaryInput.value,
 				description: descriptionInput.value,
 				tags: Array.from(tagList.children).map(elem => {
@@ -102,25 +110,34 @@ listi.views.list_item_edit = function ({ summary, description, tags, due, index,
 				due: dueDate.textContent === 'Set' ? undefined : dueDate.textContent.split(' - '),
 				complete: {
 					action: completeAction.value,
-					// type
-					// nextDue
+					...(completeAction.value.includes('Tag') && { tagName: tagName.value }),
+					...(completeAction.value === 'Reschedule' && {
+						count: rescheduleCount.value,
+						unit: rescheduleUnit.value,
+						frequency: rescheduleFrequency.value,
+						gap: oneDay * unitMultipliers[rescheduleUnit.value] * rescheduleFrequency.value,
+					}),
 				},
 				// repeat: waitMs
 			},
-		});
+		};
+	};
+
+	listi.save = () => {
+		socketClient.reply('list_item_edit', buildListItem());
 	};
 
 	const toolkit = [
-		{ id: 'lists', onPointerPress: socketClient.reply.bind(this, 'list', listName) },
-		{ id: 'save', onPointerPress: listi.save.bind(this) },
-		{ type: 'div', textContent: `${summary ? 'Edit' : 'Create new'} list item` },
+		{ id: 'lists', onPointerPress: () => socketClient.reply('list', listName) },
+		{ id: 'save', onPointerPress: listi.save },
+		{ type: 'h1', textContent: `${summary ? 'Edit' : 'Create new'} list item` },
 	];
 
 	if (summary) {
 		toolkit.splice(toolkit.length - 1, 0, {
 			id: 'delete',
 			onPointerPress: () => {
-				socketClient.reply('list_item_edit', { index: index, listName: listName, remove: true });
+				socketClient.reply('list_item_edit', { index, listName, remove: true });
 			},
 		});
 	}

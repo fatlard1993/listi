@@ -55,6 +55,14 @@ ul#list {
 				transition: all 2s;
 			}
 
+			&.dueSoon {
+				background-color: $yellow;
+			}
+
+			&.overdue {
+				background-color: $red;
+			}
+
 			select {
 				padding: 0.8vw;
 				display: block;

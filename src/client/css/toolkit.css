@@ -21,10 +21,22 @@ div#toolkit {
 		line-height: 9vh;
 	}
 
+	h1 {
+    display: inline-block;
+		font-size: 5vh;
+		line-height: 9vh;
+		height: 9vh;
+		margin: 1vh;
+	}
+
 	button {
 		position: relative;
 		padding: 0;
 		width: 9vh;
+
+		&.right {
+			float: right;
+		}
 
 		&:before {
 			@mixin fontAwesomeSolid;
@@ -48,12 +60,8 @@ div#toolkit {
 			content: '\f067';
 		}
 
-		&#edit {
-			float: right;
-
-			&:before {
-				content: '\f044';
-			}
+		&#edit:before {
+			content: '\f044';
 		}
 
 		&#filter:before {
