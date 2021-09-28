@@ -11,7 +11,7 @@ listi.views.list_calendar = name => {
 
 	const list = listi.state?.lists?.[name] || {};
 
-	if (name && !list) return socketClient.reply('list', name);
+	if (name && !list) return socketClient.reply('lists', name);
 
 	const listFragment = dom.createFragment();
 

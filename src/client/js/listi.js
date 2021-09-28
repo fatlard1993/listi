@@ -33,16 +33,15 @@ const listi = {
 			socketClient.triedSoftReload = false;
 		}, 4000);
 	},
-	dayDiff(due) {
+	dayDiff(due, base = new Date()) {
 		const _MS_PER_DAY = 1000 * 60 * 60 * 24;
 
-		let now = new Date();
 		due = new Date(due);
 
-		now = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+		base = Date.UTC(base.getFullYear(), base.getMonth(), base.getDate());
 		due = Date.UTC(due.getFullYear(), due.getMonth(), due.getDate());
 
-		return Math.floor((due - now) / _MS_PER_DAY);
+		return Math.floor((due - base) / _MS_PER_DAY);
 	},
 	weekDays: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
 	numWithOrdinal(num) {
@@ -99,18 +98,6 @@ const listi = {
 			listi.router();
 		});
 
-		socketClient.on('list', list => {
-			const { name } = list;
-
-			listi.state.lists = listi.state.lists || {};
-
-			listi.state.lists[name] = list;
-
-			listi.log()('list', list);
-
-			listi.router();
-		});
-
 		dom.interact.on('keyUp', evt => {
 			var { key } = evt;
 
@@ -129,8 +116,6 @@ const listi = {
 		dom.interact.on('pointerDown', () => {
 			listi.stayConnected();
 		});
-
-		listi.router();
 	},
 	router() {
 		const view = dom.location.query.get('view') || 'lists';

@@ -11,7 +11,7 @@ listi.views.list_item_edit = props => {
 
 	const listItem = props?.listItem || listi.state?.lists?.[listName]?.items?.[index];
 
-	if (index >= 0 && !listItem) return socketClient.reply('list', listName);
+	if (index >= 0 && !listItem) return socketClient.reply('lists', listName);
 
 	const { summary, description, tags, due, complete } = listItem || {};
 
@@ -136,9 +136,9 @@ listi.views.list_item_edit = props => {
 	};
 
 	listi.save = () => {
-		socketClient.reply('list_item_edit', { index, listName, update: buildListItemDocument() });
-
 		dom.location.query.set({ view: 'list', list: listName });
+
+		socketClient.reply('list_item_edit', { index, listName, update: buildListItemDocument() });
 	};
 
 	const toolbar = [
@@ -151,6 +151,8 @@ listi.views.list_item_edit = props => {
 		toolbar.splice(toolbar.length - 1, 0, {
 			id: 'delete',
 			onPointerPress: () => {
+				dom.location.query.set({ view: 'list', list: listName });
+
 				socketClient.reply('list_item_edit', { index, listName, remove: true });
 			},
 		});

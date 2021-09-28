@@ -4,15 +4,17 @@ import socketClient from 'socket-client';
 import listi from 'listi';
 
 listi.views.list_edit = name => {
-	name = name || dom.location.query.get('list');
+	name = name || dom.location.query.get('list') || '';
 
 	dom.location.query.set({ view: 'list_edit', list: name });
 
 	const list = listi.state?.lists?.[name] || {};
 
+	const edit = name && !list;
+
 	if (typeof name !== 'string') name = '';
 
-	if (name && !list) return socketClient.reply('list', name);
+	if (edit) return socketClient.reply('lists', name);
 
 	listi.log()('list_edit', list);
 
@@ -24,21 +26,23 @@ listi.views.list_edit = name => {
 
 	listi.save = () => {
 		socketClient.reply('list_edit', { name, update: { name: nameInput.value } });
+
+		dom.location.query.set({ view: edit ? 'list' : 'lists', list: name });
 	};
 
 	const toolbar = [
-		{ id: 'lists', onPointerPress: () => listi.draw(name ? 'list' : 'lists', name) },
+		{ id: 'lists', onPointerPress: () => listi.draw(edit ? 'list' : 'lists', name) },
 		{ id: 'save', onPointerPress: listi.save },
-		{ type: 'h1', textContent: `${name ? 'Edit' : 'Create new'} list` },
+		{ type: 'h1', textContent: `${edit ? 'Edit' : 'Create new'} list` },
 	];
 
 	if (name) {
 		toolbar.splice(toolbar.length - 1, 0, {
 			id: 'delete',
-			onPointerPress: evt => {
-				listi.log()(evt);
-
+			onPointerPress: () => {
 				socketClient.reply('list_edit', { name, remove: true });
+
+				dom.location.query.set({ view: 'lists' });
 			},
 		});
 	}

@@ -11,7 +11,7 @@ listi.views.list_filter = name => {
 	const list = listi.state?.lists?.[name] || {};
 	// const { name, items, filter } = list;
 
-	if (name && !list) return socketClient.reply('list', name);
+	if (name && !list) return socketClient.reply('lists', name);
 
 	listi.drawToolkit([{ id: 'lists', onPointerPress: () => listi.draw('list', list) }]);
 };

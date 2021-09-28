@@ -10,7 +10,7 @@ listi.views.list = name => {
 
 	dom.location.query.set({ view: 'list', list: name });
 
-	if (!list) return socketClient.reply('list', name);
+	if (!list) return socketClient.reply('lists', name);
 
 	const { items, filter } = list;
 
@@ -58,8 +58,11 @@ listi.views.list = name => {
 
 		const handleComplete = () => {
 			let action = item.complete?.action;
+			const now = new Date();
 
 			listi.log('Complete', item);
+
+			item.lastComplete = `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()}`;
 
 			if (action === 'Delete') return socketClient.reply('list_item_edit', { index, listName: name, remove: true });
 
@@ -78,8 +81,7 @@ listi.views.list = name => {
 				if (action === 'Add Tag' && !item.tags.includes(tagName)) item.tags.push(tagName);
 				else if (action === 'Remove Tag' && item.tags.includes(tagName)) item.tags.splice(item.tags.indexOf(tagName), 1);
 			} else if (action === 'Reschedule') {
-				const now = new Date();
-				let nextDue = new Date(now.getTime() + item.complete.gap);
+				let nextDue = new Date((item.complete.base === 'Last Completed' && item.lastComplete ? new Date(item.lastComplete) : now).getTime() + item.complete.gap);
 
 				nextDue = `${nextDue.getMonth() + 1}/${nextDue.getDate()}/${nextDue.getFullYear()}`;
 

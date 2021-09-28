@@ -35,11 +35,6 @@ const listi = {
 
 			this.reply('lists', { listNames: Object.keys(listi.config.current.lists), lists: listi.config.current.lists });
 		},
-		list(name) {
-			log(`Requested list: ${name}`);
-
-			this.reply('list', { name, ...listi.config.current.lists[name] });
-		},
 		list_edit({ name, update, remove }) {
 			log(`${name ? (remove ? 'Delete' : 'Edit') : 'Create'} list: ${name || update.name}`);
 
@@ -67,7 +62,7 @@ const listi = {
 
 			if (listi.options.persistent) listi.config.save();
 
-			this.reply('list', { name: listName, ...listi.config.current.lists[listName] });
+			this.reply('lists', { listNames: Object.keys(listi.config.current.lists), lists: listi.config.current.lists });
 		},
 	},
 };
