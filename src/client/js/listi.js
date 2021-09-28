@@ -133,7 +133,7 @@ const listi = {
 	draw(view, arg) {
 		if (!view || !listi.views[view]) return log.error()(`"${view}" is an invalid view`);
 
-		dom.empty(dom.getElemById('toolkit'));
+		dom.empty(dom.getElemById('toolbar'));
 		dom.empty(dom.getElemById('list'));
 
 		delete listi.calendar;
@@ -142,7 +142,7 @@ const listi = {
 		listi.views[view](arg);
 	},
 	drawToolkit(items) {
-		var toolkitFragment = dom.createFragment();
+		var toolbarFragment = dom.createFragment();
 
 		items.forEach(opts => {
 			var elemType = 'button';
@@ -153,10 +153,10 @@ const listi = {
 				delete opts.type;
 			}
 
-			dom.createElem(elemType, Object.assign({ appendTo: toolkitFragment }, opts));
+			dom.createElem(elemType, Object.assign({ appendTo: toolbarFragment }, opts));
 		});
 
-		dom.getElemById('toolkit').appendChild(toolkitFragment);
+		dom.getElemById('toolbar').appendChild(toolbarFragment);
 	},
 	createTag(name) {
 		return dom.createElem('li', {

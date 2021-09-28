@@ -20,14 +20,14 @@ listi.views.list_edit = name => {
 		socketClient.reply('list_edit', { name, update: { name: nameInput.value } });
 	};
 
-	const toolkit = [
+	const toolbar = [
 		{ id: 'lists', onPointerPress: () => socketClient.reply('list', name) },
 		{ id: 'save', onPointerPress: listi.save },
 		{ type: 'h1', textContent: `${name ? 'Edit' : 'Create new'} list` },
 	];
 
 	if (name) {
-		toolkit.splice(toolkit.length - 1, 0, {
+		toolbar.splice(toolbar.length - 1, 0, {
 			id: 'delete',
 			onPointerPress: evt => {
 				listi.log()(evt);
@@ -37,7 +37,7 @@ listi.views.list_edit = name => {
 		});
 	}
 
-	listi.drawToolkit(toolkit);
+	listi.drawToolkit(toolbar);
 
 	dom.getElemById('list').appendChild(listFragment);
 

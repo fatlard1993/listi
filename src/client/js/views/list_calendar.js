@@ -25,7 +25,7 @@ listi.views.list_calendar = name => {
 		listi.draw('list_item_edit', { index: evt.index, listName: name });
 	});
 
-	dom.getElemById('toolkit').appendChild(listi.calendar.title);
+	dom.getElemById('toolbar').appendChild(listi.calendar.title);
 
 	listi.calendar.render();
 

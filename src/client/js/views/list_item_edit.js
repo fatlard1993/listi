@@ -123,14 +123,14 @@ listi.views.list_item_edit = ({ listName, index, listItem }) => {
 		socketClient.reply('list_item_edit', { index, listName, listItem: buildListItemDocument() });
 	};
 
-	const toolkit = [
+	const toolbar = [
 		{ id: 'lists', onPointerPress: () => socketClient.reply('list', listName) },
 		{ id: 'save', onPointerPress: listi.save },
 		{ type: 'h1', textContent: `${summary ? 'Edit' : 'Create new'} list item` },
 	];
 
 	if (summary) {
-		toolkit.splice(toolkit.length - 1, 0, {
+		toolbar.splice(toolbar.length - 1, 0, {
 			id: 'delete',
 			onPointerPress: () => {
 				socketClient.reply('list_item_edit', { index, listName, remove: true });
@@ -138,7 +138,7 @@ listi.views.list_item_edit = ({ listName, index, listItem }) => {
 		});
 	}
 
-	listi.drawToolkit(toolkit);
+	listi.drawToolkit(toolbar);
 
 	dom.getElemById('list').appendChild(listFragment);
 

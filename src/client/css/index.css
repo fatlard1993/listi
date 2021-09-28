@@ -1,4 +1,4 @@
-// includes baseline colors augmented-ui dom fonts scrollbar buttons toolkit list tags calendar
+// includes baseline colors augmented-ui dom fonts scrollbar button toolbar list tags calendar
 
 /* div#wrapper {
 	height: 100%;
@@ -105,7 +105,7 @@ li#edit {
 }
 
 @media (min-height: 18cm) {
-	div#toolkit {
+	div#toolbar {
 		height: 10%;
 
 		h1,
@@ -131,7 +131,7 @@ li#edit {
 }
 
 @media (min-height: 22cm) {
-	div#toolkit {
+	div#toolbar {
 		height: 7%;
 
 		h1,
@@ -157,7 +157,7 @@ li#edit {
 }
 
 @media (min-height: 32cm) {
-	div#toolkit {
+	div#toolbar {
 		height: 5%;
 
 		h1,
@@ -183,7 +183,7 @@ li#edit {
 }
 
 @media (min-height: 44cm) {
-	div#toolkit {
+	div#toolbar {
 		height: 3%;
 
 		h1,

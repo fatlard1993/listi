@@ -34,7 +34,7 @@ listi.views.list_item_set_due_date = ({ listName, index, listItem }) => {
 		listItem.due = evt.target.dataset.fullDate;
 	});
 
-	dom.getElemById('toolkit').appendChild(listi.calendar.title);
+	dom.getElemById('toolbar').appendChild(listi.calendar.title);
 
 	listi.calendar.render();
 
