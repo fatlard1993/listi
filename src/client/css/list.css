@@ -1,4 +1,4 @@
-// includes colors
+// includes colors fonts
 
 ul#list {
 	height: 88%;
@@ -11,35 +11,70 @@ ul#list {
 		margin: 0.2cm;
 		padding: 0.1cm;
 
-		&.listItem,
 		&.list {
 			cursor: pointer;
+		}
 
+		&.listItem,
+		&.list {
 			div.description,
 			div.dueDate {
 				pointer-events: none;
 				font-size: 0.4cm;
 			}
 
+			button.complete,
 			button.edit {
 				position: absolute;
-				right: 0;
-				top: 0;
 				height: 1cm;
 				width: 1cm;
-				background-color: $blue;
-				border-bottom-left-radius: 0.1cm;
 				font-size: 0.5cm;
 				margin: 0.16cm;
 
 				&:before {
-					@mixin fontAwesomeSolid;
-
-					pointer-events: none;
-					content: '\f044';
 					position: absolute;
 					top: 0.25cm;
 					left: 0.25cm;
+				}
+			}
+
+			button.complete {
+				right: 0;
+				bottom: 0;
+
+				&:hover {
+					top: unset;
+					bottom: 1px;
+				}
+
+				&:active,
+				&.active,
+				&.pressed {
+					top: unset;
+					bottom: -1px;
+				}
+
+				&:before {
+					content: '\f00c';
+				}
+			}
+
+			button.edit {
+				right: 0;
+				top: 0;
+
+				&:hover {
+					top: -1px;
+				}
+
+				&:active,
+				&.active,
+				&.pressed {
+					top: 1px;
+				}
+
+				&:before {
+					content: '\f044';
 				}
 			}
 		}

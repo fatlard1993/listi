@@ -48,6 +48,10 @@ div#toolkit {
 			content: '\f03a';
 		}
 
+		&#back:before {
+			content: '\f060';
+		}
+
 		&#calendar:before {
 			content: '\f073';
 		}

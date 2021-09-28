@@ -17,6 +17,13 @@ button {
 	border: none;
 	max-width: 250px;
 
+	&:before {
+		@mixin fontAwesomeSolid;
+
+		position: relative;
+		pointer-events: none;
+	}
+
 	&:after {
 		content: '';
 		position: absolute;
@@ -33,6 +40,10 @@ button {
 	&:hover {
 		top: -1px;
 
+		&:before {
+			top: -1px;
+		}
+
 		&:after {
 			background-image: linear-gradient(to right, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.1) 0.05em, rgba(0, 0, 0, 0) 0.08em),
 				linear-gradient(to left, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.2) 0.08em, rgba(0, 0, 0, 0) 0.16em),
@@ -47,6 +58,10 @@ button {
 	&.active,
 	&.pressed {
 		top: 1px;
+
+		&:before {
+			top: 1px;
+		}
 
 		&:after {
 			background-image: linear-gradient(to right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3) 0.05em, rgba(0, 0, 0, 0.2) 0.08em),

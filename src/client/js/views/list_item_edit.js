@@ -4,7 +4,7 @@ import socketClient from 'socket-client';
 import listi from 'listi';
 
 listi.views.list_item_edit = ({ listName, index, listItem }) => {
-	const { summary, description, tags, due, complete } = listItem || listi.state.lists[listName].items[index];
+	const { summary, description, tags, due, complete } = listItem || listi.state.lists[listName].items[index] || {};
 
 	listi.log()(listItem);
 
@@ -40,7 +40,7 @@ listi.views.list_item_edit = ({ listName, index, listItem }) => {
 
 	dom.createElem('label', { textContent: 'Due Date', appendTo: editWrapper });
 
-	const dueDate = dom.createElem('button', {
+	dom.createElem('button', {
 		textContent: due || 'Set',
 		className: 'dueDate postLabel',
 		appendTo: editWrapper,
@@ -49,7 +49,7 @@ listi.views.list_item_edit = ({ listName, index, listItem }) => {
 
 	const completeAction = dom.createElem('select', {
 		appendTo: dom.createElem('label', { textContent: 'Complete Action', appendTo: editWrapper }),
-		options: ['Add Tag', 'Remove Tag', 'Delete', 'Reschedule'],
+		options: ['Add Tag', 'Remove Tag', 'Toggle Tag', 'Delete', 'Reschedule'],
 		value: complete?.action || 'Add Tag',
 		onChange: evt => {
 			dom[evt.value.includes('Tag') ? 'show' : 'disappear'](tagContainer);
@@ -107,7 +107,7 @@ listi.views.list_item_edit = ({ listName, index, listItem }) => {
 				tags: Array.from(tagList.children).map(elem => {
 					return elem.textContent;
 				}),
-				due: dueDate.textContent === 'Set' ? undefined : dueDate.textContent.split(' - '),
+				due,
 				complete: {
 					action: completeAction.value,
 					...(completeAction.value.includes('Tag') && { tagName: tagName.value }),

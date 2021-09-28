@@ -44,6 +44,7 @@ const listi = {
 
 		return Math.floor((due - now) / _MS_PER_DAY);
 	},
+	weekDays: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
 	numWithOrdinal(num) {
 		return `${num}${['', 'st', 'nd', 'rd'][(num / 10) % 10 ^ 1 && num % 10] || 'th'}`;
 	},
@@ -54,14 +55,15 @@ const listi = {
 		const absDayRemainder = Math.floor(absDayCount - absWeekCount * 7);
 		const now = new Date();
 		const endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + dayCount);
+		const endDayOfWeek = listi.weekDays[endDate.getDay()];
 
 		if (dayCount === -1) return `Yesterday`;
 		if (dayCount === 0) return `Today`;
 		if (dayCount === 1) return `Tomorrow`;
-		if (absDayCount === 2) return `Day ${isNegative ? 'Before' : 'After'} ${isNegative ? 'Yesterday' : 'Tomorrow'}`;
-		if (absDayCount < 7) return `${isNegative ? '' : 'In '}${absDayCount} Days${isNegative ? ' Ago' : ''}`;
-		if (absWeekCount === 1 && absDayRemainder === 0) return `${isNegative ? 'Last' : 'Next'} Week`;
-		if (now.getDate() === endDate.getDate()) return `${isNegative ? 'Last' : 'Next'} Month on the ${listi.numWithOrdinal(now.getDate())}`;
+		if (absDayCount === 2) return `Day ${isNegative ? 'Before' : 'After'} ${isNegative ? 'Yesterday' : 'Tomorrow'} (${endDayOfWeek})`;
+		if (absDayCount < 7) return `${isNegative ? '' : 'In '}${absDayCount} Days${isNegative ? ' Ago' : ''} on ${endDayOfWeek}`;
+		if (absWeekCount === 1 && absDayRemainder === 0) return `${isNegative ? 'Last' : 'Next'} ${endDayOfWeek}`;
+		if (now.getDate() === endDate.getDate()) return `${isNegative ? 'Last' : 'Next'} Month on ${endDayOfWeek} the ${listi.numWithOrdinal(now.getDate())}`;
 		if (absWeekCount > 0 && absWeekCount < 5) {
 			return `${isNegative ? '' : 'In '}${absWeekCount} Week${absWeekCount > 1 ? 's' : ''}${absDayRemainder ? ` and ${absDayRemainder} Day${absDayRemainder > 1 ? 's' : ''}` : ''}${
 				isNegative ? ' Ago' : ''
@@ -82,10 +84,17 @@ const listi = {
 
 		socketClient.init();
 
-		socketClient.on('lists', lists => {
-			listi.state.listNames = lists;
+		socketClient.on('connected', () => {
+			listi.log()('connected');
 
-			listi.log()('lists', lists);
+			socketClient.reply('lists');
+		});
+
+		socketClient.on('lists', ({ listNames, lists }) => {
+			listi.state.listNames = listNames;
+			listi.state.lists = lists;
+
+			listi.log()('lists', listNames);
 
 			listi.draw('lists');
 		});

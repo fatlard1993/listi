@@ -55,7 +55,7 @@ li#edit {
 		button#tagAdd {
 			display: none;
 			position: absolute;
-			top: 1.42cm;
+			bottom: 47px;
 			right: 2.5%;
 			margin: 0;
 
@@ -67,13 +67,15 @@ li#edit {
 			}
 
 			&:hover {
-				top: 2.38em;
+				top: unset;
+				bottom: 48px;
 			}
 
 			&:active,
 			&.active,
 			&.pressed {
-				top: 2.52em;
+				top: unset;
+				bottom: 46px;
 			}
 		}
 

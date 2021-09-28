@@ -28,12 +28,12 @@ const listi = {
 		client_connect() {
 			log('Client connected');
 
-			this.reply('lists', Object.keys(listi.config.current.lists));
+			this.reply('connected', true);
 		},
 		lists() {
 			log('Requested lists');
 
-			this.reply('lists', Object.keys(listi.config.current.lists));
+			this.reply('lists', { listNames: Object.keys(listi.config.current.lists), lists: listi.config.current.lists });
 		},
 		list(name) {
 			log(`Requested list: ${name}`);

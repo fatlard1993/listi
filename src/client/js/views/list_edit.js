@@ -21,7 +21,7 @@ listi.views.list_edit = name => {
 	};
 
 	const toolkit = [
-		{ id: 'lists', onPointerPress: () => socketClient.reply('lists') },
+		{ id: 'lists', onPointerPress: () => socketClient.reply('list', name) },
 		{ id: 'save', onPointerPress: listi.save },
 		{ type: 'h1', textContent: `${name ? 'Edit' : 'Create new'} list` },
 	];

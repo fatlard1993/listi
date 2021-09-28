@@ -49,6 +49,36 @@ listi.views.list = name => {
 			dom.createElem('div', { textContent: `${overdue ? '(Overdue) ' : ''}Due: ${listi.dayCountName(dueDateDiff)} (${item.due})`, className: 'dueDate', appendTo: dueWrapper });
 		}
 
+		const handleComplete = () => {
+			if (item.complete?.action === 'Delete') return socketClient.reply('list_item_edit', { index, listName: name, remove: true });
+
+			if (item.due?.length) {
+				const newDue = item.due.filter(due => listi.dayDiff(due) > 0);
+
+				item.due = newDue;
+			}
+
+			if (item.complete?.action.includes('Tag')) {
+				item.tags = item.tags || [];
+
+				const tagName = item.complete.tagName || 'Complete';
+
+				if (item.complete?.action === 'Toggle Tag') item.complete.action = item.tags.includes(tagName) ? 'Remove Tag' : 'Add Tag';
+
+				if (item.complete?.action === 'Add Tag' && !item.tags.includes(tagName)) item.tags.push(tagName);
+				else if (item.complete?.action === 'Remove Tag' && item.tags.includes(tagName)) item.tags.splice(item.tags.indexOf(tagName), 1);
+			} else if (item.complete?.action === 'Reschedule') {
+				const now = new Date();
+				let nextDue = new Date(now.getTime() + item.complete.gap);
+
+				nextDue = `${nextDue.getMonth() + 1}/${nextDue.getDate()}/${nextDue.getFullYear()}`;
+
+				if (item.due.includes(nextDue)) item.due.push(nextDue);
+			}
+
+			socketClient.reply('list_item_edit', { index, listName: name, update: item });
+		};
+
 		dom.createElem('li', {
 			textContent: item.summary,
 			className: `listItem${overdue ? ' overdue' : dueSoon ? ' dueSoon' : ''}`,
@@ -59,38 +89,15 @@ listi.views.list = name => {
 						listi.draw('list_item_edit', { index, listName: name });
 					},
 				}),
+				dom.createElem('button', {
+					className: 'complete',
+					onPointerPress: handleComplete,
+				}),
 				dom.createElem('div', { textContent: item.description, className: 'description' }),
 				dueWrapper,
 				tagList,
 			],
 			appendTo: listFragment,
-			onPointerPressAndHold: () => {
-				if (item.complete?.action === 'Delete') return socketClient.reply('list_item_edit', { index, listName: name, remove: true });
-
-				if (item.due?.length) {
-					const newDue = item.due.filter(due => listi.dayDiff(due) > 0);
-
-					item.due = newDue;
-				}
-
-				if (item.complete?.action.includes('Tag')) {
-					item.tags = item.tags || [];
-
-					const tagName = item.complete.tagName || 'Complete';
-
-					if (item.complete?.action === 'Add Tag' && !item.tags.includes(tagName)) item.tags.push(tagName);
-					else if (item.complete?.action === 'Remove Tag' && item.tags.includes(tagName)) item.tags.splice(item.tags.indexOf(tagName), 1);
-				} else if (item.complete?.action === 'Reschedule') {
-					const now = new Date();
-					let nextDue = new Date(now.getTime() + item.complete.gap);
-
-					nextDue = `${nextDue.getMonth() + 1}/${nextDue.getDate()}/${nextDue.getFullYear()}`;
-
-					if (item.due.includes(nextDue)) item.due.push(nextDue);
-				}
-
-				socketClient.reply('list_item_edit', { index, listName: name, update: item });
-			},
 		});
 	});
 
