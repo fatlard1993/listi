@@ -76,6 +76,12 @@ listi.views.list_item_edit = props => {
 		appendTo: dom.createElem('label', { textContent: 'Tag Name', placeholder: 'Complete', appendTo: tagContainer }),
 	});
 
+	const rescheduleBase = dom.createElem('select', {
+		appendTo: dom.createElem('label', { textContent: 'Date Base', appendTo: schedulingContainer }),
+		options: ['Last Due', 'Last Completed'],
+		value: complete?.base || 'Last Due',
+	});
+
 	const rescheduleUnit = dom.createElem('select', {
 		appendTo: dom.createElem('label', { textContent: 'Unit', appendTo: schedulingContainer }),
 		options: ['Day', 'Week', 'Month', 'Year'],
@@ -118,6 +124,7 @@ listi.views.list_item_edit = props => {
 				action: completeAction.value,
 				...(completeAction.value.includes('Tag') && { tagName: tagName.value }),
 				...(completeAction.value === 'Reschedule' && {
+					base: rescheduleBase.value,
 					count: rescheduleCount.value,
 					unit: rescheduleUnit.value,
 					frequency: rescheduleFrequency.value,
@@ -129,6 +136,8 @@ listi.views.list_item_edit = props => {
 	};
 
 	listi.save = () => {
+		dom.location.query.set({ view: 'list', list: listName });
+
 		socketClient.reply('list_item_edit', { index, listName, listItem: buildListItemDocument() });
 	};
 
