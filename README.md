@@ -154,3 +154,4 @@ cache tags for quickly adding common ones allow for index sorting (drag and drop
 - linkable paths for each unique view
 - tag colors?
 - everything as tags? (due dates, etc.)
+- multiselect/batch operations (complete, delete)

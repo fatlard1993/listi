@@ -4,7 +4,14 @@ import socketClient from 'socket-client';
 import listi from 'listi';
 
 listi.views.list = name => {
-	const list = listi.state.lists[name] || {};
+	name = name || dom.location.query.get('list');
+
+	const list = listi.state?.lists?.[name];
+
+	dom.location.query.set({ view: 'list', list: name });
+
+	if (!list) return socketClient.reply('list', name);
+
 	const { items, filter } = list;
 
 	if (!items) {
@@ -20,9 +27,9 @@ listi.views.list = name => {
 	const listFragment = dom.createFragment();
 
 	listi.drawToolkit([
-		{ id: 'lists', onPointerPress: () => socketClient.reply('lists') },
+		{ id: 'lists', onPointerPress: () => listi.draw('lists') },
 		{ id: 'calendar', onPointerPress: () => listi.draw('list_calendar', name) },
-		{ id: 'filter', onPointerPress: () => listi.draw('filter_edit', name) },
+		{ id: 'filter', onPointerPress: () => listi.draw('list_filter', name) },
 		{ id: 'edit', onPointerPress: () => listi.draw('list_edit', name) },
 		{ type: 'h1', textContent: name },
 		{ id: 'add', className: 'right', onPointerPress: () => listi.draw('list_item_edit', { listName: name }) },

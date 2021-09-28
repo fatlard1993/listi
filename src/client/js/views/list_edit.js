@@ -4,11 +4,17 @@ import socketClient from 'socket-client';
 import listi from 'listi';
 
 listi.views.list_edit = name => {
-	const list = listi.state.lists[name] || {};
+	name = name || dom.location.query.get('list');
+
+	dom.location.query.set({ view: 'list_edit', list: name });
+
+	const list = listi.state?.lists?.[name] || {};
 
 	if (typeof name !== 'string') name = '';
 
-	listi.log()(list);
+	if (name && !list) return socketClient.reply('list', name);
+
+	listi.log()('list_edit', list);
 
 	const listFragment = dom.createFragment();
 
@@ -21,7 +27,7 @@ listi.views.list_edit = name => {
 	};
 
 	const toolbar = [
-		{ id: 'lists', onPointerPress: () => socketClient.reply('list', name) },
+		{ id: 'lists', onPointerPress: () => listi.draw(name ? 'list' : 'lists', name) },
 		{ id: 'save', onPointerPress: listi.save },
 		{ type: 'h1', textContent: `${name ? 'Edit' : 'Create new'} list` },
 	];

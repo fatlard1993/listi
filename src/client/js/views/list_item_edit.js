@@ -3,10 +3,19 @@ import socketClient from 'socket-client';
 
 import listi from 'listi';
 
-listi.views.list_item_edit = ({ listName, index, listItem }) => {
-	const { summary, description, tags, due, complete } = listItem || listi.state.lists[listName].items[index] || {};
+listi.views.list_item_edit = props => {
+	const listName = props?.listName || dom.location.query.get('list');
+	const index = props?.index ?? dom.location.query.get('item');
 
-	listi.log()(listItem);
+	dom.location.query.set({ view: 'list_item_edit', list: listName, item: index });
+
+	const listItem = props?.listItem || listi.state?.lists?.[listName]?.items?.[index];
+
+	if (index >= 0 && !listItem) return socketClient.reply('list', listName);
+
+	const { summary, description, tags, due, complete } = listItem || {};
+
+	listi.log()('list_item_edit', { listName, index, listItem });
 
 	const listFragment = dom.createFragment();
 
@@ -124,7 +133,7 @@ listi.views.list_item_edit = ({ listName, index, listItem }) => {
 	};
 
 	const toolbar = [
-		{ id: 'lists', onPointerPress: () => socketClient.reply('list', listName) },
+		{ id: 'lists', onPointerPress: () => listi.draw('list', listName) },
 		{ id: 'save', onPointerPress: listi.save },
 		{ type: 'h1', textContent: `${summary ? 'Edit' : 'Create new'} list item` },
 	];

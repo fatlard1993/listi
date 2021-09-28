@@ -87,7 +87,7 @@ const listi = {
 		socketClient.on('connected', () => {
 			listi.log()('connected');
 
-			socketClient.reply('lists');
+			listi.router();
 		});
 
 		socketClient.on('lists', ({ listNames, lists }) => {
@@ -96,7 +96,7 @@ const listi = {
 
 			listi.log()('lists', listNames);
 
-			listi.draw('lists');
+			listi.router();
 		});
 
 		socketClient.on('list', list => {
@@ -108,7 +108,7 @@ const listi = {
 
 			listi.log()('list', list);
 
-			listi.draw('list', name);
+			listi.router();
 		});
 
 		dom.interact.on('keyUp', evt => {
@@ -129,6 +129,15 @@ const listi = {
 		dom.interact.on('pointerDown', () => {
 			listi.stayConnected();
 		});
+
+		listi.router();
+	},
+	router() {
+		const view = dom.location.query.get('view') || 'lists';
+
+		log()('view', view);
+
+		listi.draw(view);
 	},
 	draw(view, arg) {
 		if (!view || !listi.views[view]) return log.error()(`"${view}" is an invalid view`);

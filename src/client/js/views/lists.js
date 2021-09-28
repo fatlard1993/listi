@@ -6,6 +6,10 @@ import listi from 'listi';
 listi.views.lists = () => {
 	const { listNames } = listi.state;
 
+	dom.location.query.set({ view: 'lists' });
+
+	if (!listNames) return socketClient.reply('lists');
+
 	const listFragment = dom.createFragment();
 
 	listi.drawToolkit([
@@ -26,7 +30,7 @@ listi.views.lists = () => {
 				className: 'edit',
 				onPointerPress: () => listi.draw('list_edit', name),
 			}),
-			onPointerPress: () => socketClient.reply('list', name),
+			onPointerPress: () => listi.draw('list', name),
 		});
 	});
 
