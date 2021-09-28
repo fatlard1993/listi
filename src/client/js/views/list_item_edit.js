@@ -44,7 +44,7 @@ listi.views.list_item_edit = ({ listName, index, listItem }) => {
 		textContent: due || 'Set',
 		className: 'dueDate postLabel',
 		appendTo: editWrapper,
-		onPointerPress: () => listi.draw('list_item_set_due_date', { index, listName, listItem: buildListItem() }),
+		onPointerPress: () => listi.draw('list_item_set_due_date', { index, listName, listItem: buildListItemDocument() }),
 	});
 
 	const completeAction = dom.createElem('select', {
@@ -97,34 +97,30 @@ listi.views.list_item_edit = ({ listName, index, listItem }) => {
 		Year: 365,
 	};
 
-	const buildListItem = () => {
+	const buildListItemDocument = () => {
 		return {
-			index,
-			listName,
-			update: {
-				summary: summaryInput.value,
-				description: descriptionInput.value,
-				tags: Array.from(tagList.children).map(elem => {
-					return elem.textContent;
+			summary: summaryInput.value,
+			description: descriptionInput.value,
+			tags: Array.from(tagList.children).map(elem => {
+				return elem.textContent;
+			}),
+			due,
+			complete: {
+				action: completeAction.value,
+				...(completeAction.value.includes('Tag') && { tagName: tagName.value }),
+				...(completeAction.value === 'Reschedule' && {
+					count: rescheduleCount.value,
+					unit: rescheduleUnit.value,
+					frequency: rescheduleFrequency.value,
+					gap: oneDay * unitMultipliers[rescheduleUnit.value] * rescheduleFrequency.value,
 				}),
-				due,
-				complete: {
-					action: completeAction.value,
-					...(completeAction.value.includes('Tag') && { tagName: tagName.value }),
-					...(completeAction.value === 'Reschedule' && {
-						count: rescheduleCount.value,
-						unit: rescheduleUnit.value,
-						frequency: rescheduleFrequency.value,
-						gap: oneDay * unitMultipliers[rescheduleUnit.value] * rescheduleFrequency.value,
-					}),
-				},
-				// repeat: waitMs
 			},
+			// repeat: waitMs
 		};
 	};
 
 	listi.save = () => {
-		socketClient.reply('list_item_edit', buildListItem());
+		socketClient.reply('list_item_edit', { index, listName, listItem: buildListItemDocument() });
 	};
 
 	const toolkit = [

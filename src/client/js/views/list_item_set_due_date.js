@@ -6,6 +6,8 @@ import listi from 'listi';
 listi.views.list_item_set_due_date = ({ listName, index, listItem }) => {
 	const listFragment = dom.createFragment();
 
+	listi.log('Set Due Date', { listName, index, listItem });
+
 	listi.drawToolkit([
 		{ id: 'back', onPointerPress: () => listi.draw('list_item_edit', { listName, index, listItem }) },
 		{
