@@ -136,9 +136,9 @@ listi.views.list_item_edit = props => {
 	};
 
 	listi.save = () => {
-		dom.location.query.set({ view: 'list', list: listName });
+		socketClient.reply('list_item_edit', { index, listName, update: buildListItemDocument() });
 
-		socketClient.reply('list_item_edit', { index, listName, listItem: buildListItemDocument() });
+		dom.location.query.set({ view: 'list', list: listName });
 	};
 
 	const toolbar = [
