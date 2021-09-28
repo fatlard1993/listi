@@ -50,7 +50,11 @@ listi.views.list = name => {
 		}
 
 		const handleComplete = () => {
-			if (item.complete?.action === 'Delete') return socketClient.reply('list_item_edit', { index, listName: name, remove: true });
+			let action = item.complete?.action;
+
+			listi.log('Complete', item);
+
+			if (action === 'Delete') return socketClient.reply('list_item_edit', { index, listName: name, remove: true });
 
 			if (item.due?.length) {
 				const newDue = item.due.filter(due => listi.dayDiff(due) > 0);
@@ -58,16 +62,15 @@ listi.views.list = name => {
 				item.due = newDue;
 			}
 
-			if (item.complete?.action.includes('Tag')) {
+			if (action.includes('Tag')) {
 				item.tags = item.tags || [];
 
 				const tagName = item.complete.tagName || 'Complete';
+				action = action === 'Toggle Tag' ? (item.tags.includes(tagName) ? 'Remove Tag' : 'Add Tag') : action;
 
-				if (item.complete?.action === 'Toggle Tag') item.complete.action = item.tags.includes(tagName) ? 'Remove Tag' : 'Add Tag';
-
-				if (item.complete?.action === 'Add Tag' && !item.tags.includes(tagName)) item.tags.push(tagName);
-				else if (item.complete?.action === 'Remove Tag' && item.tags.includes(tagName)) item.tags.splice(item.tags.indexOf(tagName), 1);
-			} else if (item.complete?.action === 'Reschedule') {
+				if (action === 'Add Tag' && !item.tags.includes(tagName)) item.tags.push(tagName);
+				else if (action === 'Remove Tag' && item.tags.includes(tagName)) item.tags.splice(item.tags.indexOf(tagName), 1);
+			} else if (action === 'Reschedule') {
 				const now = new Date();
 				let nextDue = new Date(now.getTime() + item.complete.gap);
 
