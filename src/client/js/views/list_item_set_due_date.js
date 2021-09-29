@@ -4,6 +4,8 @@ import Calendar from 'calendar';
 import listi from 'listi';
 
 listi.views.list_item_set_due_date = ({ listName, index, listItem }) => {
+	const list = listi.state.lists[listName];
+
 	const listFragment = dom.createFragment();
 
 	listi.log('Set Due Date', { listName, index, listItem });
@@ -18,8 +20,8 @@ listi.views.list_item_set_due_date = ({ listName, index, listItem }) => {
 
 	listi.calendar = new Calendar();
 
-	listi.state.lists[listName].items.forEach(({ due: at }, index) => {
-		if (at) listi.calendar.addEvent({ index, at, label: listItem.summary });
+	list.items.forEach(({ due: at, summary: label }, index) => {
+		if (at) listi.calendar.addEvent({ index, at, label });
 	});
 
 	listi.calendar.elem.classList.add('select');
@@ -27,7 +29,9 @@ listi.views.list_item_set_due_date = ({ listName, index, listItem }) => {
 	listi.calendar.on('selectDay', evt => {
 		const selectedItems = listi.calendar.elem.querySelectorAll('.selected');
 
-		if (evt.target.classList.contains('selected')) dom.classList(selectedItems, 'remove', 'selected');
+		if (evt.target.classList.contains('selected')) return;
+
+		if (selectedItems) dom.classList(selectedItems, 'remove', 'selected');
 
 		evt.target.classList.add('selected');
 

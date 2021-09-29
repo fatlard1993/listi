@@ -22,7 +22,7 @@ listi.views.list = name => {
 		return;
 	}
 
-	listi.log()('draw_list', name, items, filter);
+	listi.log()('list', name, items, filter);
 
 	const listFragment = dom.createFragment();
 
@@ -59,18 +59,14 @@ listi.views.list = name => {
 		const handleComplete = () => {
 			let action = item.complete?.action;
 			const now = new Date();
+			const lastDue = item.due;
 
 			listi.log('Complete', item);
 
-			item.lastComplete = `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()}`;
-
 			if (action === 'Delete') return socketClient.reply('list_item_edit', { index, listName: name, remove: true });
 
-			if (item.due?.length) {
-				const newDue = item.due.filter(due => listi.dayDiff(due) > 0);
-
-				item.due = newDue;
-			}
+			item.lastComplete = `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()}`;
+			item.due = '';
 
 			if (action.includes('Tag')) {
 				item.tags = item.tags || [];
@@ -81,11 +77,11 @@ listi.views.list = name => {
 				if (action === 'Add Tag' && !item.tags.includes(tagName)) item.tags.push(tagName);
 				else if (action === 'Remove Tag' && item.tags.includes(tagName)) item.tags.splice(item.tags.indexOf(tagName), 1);
 			} else if (action === 'Reschedule') {
-				let nextDue = new Date((item.complete.base === 'Last Completed' && item.lastComplete ? new Date(item.lastComplete) : now).getTime() + item.complete.gap);
+				let nextDue = new Date((item.complete.base === 'Last Completed' && item.lastComplete ? new Date(item.lastComplete) : new Date(lastDue)).getTime() + item.complete.gap);
 
 				nextDue = `${nextDue.getMonth() + 1}/${nextDue.getDate()}/${nextDue.getFullYear()}`;
 
-				if (item.due.includes(nextDue)) item.due.push(nextDue);
+				item.due = nextDue;
 			}
 
 			socketClient.reply('list_item_edit', { index, listName: name, update: item });

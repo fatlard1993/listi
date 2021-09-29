@@ -9,7 +9,9 @@ listi.views.list_calendar = name => {
 
 	dom.location.query.set({ view: 'list_calendar', list: name });
 
-	const list = listi.state?.lists?.[name] || {};
+	const list = listi.state?.lists?.[name];
+
+	listi.log()('list_calendar', name, list);
 
 	if (name && !list) return socketClient.reply('lists', name);
 
@@ -19,7 +21,7 @@ listi.views.list_calendar = name => {
 
 	listi.calendar = new Calendar();
 
-	list.items?.forEach((item, index) => {
+	list?.items?.forEach((item, index) => {
 		if (item.due) listi.calendar.addEvent({ index, label: item.summary, at: item.due });
 	});
 

@@ -109,13 +109,9 @@ const listi = {
 			}
 		});
 
-		dom.interact.on('keyDown', () => {
-			listi.stayConnected();
-		});
+		dom.interact.on('keyDown', listi.stayConnected);
 
-		dom.interact.on('pointerDown', () => {
-			listi.stayConnected();
-		});
+		dom.interact.on('pointerDown', listi.stayConnected);
 	},
 	router() {
 		const view = dom.location.query.get('view') || 'lists';
