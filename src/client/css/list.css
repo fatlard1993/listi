@@ -17,6 +17,10 @@ ul#list {
 
 		&.listItem,
 		&.list {
+			div.description {
+				white-space: pre-wrap;
+			}
+
 			div.description,
 			div.dueDate {
 				pointer-events: none;
