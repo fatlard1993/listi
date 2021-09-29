@@ -149,7 +149,8 @@ cache tags for quickly adding common ones allow for index sorting (drag and drop
 
 ## TODO
 
-- add a top-level calendar that shows items from all lists (maybe with options to toggle certain ones?)
+- add a top-level calendar that shows items from all lists (with ability to toggle them)
+- add top-level list view to see aggregate of all lists (with ability to toggle them)
 - change config file structure to support the above configuration features
 - linkable paths for each unique view
 - tag colors?
