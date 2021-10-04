@@ -1,19 +1,19 @@
 ::-webkit-scrollbar {
-	width: 0.5cm;
-	height: 0.5cm;
+	width: 24px;
+	height: 24px;
 }
 ::-webkit-scrollbar-button {
-	width: 4px;
-	height: 4px;
+	width: 6px;
+	height: 6px;
 }
 ::-webkit-scrollbar-thumb {
 	background: $grey-darkest;
-	-webkit-box-shadow: inset 0 0 0.1cm 0.05cm $blue;
-	border-radius: 0.5cm;
+	-webkit-box-shadow: inset 0 0 2px 1px $blue;
+	border-radius: 12px;
 }
 ::-webkit-scrollbar-thumb:hover {
-	-webkit-box-shadow: inset 0 0 0.15cm 0.05cm $blue;
+	-webkit-box-shadow: inset 0 0 3px 1px $blue;
 }
 ::-webkit-scrollbar-thumb:active {
-	-webkit-box-shadow: inset 0 0 0.25cm 0.1cm $blue;
+	-webkit-box-shadow: inset 0 0 4px 2px $blue;
 }

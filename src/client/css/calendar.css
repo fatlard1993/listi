@@ -1,9 +1,12 @@
 // includes colors calendar
 
+div#toolbar h1 div.title {
+	line-height: inherit;
+	font-size: inherit;
+}
+
 ul#list li#calendar {
-	height: 97%;
-	margin: 1%;
-	min-height: 16cm;
+	min-height: 8em;
 	background-color: $grey-darkest;
 
 	* {

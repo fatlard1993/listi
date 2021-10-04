@@ -1,6 +1,6 @@
 div#toolbar {
 	background-image: linear-gradient(to bottom, $grey-darkest 90%, rgb(0 0 0 / 0%));
-	height: 12%;
+	min-height: 3.5em;
 	position: relative;
 
 	&:after {
@@ -9,30 +9,22 @@ div#toolbar {
 		display: table;
 	}
 
-	div,
-	button {
-		float: left;
-		height: 9vh;
-		font-size: 5vh;
-		margin: 1vh;
-	}
-
-	div {
-		line-height: 9vh;
+	h1, button {
+		font-size: 1.2em;
+		margin: 0.4rem;
+		height: 2.4rem;
 	}
 
 	h1 {
-    display: inline-block;
-		font-size: 5vh;
-		line-height: 9vh;
-		height: 9vh;
-		margin: 1vh;
+		display: inline-block;
+		line-height: 2;
 	}
 
 	button {
+		float: left;
 		position: relative;
 		padding: 0;
-		width: 9vh;
+		width: 2.4rem;
 
 		&.right {
 			float: right;

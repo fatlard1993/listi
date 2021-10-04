@@ -32,7 +32,7 @@ select {
 	padding: 0;
 	border: 0;
 	font: inherit;
-	font-size: 0.8cm;
+	font-size: 16px;
 	vertical-align: baseline;
 }
 
@@ -43,7 +43,7 @@ html {
 	overflow: hidden;
 
 	* {
-		font: 400 0.8cm 'Source Sans Pro';
+		font: 400 16px 'Source Sans Pro';
 		font-family: 'Source Sans Pro', sans-serif;
 		touch-action: manipulation;
 		-webkit-text-size-adjust: none;
@@ -102,7 +102,7 @@ button,
 select {
 	text-transform: none;
 	cursor: pointer;
-	border-radius: 0.1cm;
+	border-radius: 3px;
 }
 
 input[type='number']::-webkit-inner-spin-button,
@@ -116,9 +116,9 @@ input[type='text'],
 input[type='number'],
 textarea {
 	display: block;
-	border-radius: 0.1cm;
-	text-indent: 0.1cm;
-	border: inset 0.1cm $grey-light;
+	border-radius: 3px;
+	text-indent: 3px;
+	border: inset 3px $grey-light;
 	box-sizing: border-box;
 }
 

@@ -4,10 +4,10 @@ ul#list ul.tagList {
 	background-color: $grey-darkest;
 	margin: 1% auto;
 	width: 95%;
-	border-radius: 0.1cm;
+	border-radius: 3px;
 	box-sizing: border-box;
-	border: inset 0.1cm $grey-light;
-	min-height: 1cm;
+	border: inset 2px $grey-light;
+	min-height: 1em;
 
 	&:after {
 		content: '';
@@ -25,13 +25,13 @@ ul#list ul.tagList {
 
 	li.tag {
 		border: 1px solid white;
-		padding: 0 0.3cm;
-		margin: 0.2cm;
+		padding: 0 3px;
+		margin: 3px;
 		display: inline-block;
 		float: left;
-		border-radius: 0.1cm;
+		border-radius: 3px;
 		border-top-left-radius: 0;
-		font-size: 0.5cm;
+		font-size: 0.8em;
 		background-color: $black;
 
 		&.pointerHold {

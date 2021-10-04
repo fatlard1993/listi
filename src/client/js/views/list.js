@@ -39,19 +39,23 @@ listi.views.list = name => {
 		return dom.createElem('li', { textContent: 'No list items yet .. Create some with the + button above', appendTo: dom.getElemById('list') });
 	}
 
-	items.forEach((item, index) => {
+	const sortedItems = items.sort((a, b) => new Date(a.due) - new Date(b.due));
+
+	sortedItems.forEach((item, index) => {
 		const tagList = listi.createTagList(item.tags);
 		tagList.classList.add('readOnly');
 
 		const dueWrapper = dom.createElem('div');
 		let overdue;
 		let dueSoon;
+		let dueToday;
 
 		if (item.due) {
 			const dueDateDiff = listi.dayDiff(item.due);
 
 			overdue = dueDateDiff < 0;
 			dueSoon = !overdue && dueDateDiff < 7;
+			dueToday = dueDateDiff === 0;
 
 			dom.createElem('div', { textContent: `${overdue ? '(Overdue) ' : ''}Due: ${listi.dayCountName(dueDateDiff)} (${item.due})`, className: 'dueDate', appendTo: dueWrapper });
 		}
@@ -89,7 +93,7 @@ listi.views.list = name => {
 
 		dom.createElem('li', {
 			textContent: item.summary,
-			className: `listItem${overdue ? ' overdue' : dueSoon ? ' dueSoon' : ''}`,
+			className: `listItem${overdue ? ' overdue' : dueToday ? ' dueToday' : dueSoon ? ' dueSoon' : ''}`,
 			appendChildren: [
 				dom.createElem('button', {
 					className: 'edit',

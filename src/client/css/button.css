@@ -2,8 +2,8 @@
 
 button {
 	display: inline-block;
-	padding: 0.1cm 0.4cm;
-	margin: 0 0.3em 0.3em 0;
+	padding: 3px 6px;
+	margin: 0 3px 3px 0;
 	box-sizing: border-box;
 	text-decoration: none;
 	text-transform: uppercase;

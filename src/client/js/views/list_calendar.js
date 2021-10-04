@@ -17,9 +17,12 @@ listi.views.list_calendar = name => {
 
 	const listFragment = dom.createFragment();
 
-	listi.drawToolkit([{ id: 'lists', onPointerPress: () => listi.draw('list', name) }]);
-
 	listi.calendar = new Calendar();
+
+	listi.drawToolkit([
+		{ id: 'lists', onPointerPress: () => listi.draw('list', name) },
+		{ type: 'h1', appendChild: listi.calendar.title },
+	]);
 
 	list?.items?.forEach((item, index) => {
 		if (item.due) listi.calendar.addEvent({ index, label: item.summary, at: item.due });
@@ -32,8 +35,6 @@ listi.views.list_calendar = name => {
 	listi.calendar.on('selectEvent', evt => {
 		listi.draw('list_item_edit', { index: evt.index, listName: name });
 	});
-
-	dom.getElemById('toolbar').appendChild(listi.calendar.title);
 
 	listi.calendar.render();
 
