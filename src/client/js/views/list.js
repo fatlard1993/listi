@@ -39,9 +39,11 @@ listi.views.list = name => {
 		return dom.createElem('li', { textContent: 'No list items yet .. Create some with the + button above', appendTo: dom.getElemById('list') });
 	}
 
-	const sortedItems = items.sort((a, b) => new Date(a.due) - new Date(b.due));
+	const sortedItems = items.map((item, index) => ({ ...item, index })).sort((a, b) => new Date(a.due) - new Date(b.due));
 
-	sortedItems.forEach((item, index) => {
+	sortedItems.forEach(item => {
+		const { index, due: lastDue } = item;
+
 		const tagList = listi.createTagList(item.tags);
 		tagList.classList.add('readOnly');
 
@@ -50,8 +52,8 @@ listi.views.list = name => {
 		let dueSoon;
 		let dueToday;
 
-		if (item.due) {
-			const dueDateDiff = listi.dayDiff(item.due);
+		if (lastDue) {
+			const dueDateDiff = listi.dayDiff(lastDue);
 
 			overdue = dueDateDiff < 0;
 			dueSoon = !overdue && dueDateDiff < 7;
@@ -63,7 +65,6 @@ listi.views.list = name => {
 		const handleComplete = () => {
 			let action = item.complete?.action;
 			const now = new Date();
-			const lastDue = item.due;
 
 			listi.log('Complete', item);
 
