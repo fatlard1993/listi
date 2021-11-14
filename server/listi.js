@@ -1,10 +1,11 @@
 const os = require('os');
 const path = require('path');
 
+const express = require('express');
 const { Log } = require('log');
 
 const log = new Log({ tag: 'listi' });
-const SocketServer = require('websocket-server');
+const WebsocketServer = require('websocket-server');
 
 const { port } = require('../constants.json');
 
@@ -19,11 +20,13 @@ const listi = {
 
 		if (!this.config.current.lists) this.config.current.lists = {};
 
-		const { app } = require('http-server').init(port, this.rootPath(), '/');
+		this.app = express();
+
+		this.server = this.app.listen(port, () => log(`Server listening on port: ${port}`));
 
 		require('./router');
 
-		this.socketServer = new SocketServer({ server: app.server });
+		this.socketServer = new WebsocketServer({ server: this.server });
 		this.socketServer.registerEndpoints(this.socketEndpoints);
 
 		log.info('Initialized');

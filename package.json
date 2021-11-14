@@ -29,11 +29,11 @@
 		"calendar": "github:fatlard1993/calendar#main",
 		"config-manager": "github:fatlard1993/config-manager#2.x.x",
 		"dom": "github:fatlard1993/dom",
-		"http-server": "github:fatlard1993/http-server#4.x.x",
+		"express": "^4.17.1",
 		"log": "github:fatlard1993/log",
 		"socket-client": "github:fatlard1993/socket-client",
 		"source-sans-pro": "^3.6.0",
-		"websocket-server": "github:fatlard1993/websocket-server#2.x.x"
+		"websocket-server": "github:fatlard1993/websocket-server#main"
 	},
 	"devDependencies": {
 		"eslint": "^8.2.0",

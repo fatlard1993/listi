@@ -3,8 +3,8 @@
 	"short_name": "listi",
 	"lang": "en-US",
 	"orientation": "any",
-	"display": "fullscreen",
-	"theme_color": "#BADA55",
+	"display": "standalone",
+	"theme_color": "#3475b2",
 	"background_color": "#000",
 	"start_url": "."
 }
