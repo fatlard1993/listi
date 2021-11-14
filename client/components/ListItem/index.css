@@ -1,0 +1,34 @@
+@import '../../styles/colors';
+@import '../../styles/fonts';
+
+ul#list {
+	> li.listItem {
+		> div, >ul {
+			pointer-events: none;
+		}
+
+		&.dueSoon {
+			background-color: $orange;
+		}
+
+		&.overdue {
+			background-color: $red;
+		}
+
+		&.dueToday {
+			background-color: $blue;
+		}
+
+		ul.tagList {
+			border: none;
+			background: none;
+		}
+
+		select {
+			padding: 0.8vw;
+			display: block;
+			margin: 0 auto;
+			border-radius: 0.15em;
+		}
+	}
+}

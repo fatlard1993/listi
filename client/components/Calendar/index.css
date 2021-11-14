@@ -1,0 +1,89 @@
+@import '../../styles/colors';
+@import '../Button';
+
+div#toolbar h1 div.title {
+	line-height: inherit;
+	font-size: inherit;
+}
+
+div#calendar {
+	min-height: 8em;
+	background-color: $grey-darkest;
+	flex: 1;
+
+	* {
+		font-size: 16px;
+	}
+
+	div.calendar {
+		display: flex;
+		flex-direction: column;
+
+		div.control-bar {
+			margin: 1%;
+			height: unset;
+			button {
+				@mixin Button;
+
+				&.set-day {
+					display: none;
+				}
+			}
+		}
+
+		div.calendar-wrapper {
+			flex: 1;
+			height: unset;
+		}
+	}
+
+	div.calendar.select {
+		div.control-bar button.left {
+			display: none;
+		}
+
+		.selected {
+			outline: 2px dashed $red;
+
+			&:after {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background-color: $red;
+				opacity: 0.3;
+				pointer-events: none;
+			}
+		}
+
+		span.day-title,
+		div.event-container {
+			pointer-events: none;
+		}
+	}
+
+	.today {
+		background-color: $blue;
+	}
+
+	div.event-container {
+		height: calc(100% - 30px);
+	}
+
+	div.event {
+		text-align: center;
+		padding: 2px;
+		margin: 2px;
+		border: 2px solid $black;
+		background-color: $blue-light;
+		word-wrap: break-word;
+		word-break: break-word;
+		white-space: normal;
+
+		div.time {
+			display: none;
+		}
+	}
+}

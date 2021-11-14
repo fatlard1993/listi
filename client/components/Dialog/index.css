@@ -1,0 +1,10 @@
+@import '../../styles/colors';
+
+div#dialogModal {
+	background-color: $white;
+	opacity: 0.1;
+}
+
+div#dialog {
+
+}
