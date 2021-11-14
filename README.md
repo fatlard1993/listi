@@ -2,6 +2,12 @@
 
 Like "lists", but better because it uses "i" to pluralize.
 
+## Screenshots
+
+![lists view](./img/lists_view.png)
+
+![list view](./img/list_view.png)
+
 ## Lists
 
 - Custom name
