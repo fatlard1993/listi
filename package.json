@@ -26,6 +26,7 @@
 		"@fortawesome/fontawesome-free": "^5.15.4",
 		"argi": "github:fatlard1993/argi",
 		"augmented-ui": "^2.0.0",
+		"js-util": "github:fatlard1993/js-util",
 		"calendar": "github:fatlard1993/calendar#main",
 		"config-manager": "github:fatlard1993/config-manager#2.x.x",
 		"dom": "github:fatlard1993/dom",
@@ -36,12 +37,16 @@
 		"websocket-server": "github:fatlard1993/websocket-server#main"
 	},
 	"devDependencies": {
+		"autoprefixer": "^10.4.0",
 		"eslint": "^8.2.0",
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-cypress": "^2.12.1",
 		"eslint-plugin-prettier": "^4.0.0",
 		"husky": "^7.0.4",
 		"lint-staged": "^12.0.1",
+		"postcss-mixins": "^8.1.0",
+		"postcss-nested": "^5.0.6",
+		"postcss-simple-vars": "^6.0.3",
 		"prettier": "2.4.1",
 		"vite": "^2.6.14"
 	},

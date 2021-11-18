@@ -1,11 +1,7 @@
-import dom from 'dom';
+import DomElem from '../DomElem';
 
-class PageHeader {
-	constructor({ textContent } = {}) {
-		this.elem = dom.createElem('h1', { textContent });
-
-		return this.elem;
+export default class PageHeader extends DomElem {
+	constructor({ className, ...rest } = {}) {
+		super('h1', { className: ['pageHeader', className], ...rest });
 	}
 }
-
-export default PageHeader;

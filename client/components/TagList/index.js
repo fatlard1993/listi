@@ -1,21 +1,11 @@
 import './index.css';
 
-import dom from 'dom';
+import DomElem from '../DomElem';
 
 import Tag from '../Tag';
 
-class TagList {
-	constructor({ appendTo, body, items, className }) {
-		this.elem = dom.createElem('ul', { className: `tagList${className ? ` ${className}` : ''}`, appendTo });
-
-		if (body) {
-			this.elem.appendChild(body);
-		} else if (items) {
-			items.forEach(name => new Tag({ name, appendTo: this.elem }));
-		}
-
-		return this.elem;
+export default class TagList extends DomElem {
+	constructor({ tags = [], className, ...rest }) {
+		super('ul', { className: ['tagList', className], appendChildren: tags.map(tag => new Tag({ tag })), ...rest });
 	}
 }
-
-export default TagList;

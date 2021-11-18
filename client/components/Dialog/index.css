@@ -1,10 +1,43 @@
 @import '../../styles/colors';
 
-div#dialogModal {
-	background-color: $white;
-	opacity: 0.1;
-}
+div.dialog {
+	margin: 33% auto 0;
+	background-color: $grey-darker;
+	border-radius: 3px;
+	display: flex;
+	flex-direction: column;
+	border: 2px solid $blue-dark;
 
-div#dialog {
+	/* Default size: small */
+	width: 420px;
+	height: 210px;
 
+	&.standard {
+		width: 840px;
+		height: 420px;
+	}
+
+	&.large {
+		width: 90vw;
+		height: 90vh;
+	}
+
+	div.header {
+		text-align: center;
+		font-size: 1.2em;
+		height: 30px;
+	}
+
+	div.content {
+		flex: 1;
+		padding: 6px;
+	}
+
+	div.footer {
+		height: 40px;
+
+		button.button {
+			margin: 6px 0 6px 6px;
+		}
+	}
 }

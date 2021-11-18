@@ -33,32 +33,32 @@ const listi = {
 	},
 	socketEndpoints: {
 		client_connect() {
-			log('Client connected');
+			log(3)('Client connected');
 
 			this.reply('connected', true);
 		},
-		lists() {
-			log('Requested lists');
+		request_state() {
+			log(3)('Requested state');
 
-			this.reply('lists', { listNames: Object.keys(listi.config.current.lists), lists: listi.config.current.lists });
+			this.reply('state', { listNames: Object.keys(listi.config.current.lists), lists: listi.config.current.lists });
 		},
-		list_edit({ name, update, remove }) {
-			log(`${name ? (remove ? 'Delete' : 'Edit') : 'Create'} list: ${name || update.name}`);
+		list_edit({ listName, update, remove }) {
+			log(`${listName ? (remove ? 'Delete' : 'Edit') : 'Create'} list: ${listName || update.listName}`);
 
-			if (!name) listi.config.current.lists[update.name] = { filter: {}, items: [] };
+			if (!listName) listi.config.current.lists[update.listName] = { filter: {}, items: [] };
 			else {
 				if (update) {
-					listi.config.current.lists[update.name] = listi.config.current.lists[name];
+					listi.config.current.lists[update.listName] = listi.config.current.lists[listName];
 
-					if (update.filter) listi.config.current.lists[update.name].filter = Object.assign(listi.config.current.lists[update.name].filter, update.filter);
+					if (update.filter) listi.config.current.lists[update.listName].filter = Object.assign(listi.config.current.lists[update.listName].filter, update.filter);
 				}
 
-				if (remove || (update && update.name && name !== update.name)) delete listi.config.current.lists[name];
+				if (remove || (update && update.listName && listName !== update.listName)) delete listi.config.current.lists[listName];
 			}
 
 			if (listi.options.persistent) listi.config.save();
 
-			this.reply('lists', Object.keys(listi.config.current.lists));
+			this.reply('list_edit', { success: true });
 		},
 		list_item_edit({ remove, index, listName, summary, update }) {
 			log(`${typeof index === 'number' ? (remove ? 'Delete' : 'Edit') : 'Create'} list item: ${summary || (update && update.summary) || index}`);
@@ -69,7 +69,7 @@ const listi = {
 
 			if (listi.options.persistent) listi.config.save();
 
-			this.reply('lists', { listNames: Object.keys(listi.config.current.lists), lists: listi.config.current.lists });
+			this.reply('list_item_edit', { success: true });
 		},
 	},
 };

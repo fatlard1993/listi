@@ -1,10 +1,11 @@
 @import '../../styles/colors';
 @import '../../styles/fonts';
 
-ul#list {
+ul.list {
 	> li.listItem {
-		> div, >ul {
+		div.content {
 			pointer-events: none;
+			width: calc(100% - 40px);
 		}
 
 		&.dueSoon {
@@ -29,6 +30,49 @@ ul#list {
 			display: block;
 			margin: 0 auto;
 			border-radius: 0.15em;
+		}
+
+		h2.listItemTitle {
+			margin: 6px;
+			font-size: 1.1em;
+		}
+
+		div.description {
+			white-space: pre-wrap;
+		}
+
+		div.description,
+		div.dueDate {
+			pointer-events: none;
+			font-size: 0.9em;
+		}
+
+		button.complete {
+			position: absolute;
+			height: 2rem;
+			width: 2rem;
+			font-size: 1rem;
+			margin: 0.2rem;
+			right: 0;
+			bottom: 0;
+
+			&:before {
+				position: absolute;
+				top: 0.5rem;
+				left: 0.5rem;
+			}
+
+			&:hover {
+				top: unset;
+				bottom: 1px;
+			}
+
+			&:active,
+			&.active,
+			&.pressed {
+				top: unset;
+				bottom: -1px;
+			}
 		}
 	}
 }

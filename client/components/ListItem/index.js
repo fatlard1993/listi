@@ -1,37 +1,40 @@
 import './index.css';
 
-import dom from 'dom';
 import socketClient from 'socket-client';
 
 import listi from '../../listi';
+import utils from '../../utils';
 
+import DomElem from '../DomElem';
 import TagList from '../TagList';
-import Button from '../Button';
+import IconButton from '../IconButton';
 
-class ListItem {
-	constructor({ appendTo, item, listName }) {
-		const { index, due: lastDue } = item;
+export default class ListItem extends DomElem {
+	constructor({ appendTo, className, item, index, listName }) {
+		const { log, load, checkDisabledPointer } = listi;
+		const { dayDiff, dayCountName } = utils;
+		const { due: lastDue } = item;
 
-		const dueWrapper = dom.createElem('div');
+		const dueWrapper = new DomElem('div');
 		let overdue;
 		let dueSoon;
 		let dueToday;
 
 		if (lastDue) {
-			const dueDateDiff = listi.dayDiff(lastDue);
+			const dueDateDiff = dayDiff(lastDue);
 
 			overdue = dueDateDiff < 0;
 			dueSoon = !overdue && dueDateDiff < 7;
 			dueToday = dueDateDiff === 0;
 
-			dom.createElem('div', { textContent: `${overdue ? '(Overdue) ' : ''}Due: ${listi.dayCountName(dueDateDiff)} (${item.due})`, className: 'dueDate', appendTo: dueWrapper });
+			new DomElem('div', { textContent: `${overdue ? '(Overdue) ' : ''}Due: ${dayCountName(dueDateDiff)} (${item.due})`, className: 'dueDate', appendTo: dueWrapper });
 		}
 
 		const handleComplete = () => {
 			let action = item.complete?.action;
 			const now = new Date();
 
-			listi.log('Complete', item);
+			log('Complete', item);
 
 			if (action === 'Delete') return socketClient.reply('list_item_edit', { index, listName, remove: true });
 
@@ -57,25 +60,28 @@ class ListItem {
 			socketClient.reply('list_item_edit', { index, listName, update: item });
 		};
 
-		this.elem = dom.createElem('li', {
-			textContent: item.summary,
-			className: `listItem${overdue ? ' overdue' : dueToday ? ' dueToday' : dueSoon ? ' dueSoon' : ''}`,
+		super('li', {
+			className: ['listItem', overdue && 'overdue', dueToday && 'dueToday', dueSoon && 'dueSoon', className],
 			appendTo,
-			onPointerPress: () => listi.draw('list_item_edit', { index, listName }),
+			onPointerPress: evt => checkDisabledPointer(evt, () => load('ListItemEdit', { index, listName })),
 			appendChildren: [
-				new Button({
-					className: 'complete',
-					onPointerPress: handleComplete,
+				new DomElem('div', {
+					className: 'content',
+					appendChildren: [
+						new DomElem('h2', {
+							className: 'listItemTitle',
+							textContent: item.summary,
+						}),
+						new DomElem('div', { textContent: item.description, className: 'description' }),
+						dueWrapper,
+						new TagList({ tags: item.tags }),
+					],
 				}),
-				dom.createElem('div', { textContent: item.description, className: 'description' }),
-				dueWrapper,
+				new IconButton({
+					icon: 'complete',
+					onPointerPress: evt => checkDisabledPointer(evt, handleComplete),
+				}),
 			],
 		});
-
-		new TagList({ appendTo: this.elem, items: item.tags });
-
-		return this.elem;
 	}
 }
-
-export default ListItem;

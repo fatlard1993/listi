@@ -64,10 +64,6 @@ div.editForm {
 			font-size: 0.9em;
 		}
 
-		input[type='number'] {
-			width: 40%;
-		}
-
 		textarea {
 			width: 95%;
 			margin: 0 auto;

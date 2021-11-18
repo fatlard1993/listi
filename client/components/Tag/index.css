@@ -1,6 +1,6 @@
 @import '../../styles/colors';
 
-ul#list ul.tagList li.tag {
+li.tag {
 	border: 1px solid white;
 	padding: 0 3px;
 	margin: 3px;

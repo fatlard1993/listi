@@ -1,21 +1,27 @@
 import './index.css';
 
-import dom from 'dom';
+import listi from '../../listi';
 
-class List {
-	constructor({ appendTo, body, items }) {
-		this.elem = dom.createElem('ul', { id: 'list', appendTo });
+import DomElem from '../DomElem';
 
-		if (body) {
-			this.elem.appendChild(body);
-		} else if (items) {
-			items.forEach(item => {
-				this.elem.appendChild(dom.createElem('li', item));
-			});
-		}
+export default class List extends DomElem {
+	constructor({ className, ...rest }) {
+		super('ul', { className: ['list', className], ...rest });
 
-		return this.elem;
+		this.onMove = () => {
+			listi.state.disablePointerPress = true;
+		};
+
+		this.addEventListener('scroll', this.onMove);
+		this.addEventListener('touchmove', this.onMove);
+	}
+
+	cleanup() {
+		console.log('LIST CLEANUP');
+
+		this.removeEventListener('scroll', this.onMove);
+		this.removeEventListener('touchmove', this.onMove);
+
+		super.cleanup();
 	}
 }
-
-export default List;

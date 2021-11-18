@@ -1,88 +1,35 @@
 @import '../../styles/colors';
 @import '../../styles/fonts';
 
-ul#list {
+ul.list {
+	list-style: none;
+	padding: 0;
 	flex: 1;
 	overflow-y: auto;
 
 	& > li {
 		position: relative;
 		font-size: 1.6em;
-		border: 1px solid $white;
+		border: 2px solid $grey-light;
+		border-radius: 3px;
 		margin: 0.4rem;
-		min-height: 4.6rem;
-		padding-left: 0.2em;
+		min-height: 2.4rem;
+		cursor: pointer;
 
-		&.list {
-			cursor: pointer;
-			min-height: 2.4rem;
+		button.iconButton {
+			float: right;
 		}
 
-		&.listItem,
 		&.list {
-			div.description {
-				white-space: pre-wrap;
-			}
+			text-indent: 6px;
+			min-height: 2.5rem;
 
-			div.description,
-			div.dueDate {
+			h2.listTitle {
 				pointer-events: none;
-				font-size: 0.9em;
-			}
-
-			button.complete,
-			button.edit {
-				position: absolute;
-				height: 2rem;
-				width: 2rem;
-				font-size: 1rem;
-				margin: 0.2rem;
-
-				&:before {
-					position: absolute;
-					top: 0.5rem;
-					left: 0.5rem;
-				}
-			}
-
-			button.complete {
-				right: 0;
-				bottom: 0;
-
-				&:hover {
-					top: unset;
-					bottom: 1px;
-				}
-
-				&:active,
-				&.active,
-				&.pressed {
-					top: unset;
-					bottom: -1px;
-				}
-
-				&:before {
-					content: '\f00c';
-				}
-			}
-
-			button.edit {
-				right: 0;
-				top: 0;
-
-				&:hover {
-					top: -1px;
-				}
-
-				&:active,
-				&.active,
-				&.pressed {
-					top: 1px;
-				}
-
-				&:before {
-					content: '\f044';
-				}
+				display: inline-block;
+				margin: 0;
+				font-size: 1.1em;
+				width: calc(100% - 56px);
 			}
 		}
 	}

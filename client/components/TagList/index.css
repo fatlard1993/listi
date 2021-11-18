@@ -1,6 +1,6 @@
 @import '../../styles/colors';
 
-ul#list ul.tagList {
+ul.tagList {
 	background-color: $grey-darkest;
 	margin: 1% auto;
 	width: 95%;

@@ -1,20 +1,14 @@
 import './index.css';
 
-import dom from 'dom';
+import DomElem from '../DomElem';
 
-class Tag {
-	constructor({ appendTo, name }) {
-		this.elem = dom.createElem('li', {
-			className: 'tag',
+export default class Tag extends DomElem {
+	constructor({ appendTo, className, tag }) {
+		super('li', {
+			className: ['tag', className],
 			appendTo,
-			textContent: name,
-			onPointerPressAndHold: evt => {
-				dom.remove(evt.target);
-			},
+			textContent: tag,
+			onPointerPressAndHold: () => this.remove(),
 		});
-
-		return this.elem;
 	}
 }
-
-export default Tag;

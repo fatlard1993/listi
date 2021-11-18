@@ -1,7 +1,7 @@
-@import './colors';
-@import './fonts';
+@import '../../../styles/colors';
+@import '../../../styles/fonts';
 
-div#edit {
+div.listItemEdit {
 	flex: 1;
 	cursor: default;
 	border: none;

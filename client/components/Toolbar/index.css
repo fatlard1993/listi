@@ -1,7 +1,7 @@
 @import '../../styles/colors';
 @import '../../styles/fonts';
 
-div#toolbar {
+div.toolbar {
 	background-image: linear-gradient(to bottom, $grey-darkest 90%, rgb(0 0 0 / 0%));
 	min-height: 3.5em;
 	position: relative;
@@ -32,52 +32,9 @@ div#toolbar {
 		float: left;
 		position: relative;
 		padding: 0;
-		width: 2.4rem;
 
 		&.right {
 			float: right;
-		}
-
-		&:before {
-			@mixin fontAwesomeSolid;
-
-			pointer-events: none;
-		}
-
-		&#lists:before {
-			content: '\f03a';
-		}
-
-		&#back:before {
-			content: '\f060';
-		}
-
-		&#calendar:before {
-			content: '\f073';
-		}
-
-		&#home:before {
-			content: '\f015';
-		}
-
-		&#add:before {
-			content: '\f067';
-		}
-
-		&#edit:before {
-			content: '\f044';
-		}
-
-		&#filter:before {
-			content: '\f0b0';
-		}
-
-		&#save:before {
-			content: '\f0c7';
-		}
-
-		&#delete:before {
-			content: '\f2ed';
 		}
 	}
 }

@@ -1,13 +1,9 @@
 import './index.css';
 
-import dom from 'dom';
+import DomElem from '../DomElem';
 
-class Button {
+export default class Button extends DomElem {
 	constructor({ className, ...rest }) {
-		this.elem = dom.createElem('button', { className: `button${className ? ` ${className}` : ''}`, ...rest });
-
-		return this.elem;
+		super('button', { className: ['button', className], ...rest });
 	}
 }
-
-export default Button;

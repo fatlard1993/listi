@@ -1,13 +1,9 @@
 import './index.css';
 
-import dom from 'dom';
+import DomElem from '../DomElem';
 
-class EditForm {
+export default class EditForm extends DomElem {
 	constructor({ className, ...rest }) {
-		this.elem = dom.createElem('div', { className: `editForm${className ? ` ${className}` : ''}`, ...rest });
-
-		return this.elem;
+		super('div', { className: ['editForm', className], ...rest });
 	}
 }
-
-export default EditForm;

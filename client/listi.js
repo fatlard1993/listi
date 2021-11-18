@@ -4,81 +4,28 @@ import { Log } from 'log';
 import dom from 'dom';
 import socketClient from 'socket-client';
 
-import views from './views';
+import views from './components/views';
 
 import { port } from '../constants.json';
+import utils from './utils';
 
-const log = new Log({ verbosity: 2 || parseInt(dom.storage.get('logVerbosity') || 0) });
+const log = new Log({ tag: 'listi', verbosity: parseInt(dom.storage.get('logVerbosity') || 0) });
+
+const DEFAULT_VIEW = 'Lists';
 
 const listi = {
 	log,
 	tapAndHoldTime: 900,
 	lists: {},
-	views: {},
 	state: {},
-	stayConnected() {
-		if (socketClient.status === 'open') return;
-
-		let reload = 'soft';
-
-		if (reload === 'soft' && socketClient.triedSoftReload) reload = 'hard';
-
-		socketClient.log()(`Reload: ${reload}`);
-
-		if (reload === 'hard') return window.location.reload(false);
-
-		socketClient.reconnect();
-
-		socketClient.triedSoftReload = true;
-
-		socketClient.resetSoftReset_TO = setTimeout(() => {
-			socketClient.triedSoftReload = false;
-		}, 4000);
-	},
-	dayDiff(due, base = new Date()) {
-		const _MS_PER_DAY = 1000 * 60 * 60 * 24;
-
-		due = new Date(due);
-
-		base = Date.UTC(base.getFullYear(), base.getMonth(), base.getDate());
-		due = Date.UTC(due.getFullYear(), due.getMonth(), due.getDate());
-
-		return Math.floor((due - base) / _MS_PER_DAY);
-	},
-	weekDays: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-	numWithOrdinal(num) {
-		return `${num}${['', 'st', 'nd', 'rd'][(num / 10) % 10 ^ 1 && num % 10] || 'th'}`;
-	},
-	dayCountName(dayCount) {
-		const absDayCount = Math.abs(dayCount);
-		const isNegative = dayCount < 0;
-		const absWeekCount = Math.floor(absDayCount / 7);
-		const absDayRemainder = Math.floor(absDayCount - absWeekCount * 7);
-		const now = new Date();
-		const endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + dayCount);
-		const endDayOfWeek = listi.weekDays[endDate.getDay()];
-
-		if (dayCount === -1) return `Yesterday`;
-		if (dayCount === 0) return `Today`;
-		if (dayCount === 1) return `Tomorrow`;
-		if (absDayCount === 2) return `Day ${isNegative ? 'Before' : 'After'} ${isNegative ? 'Yesterday' : 'Tomorrow'} (${endDayOfWeek})`;
-		if (absDayCount < 7) return `${isNegative ? '' : 'In '}${absDayCount} Days${isNegative ? ' Ago' : ''} on ${endDayOfWeek}`;
-		if (absWeekCount === 1 && absDayRemainder === 0) return `${isNegative ? 'Last' : 'Next'} ${endDayOfWeek}`;
-		if (now.getDate() === endDate.getDate()) return `${isNegative ? 'Last' : 'Next'} Month on ${endDayOfWeek} the ${listi.numWithOrdinal(now.getDate())}`;
-		if (absWeekCount > 0 && absWeekCount < 5) {
-			return `${isNegative ? '' : 'In '}${absWeekCount} Week${absWeekCount > 1 ? 's' : ''}${absDayRemainder ? ` and ${absDayRemainder} Day${absDayRemainder > 1 ? 's' : ''}` : ''}${
-				isNegative ? ' Ago' : ''
-			}`;
+	isDev: localStorage.getItem('dev'),
+	checkDisabledPointer(evt, cb) {
+		if (listi.state.disablePointerPress) {
+			listi.state.disablePointerPress = false;
+			return;
 		}
-		if (absWeekCount > 5) return ``;
-	},
-	isEditingText() {
-		const activeElem = document.activeElement,
-			activeNode = activeElem.nodeName;
 
-		if (activeNode && (activeNode === 'textarea' || (activeNode === 'input' && activeElem.getAttribute('type') === 'text'))) return true;
-
-		return false;
+		cb(evt);
 	},
 	init() {
 		log('init');
@@ -90,51 +37,57 @@ const listi = {
 		socketClient.on('connected', () => {
 			log()('connected');
 
-			listi.router();
-		});
-
-		socketClient.on('lists', ({ listNames, lists }) => {
-			listi.state.listNames = listNames;
-			listi.state.lists = lists;
-
-			log()('lists', listNames);
-
-			listi.router();
+			listi.draw();
 		});
 
 		dom.interact.on('keyUp', evt => {
 			var { key } = evt;
 
-			log(1)(key);
+			log(3)(key);
 
-			if (key === 'Enter' && (listi.isEditingText() || evt.ctrlKey)) {
+			if (key === 'Enter' && (utils.isEditingText() || evt.ctrlKey)) {
 				if (document.getElementsByClassName('showTagAdd').length) document.getElementById('tagAdd').pointerPressFunction();
 				else if (typeof listi.save === 'function') listi.save();
 			}
 		});
 
-		dom.interact.on('keyDown', listi.stayConnected);
+		dom.interact.on('keyDown', utils.stayConnected);
 
-		dom.interact.on('pointerDown', listi.stayConnected);
+		dom.interact.on('pointerDown', utils.stayConnected);
+
+		window.addEventListener('popstate', ({ state }) => {
+			log()('popstate', state);
+
+			listi.draw();
+		});
 	},
-	router() {
-		const view = dom.location.query.get('view') || 'lists';
+	load(view, args = dom.location.query.parse()) {
+		if (!view) view = args.view ? args.view : DEFAULT_VIEW;
 
-		log()('view', view);
+		log(1)('load view', { view, args });
 
-		listi.draw(view);
+		// Temporary patch until I figure what the hell is going on with the history manipulation stuff that is not working...
+		window.location.search = `?${dom.location.query.stringify({ ...args, view })}`;
+
+		// listi.draw(view, args);
+
+		// dom.location.query.set({ ...args, view });
+
+		// Store loaded view in browser history
+		// window.history.pushState({}, `${document.title} - ${view}`, `${window.location.origin}?${dom.location.query.stringify({ ...args, view })}`);
 	},
-	draw(view, arg) {
-		if (!view || !views[view]) return log.error()(`"${view}" is an invalid view`);
+	draw(view, args = dom.location.query.parse()) {
+		if (!view) view = args.view ? args.view : DEFAULT_VIEW;
 
-		dom.empty(dom.getElemById('app'));
+		log(1)('draw view', { view, args, oldView: listi.state?.currentView?.cleanup });
 
-		delete listi.calendar;
-		delete listi.save;
+		if (!views[view]) return listi.draw('Lists', args);
 
-		if (!listi.state?.lists) return socketClient.reply('lists');
+		if (listi.state?.currentView?.cleanup) listi.state.currentView.cleanup();
 
-		views[view](arg);
+		const appendTo = dom.getElemById('app');
+
+		listi.state.currentView = new views[view]({ appendTo, ...args }) || {};
 	},
 };
 
@@ -143,7 +96,7 @@ document.oncontextmenu = evt => {
 };
 
 document.addEventListener('visibilitychange', () => {
-	if (document.visibilityState) listi.stayConnected();
+	if (document.visibilityState) utils.stayConnected();
 });
 
 dom.onLoad(listi.init);
