@@ -12,7 +12,8 @@
 		"server": "node ./server/index.js",
 		"lint": "eslint",
 		"lint:fix": "eslint --fix --ext .js .",
-		"pretty": "prettier --write ."
+		"pretty": "prettier --write .",
+		"test": "cypress open"
 	},
 	"repository": {
 		"type": "git",
@@ -38,6 +39,7 @@
 	},
 	"devDependencies": {
 		"autoprefixer": "^10.4.0",
+		"cypress": "^9.1.1",
 		"eslint": "^8.2.0",
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-cypress": "^2.12.1",

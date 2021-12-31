@@ -8,7 +8,7 @@ module.exports = {
 		sourceType: 'module',
 		ecmaVersion: 2020,
 	},
-	extends: ['eslint:recommended', 'plugin:prettier/recommended'],
+	extends: ['eslint:recommended', 'plugin:prettier/recommended', 'plugin:cypress/recommended'],
 	rules: {
 		'no-async-promise-executor': 'off',
 	},
