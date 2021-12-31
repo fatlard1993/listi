@@ -1,5 +1,9 @@
-const express = require('express');
+const path = require('path');
 
-const { rootPath, app } = require('./listi');
+const router = {
+	init({ express, app }) {
+		app.use(express.static(path.join(__dirname, '..', 'client/dist')));
+	},
+};
 
-app.use(express.static(rootPath('client/dist')));
+module.exports = router;
