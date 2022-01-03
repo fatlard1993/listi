@@ -1,7 +1,7 @@
 import dom from 'dom';
 import socketClient from 'socket-client';
 
-import listi from '../../../listi';
+import router from '../../../router';
 
 import Toolbar from '../../Toolbar';
 import IconButton from '../../IconButton';
@@ -11,12 +11,16 @@ import DomElem from '../../DomElem';
 import View from '../View';
 
 export default class ListCalendar extends View {
-	constructor({ listName = dom.location.query.get('listName'), className, state, ...rest }) {
+	constructor({ filterId, listName = dom.location.query.get('listName'), className, state, ...rest }) {
 		super({ className: ['listCalendar', className], ...rest });
 
-		const { load, draw, checkDisabledPointer } = listi;
+		const { draw } = router;
 
-		if (!listName) return load('Lists', {});
+		if (!listName) {
+			router.path = router.ROUTES.filters;
+
+			return;
+		}
 
 		dom.location.query.set({ listName, view: 'ListCalendar' });
 
@@ -33,15 +37,23 @@ export default class ListCalendar extends View {
 
 		new Toolbar({
 			appendTo,
-			appendChildren: [new IconButton({ icon: 'back', onPointerPress: evt => checkDisabledPointer(evt, () => load('SingleList', { listName })) }), title],
+			appendChildren: [
+				new IconButton({
+					icon: 'arrow-left',
+					onPointerPress: () => {
+						router.path = router.routeToPath(router.ROUTES.list, { filterId });
+					},
+				}),
+				title,
+			],
 		});
 
 		calendar.on('selectDay', evt => {
-			load('ListItemEdit', { listName, listItem: { due: evt.fullDate } });
+			router.path = router.routeToPath(router.ROUTES.listItemEdit, { id: filterId, listItem: { due: evt.fullDate } });
 		});
 
 		calendar.on('selectEvent', evt => {
-			load('ListItemEdit', { index: evt.index, listName });
+			router.path = router.routeToPath(router.ROUTES.listItemEdit, { id: filterId, index: evt.index });
 		});
 
 		calendar.render();

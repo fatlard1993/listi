@@ -9,28 +9,10 @@ ul.list {
 
 	& > li {
 		position: relative;
-		font-size: 1.6em;
+		font-size: 20px;
 		border: 2px solid $grey-light;
 		border-radius: 3px;
 		margin: 0.4rem;
-		min-height: 2.4rem;
 		cursor: pointer;
-
-		button.iconButton {
-			float: right;
-		}
-
-		&.list {
-			text-indent: 6px;
-			min-height: 2.5rem;
-
-			h2.listTitle {
-				pointer-events: none;
-				display: inline-block;
-				margin: 0;
-				font-size: 1.1em;
-				width: calc(100% - 56px);
-			}
-		}
 	}
 }

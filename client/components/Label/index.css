@@ -1,0 +1,9 @@
+label.label {
+	position: relative;
+	display: block;
+	font-size: 1em;
+	width: 80%;
+	margin: 0 auto 12px;
+	border-left: 3px solid;
+	padding: 3px 6px;
+}

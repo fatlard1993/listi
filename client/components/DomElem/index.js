@@ -1,12 +1,35 @@
 import dom from 'dom';
 
+import state from '../../state';
+
 import { buildClassName } from '../util';
 
 export default class DomElem {
-	constructor(nodeName, { className, ...options } = {}) {
-		this.elem = dom.createElem(nodeName, { className: buildClassName(className), ...options });
+	constructor(nodeName, options) {
+		this.nodeName = nodeName;
+		this.options = options || {};
+
+		this.render(nodeName, options);
 
 		return this.elem;
+	}
+
+	render(nodeName, { className, onPointerPress, ...rest }) {
+		this.cleanup();
+
+		this.elem = dom.createElem(nodeName, {
+			className: buildClassName(className),
+			onPointerPress: evt => {
+				if (state.disablePointerPress) {
+					state.disablePointerPress = false;
+
+					return;
+				}
+
+				if (typeof onPointerPress === 'function') onPointerPress(evt);
+			},
+			...rest,
+		});
 	}
 
 	cleanup() {

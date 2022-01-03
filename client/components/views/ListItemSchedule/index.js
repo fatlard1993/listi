@@ -1,7 +1,7 @@
 import dom from 'dom';
 import socketClient from 'socket-client';
 
-import listi from '../../../listi';
+import router from '../../../router';
 
 import Toolbar from '../../Toolbar';
 import IconButton from '../../IconButton';
@@ -15,9 +15,13 @@ export default class ListItemSchedule extends UnloadAwareView {
 	constructor({ listName = dom.location.query.get('listName'), index = dom.location.query.get('index'), listItem, className, state, ...rest }) {
 		super({ className: ['listItemSchedule', className], ...rest });
 
-		const { load, draw, checkDisabledPointer } = listi;
+		const { draw } = router;
 
-		if (!listName) return load('Lists', {});
+		if (!listName) {
+			router.path = router.ROUTES.filters;
+
+			return;
+		}
 
 		dom.location.query.set({ listName, index, view: 'ListItemSchedule' });
 
@@ -36,18 +40,17 @@ export default class ListItemSchedule extends UnloadAwareView {
 			appendTo,
 			appendChildren: [
 				new IconButton({
-					icon: 'back',
-					onPointerPress: evt =>
-						checkDisabledPointer(evt, () => {
-							new BeforePageChangeDialog({
-								appendTo,
-								onYes: () => draw('ListItemEdit', { listName, index, listItem }),
-							});
-						}),
+					icon: 'arrow-left',
+					onPointerPress: () => {
+						new BeforePageChangeDialog({
+							appendTo,
+							onYes: () => draw('ListItemEdit', { listName, index, listItem }),
+						});
+					},
 				}),
 				new IconButton({
 					icon: 'save',
-					onPointerPress: evt => checkDisabledPointer(evt, () => draw('ListItemEdit', { listName, index, listItem })),
+					onPointerPress: () => draw('ListItemEdit', { listName, index, listItem }),
 				}),
 				title,
 			],

@@ -3,6 +3,7 @@ const Config = require('config-manager');
 const database = {
 	default: {
 		filters: {},
+		items: {},
 	},
 	init({ persistent, path }) {
 		const config = new Config(path, database.default);

@@ -1,0 +1,12 @@
+@import '../../styles/colors';
+@import '../../styles/fonts';
+
+h1.pageHeader {
+	display: inline-block;
+	line-height: 2;
+
+	div.title {
+		font-size: inherit;
+		line-height: inherit;
+	}
+}

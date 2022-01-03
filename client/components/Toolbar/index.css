@@ -13,19 +13,9 @@ div.toolbar {
 	}
 
 	h1, button {
-		font-size: 1.2em;
+		font-size: 1.3em;
 		margin: 0.4rem;
 		height: 2.4rem;
-	}
-
-	h1 {
-		display: inline-block;
-		line-height: 2;
-
-		div.title {
-			font-size: inherit;
-			line-height: inherit;
-		}
 	}
 
 	button {

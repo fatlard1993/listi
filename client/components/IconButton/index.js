@@ -4,6 +4,6 @@ import DomElem from '../DomElem';
 
 export default class IconButton extends DomElem {
 	constructor({ icon, className, ...rest }) {
-		super('button', { className: ['iconButton', icon, className], ...rest });
+		super('button', { className: ['iconButton', icon ? `fa-${icon}` : undefined, className], ...rest });
 	}
 }

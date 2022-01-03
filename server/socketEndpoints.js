@@ -1,3 +1,4 @@
+const { nanoid } = require('nanoid');
 const database = require('./database');
 
 const socketEndpoints = {
@@ -16,27 +17,11 @@ const socketEndpoints = {
 			socketEndpoints.log(3)('Requested state');
 
 			this.reply('state', {
-				filterNames: Object.keys(database.state.filters),
+				filterIds: Object.keys(database.state.filters),
 				filters: database.state.filters,
+				itemIds: Object.keys(database.state.items),
+				items: database.state.items,
 			});
-		},
-		list_edit({ listName, update, remove }) {
-			socketEndpoints.log(`${listName ? (remove ? 'Delete' : 'Edit') : 'Create'} list: ${listName || update.listName}`);
-
-			if (!listName) database.state.lists[update.listName] = { filter: {}, items: [] };
-			else {
-				if (update) {
-					database.state.lists[update.listName] = database.state.lists[listName];
-
-					if (update.filter) database.state.lists[update.listName].filter = Object.assign(database.state.lists[update.listName].filter, update.filter);
-				}
-
-				if (remove || (update && update.listName && listName !== update.listName)) delete database.state.lists[listName];
-			}
-
-			database.save();
-
-			this.reply('list_edit', { success: true });
 		},
 		list_item_edit({ remove, index, listName, summary, update }) {
 			socketEndpoints.log(`${typeof index === 'number' ? (remove ? 'Delete' : 'Edit') : 'Create'} list item: ${summary || (update && update.summary) || index}`);
@@ -49,18 +34,14 @@ const socketEndpoints = {
 
 			this.reply('list_item_edit', { success: true });
 		},
-		filter_edit({ name, update, remove }) {
-			socketEndpoints.log(`${name ? (remove ? 'Delete' : 'Edit') : 'Create'} filter: ${name || update.name}`);
+		filter_edit({ id, update, remove }) {
+			socketEndpoints.log(`${id ? (remove ? 'Delete' : 'Edit') : 'Create'} filter: ${database.state.filters?.[id]?.name || update.name}`);
 
-			if (!name) database.state.filters[update.name] = { tags: [] };
+			if (!id) database.state.filters[nanoid(5)] = { tags: [], name: update.name };
 			else {
-				if (update) {
-					database.state.filters[update.name] = database.state.filters[name];
+				if (update?.filter) database.state.filters[id].filter = Object.assign(database.state.lists[id].filter, update.filter);
 
-					if (update.filter) database.state.filters[update.name].filter = Object.assign(database.state.lists[update.name].filter, update.filter);
-				}
-
-				if (remove || (update && update.name && name !== update.name)) delete database.state.filters[name];
+				if (remove) delete database.state.filters[id];
 			}
 
 			database.save();

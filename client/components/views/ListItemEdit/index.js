@@ -4,7 +4,7 @@ import dom from 'dom';
 import { jsUtil } from 'js-util';
 import socketClient from 'socket-client';
 
-import listi from '../../../listi';
+import router from '../../../router';
 
 import Toolbar from '../../Toolbar';
 import TagList from '../../TagList';
@@ -15,88 +15,97 @@ import PageHeader from '../../PageHeader';
 import LabeledElem from '../../LabeledElem';
 import EditForm from '../../EditForm';
 import ModalDialog from '../../ModalDialog';
+import Label from '../../Label';
 import LabeledTextInput from '../../LabeledTextInput';
 import LabeledNumberInput from '../../LabeledNumberInput';
 import DomElem from '../../DomElem';
 import TextInput from '../../TextInput';
-import Label from '../../Label';
-import View from '../View';
+import UnloadAwareView from '../UnloadAwareView';
 import BeforePageChangeDialog from '../../BeforePageChangeDialog';
 
-export default class ListItemEdit extends View {
-	constructor({ listName = dom.location.query.get('listName'), index = dom.location.query.get('index'), listItem, className, state, ...rest }) {
-		super({
+export default class ListItemEdit extends UnloadAwareView {
+	constructor({ className, serverState, ...rest }) {
+		super();
+
+		this.options = { className, ...rest };
+
+		socketClient.on('state', newState => this.render({ className, serverState: newState, ...rest }));
+
+		this.render({ className, serverState, ...rest });
+	}
+
+	render({ className, serverState, ...rest }) {
+		if (!serverState) {
+			socketClient.reply('request_state', true);
+
+			return undefined;
+		}
+
+		const { id } = router.parseRouteParams();
+		const { summary, description, tags, due, complete } = serverState.items[id] || {};
+
+		if (!summary && id !== 'new') {
+			router.path = router.ROUTES.filters;
+
+			return;
+		}
+
+		const dirtyChecks = [];
+		const isDirty = () => dirtyChecks.every(isDirty => isDirty());
+
+		super.render({
 			className: ['listItemEdit', className],
-			isDirty: () => this.dirtyChecks.every(isDirty => isDirty()),
+			isDirty,
 			...rest,
 		});
-		this.dirtyChecks = [];
-
-		const { log, load, draw, checkDisabledPointer } = listi;
-
-		if (!listName) return load('Lists', {});
-
-		dom.location.query.set({ listName, index, view: 'ListItemEdit' });
-
-		socketClient.on('state', newState => draw('ListItemEdit', { listName, index, listItem, className, ...rest, state: newState }));
-
-		if (!state) return socketClient.reply('request_state', true);
 
 		const appendTo = this.elem;
-		const { lists } = state;
-		const { items } = lists[listName];
 
-		if (!listItem) listItem = items?.[index];
+		const handleSave = () => {
+			socketClient.reply('list_item_edit', { id, update: buildListItemDocument() });
 
-		if (index >= 0 && !listItem) return load('Lists', {});
-
-		const { summary, description, tags, due, complete } = listItem || {};
-
-		listi.save = () => {
-			socketClient.reply('list_item_edit', { index, listName, update: buildListItemDocument() });
-
-			load('SingleList', { listName });
+			router.path = router.buildPath(router.ROUTES.list);
 		};
 
 		const toolbarItems = [
 			new IconButton({
-				icon: 'back',
-				onPointerPress: evt =>
-					checkDisabledPointer(evt, () => {
-						new BeforePageChangeDialog({
-							isDirty: () => this.dirtyChecks.every(isDirty => isDirty()),
-							appendTo,
-							onYes: () => load('SingleList', { listName }),
-						});
-					}),
+				icon: 'arrow-left',
+				onPointerPress: () => {
+					new BeforePageChangeDialog({
+						isDirty,
+						appendTo,
+						onYes: () => {
+							router.path = router.buildPath(router.ROUTES.list);
+						},
+					});
+				},
 			}),
-			new PageHeader({ textContent: `${summary ? 'Edit' : 'Create new'} list item` }),
-			new IconButton({ icon: 'save', className: 'right', onPointerPress: listi.save }),
+			new PageHeader({ textContent: `${summary ? 'Edit' : 'Create New'} List Item` }),
+			new IconButton({ icon: 'save', className: 'right', onPointerPress: handleSave }),
 		];
 
 		if (summary) {
 			toolbarItems.push(
 				new IconButton({
-					icon: 'delete',
+					icon: 'trash-alt',
 					className: 'right',
-					onPointerPress: evt =>
-						checkDisabledPointer(evt, () => {
-							new ModalDialog({
-								appendTo,
-								header: 'Attention',
-								content: 'Are you sure you want to delete this list item?',
-								buttons: ['yes', 'no'],
-								onDismiss: ({ button, closeDialog }) => {
-									if (button === 'yes') {
-										socketClient.reply('list_item_edit', { index, listName, remove: true });
+					onPointerPress: () => {
+						new ModalDialog({
+							appendTo,
+							header: 'Attention',
+							content: 'Are you sure you want to delete this list item?',
+							buttons: ['yes', 'no'],
+							onDismiss: ({ button, closeDialog }) => {
+								if (button === 'yes') {
+									socketClient.reply('list_item_edit', { id, remove: true });
 
-										load('SingleList', { listName });
-									}
+									router.path = router.buildPath(router.ROUTES.list);
+								}
 
-									closeDialog();
-								},
-							});
-						}),
+								closeDialog();
+							},
+						});
+					},
 				}),
 			);
 		}
@@ -112,19 +121,18 @@ export default class ListItemEdit extends View {
 		const tagList = new TagList({ tags });
 		const tagAdd = new IconButton({
 			id: 'tagAdd',
-			icon: 'add',
-			onPointerPress: evt =>
-				checkDisabledPointer(evt, () => {
-					const tags = Array.from(tagList.children).map(elem => elem.textContent);
+			icon: 'plus',
+			onPointerPress: () => {
+				const tags = Array.from(tagList.children).map(elem => elem.textContent);
 
-					if (tagInput.value.length < 2 || tags.includes(tagInput.value)) return;
+				if (tagInput.value.length < 2 || tags.includes(tagInput.value)) return;
 
-					new Tag({ appendTo: tagList, tag: tagInput.value });
+				new Tag({ appendTo: tagList, tag: tagInput.value });
 
-					tagAdd.parentElement.classList.remove('showTagAdd');
+				tagAdd.parentElement.classList.remove('showTagAdd');
 
-					tagInput.value = '';
-				}),
+				tagInput.value = '';
+			},
 		});
 		const tagInput = new TextInput({
 			placeholder: 'Add new tags',
@@ -188,7 +196,7 @@ export default class ListItemEdit extends View {
 			Year: 365,
 		};
 
-		this.dirtyChecks.push(
+		dirtyChecks.push(
 			summaryInput.isDirty,
 			descriptionInput.isDirty,
 			() =>
@@ -235,7 +243,9 @@ export default class ListItemEdit extends View {
 				new Button({
 					textContent: due || 'Set',
 					className: 'dueDate postLabel',
-					onPointerPress: evt => checkDisabledPointer(evt, () => draw('ListItemSchedule', { index, listName, listItem: buildListItemDocument() })),
+					onPointerPress: () => {
+						router.path = router.routeToPath(router.ROUTES.listItemSchedule, { id, listItem: buildListItemDocument() });
+					},
 				}),
 				completeActionLabel,
 				tagContainer,
@@ -244,9 +254,13 @@ export default class ListItemEdit extends View {
 		});
 
 		socketClient.on('list_item_edit', ({ success, error }) => {
-			if (success) return listi.draw('Lists');
+			if (success) {
+				router.path = router.ROUTES.filters;
 
-			log.error()(error);
+				return;
+			}
+
+			console.error()(error);
 		});
 
 		summaryInput.select();
@@ -254,9 +268,6 @@ export default class ListItemEdit extends View {
 
 	cleanup() {
 		socketClient.clearEventListeners();
-
-		dom.location.query.delete('listName');
-		dom.location.query.delete('index');
 
 		super.cleanup();
 	}

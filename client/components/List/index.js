@@ -1,6 +1,6 @@
 import './index.css';
 
-import listi from '../../listi';
+import state from '../../state';
 
 import DomElem from '../DomElem';
 
@@ -9,7 +9,7 @@ export default class List extends DomElem {
 		super('ul', { className: ['list', className], ...rest });
 
 		this.onMove = () => {
-			listi.state.disablePointerPress = true;
+			state.disablePointerPress = true;
 		};
 
 		this.addEventListener('scroll', this.onMove);
@@ -17,10 +17,12 @@ export default class List extends DomElem {
 	}
 
 	cleanup() {
-		console.log('LIST CLEANUP');
+		state.disablePointerPress = false;
 
-		this.removeEventListener('scroll', this.onMove);
-		this.removeEventListener('touchmove', this.onMove);
+		if (this.removeEventListener) {
+			this.removeEventListener('scroll', this.onMove);
+			this.removeEventListener('touchmove', this.onMove);
+		}
 
 		super.cleanup();
 	}

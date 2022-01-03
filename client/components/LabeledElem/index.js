@@ -1,7 +1,7 @@
 import dom from 'dom';
 
-import DomElem from '../DomElem';
 import Label from '../Label';
+import DomElem from '../DomElem';
 
 export default class LabeledElem {
 	constructor(nodeName, { label, appendTo, ...options }) {
@@ -12,6 +12,6 @@ export default class LabeledElem {
 	}
 
 	cleanup() {
-		dom.remove(this.modal);
+		dom.remove(this.label);
 	}
 }

@@ -1,3 +1,5 @@
+import './index.css';
+
 import DomElem from '../DomElem';
 
 export default class PageHeader extends DomElem {

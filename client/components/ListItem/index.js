@@ -2,17 +2,18 @@ import './index.css';
 
 import socketClient from 'socket-client';
 
-import listi from '../../listi';
+import router from '../../router';
 import utils from '../../utils';
 
 import DomElem from '../DomElem';
 import TagList from '../TagList';
 import IconButton from '../IconButton';
+import state from '../../state';
 
 export default class ListItem extends DomElem {
-	constructor({ appendTo, className, item, index, listName }) {
-		const { log, load, checkDisabledPointer } = listi;
+	constructor({ appendTo, className, id }) {
 		const { dayDiff, dayCountName } = utils;
+		const item = state.listItems[id];
 		const { due: lastDue } = item;
 
 		const dueWrapper = new DomElem('div');
@@ -34,9 +35,9 @@ export default class ListItem extends DomElem {
 			let action = item.complete?.action;
 			const now = new Date();
 
-			log('Complete', item);
+			// log('Complete', item);
 
-			if (action === 'Delete') return socketClient.reply('list_item_edit', { index, listName, remove: true });
+			if (action === 'Delete') return socketClient.reply('list_item_edit', { id, remove: true });
 
 			item.lastComplete = `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()}`;
 			item.due = '';
@@ -57,13 +58,15 @@ export default class ListItem extends DomElem {
 				item.due = nextDue;
 			}
 
-			socketClient.reply('list_item_edit', { index, listName, update: item });
+			socketClient.reply('list_item_edit', { id, update: item });
 		};
 
 		super('li', {
 			className: ['listItem', overdue && 'overdue', dueToday && 'dueToday', dueSoon && 'dueSoon', className],
 			appendTo,
-			onPointerPress: evt => checkDisabledPointer(evt, () => load('ListItemEdit', { index, listName })),
+			onPointerPress: () => {
+				router.path = router.routeToPath(router.ROUTES.listItemEdit, { id });
+			},
 			appendChildren: [
 				new DomElem('div', {
 					className: 'content',
@@ -78,8 +81,8 @@ export default class ListItem extends DomElem {
 					],
 				}),
 				new IconButton({
-					icon: 'complete',
-					onPointerPress: evt => checkDisabledPointer(evt, handleComplete),
+					icon: 'check',
+					onPointerPress: handleComplete,
 				}),
 			],
 		});

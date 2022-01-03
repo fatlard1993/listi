@@ -1,59 +1,140 @@
-import dom from 'dom';
 import socketClient from 'socket-client';
 
-import listi from '../../../listi';
+import router from '../../../router';
 
 import Toolbar from '../../Toolbar';
 import List from '../../List';
 import ListItem from '../../ListItem';
 import IconButton from '../../IconButton';
 import PageHeader from '../../PageHeader';
-import DomElem from '../../DomElem';
 import View from '../View';
+import ModalDialog from '../../ModalDialog';
+import LabeledSelect from '../../LabeledSelect';
+import NoData from '../../NoData';
 
 export default class SingleList extends View {
-	constructor({ listName = dom.location.query.get('listName'), className, state, ...rest }) {
-		super({ className: ['singleList', className], ...rest });
+	constructor({ className, serverState, ...rest }) {
+		super();
 
-		const { checkDisabledPointer, load, draw } = listi;
+		this.options = { className, ...rest };
 
-		if (!listName) return load('Lists', {});
+		socketClient.on('state', newState => this.render({ className, serverState: newState, ...rest }));
 
-		dom.location.query.set({ listName, view: 'SingleList' });
+		this.render({ className, serverState, ...rest });
+	}
 
-		socketClient.on('state', newState => draw('SingleList', { listName, className, ...rest, state: newState }));
+	render({ className, serverState, ...rest }) {
+		if (!serverState) {
+			socketClient.reply('request_state', true);
 
-		if (!state) return socketClient.reply('request_state', true);
+			return undefined;
+		}
+
+		super.render({ className: ['singleList', className], ...rest });
+
+		const { filterId } = router.parseRouteParams();
+		const { name: filterName } = serverState.filters[filterId] || {};
+
+		if (!filterName && filterId) {
+			router.path = router.ROUTES.list;
+
+			return;
+		}
+
+		console.log(`Loaded filter ${filterName}`);
 
 		const appendTo = this.elem;
-		const { lists } = state;
-		const { items } = lists[listName];
+		const { filterIds, filters } = serverState;
+		const filterNames = filterIds.map(id => filters[id]?.name);
+		const listItems = [].sort((a, b) => new Date(a.due) - new Date(b.due));
+
+		const toolbarItems = [
+			new IconButton({
+				icon: 'arrow-left',
+				onPointerPress: () => {
+					router.path = router.ROUTES.filters;
+				},
+			}),
+			new IconButton({
+				icon: 'calendar-alt',
+				onPointerPress: () => {
+					router.path = router.routeToPath(router.ROUTES.listCalendar, { filterId });
+				},
+			}),
+			new PageHeader({ textContent: `${filterName ? 'Filtered ' : ''}List Items${filterName ? ` (${filterName})` : ''}` }),
+			new IconButton({
+				icon: 'plus',
+				className: 'right',
+				onPointerPress: () => {
+					new ModalDialog({
+						appendTo,
+						header: 'Create',
+						content: 'Create a new Filter or List Item?',
+						buttons: ['Filter', 'List Item', 'Cancel'],
+						onDismiss: ({ button, closeDialog }) => {
+							if (button === 'Filter') {
+								router.path = router.buildPath(router.ROUTES.filterEdit, { id: 'new' });
+							} else if (button === 'List Item') {
+								router.path = router.buildPath(router.ROUTES.listItemEdit, { id: 'new' });
+							}
+
+							closeDialog();
+						},
+					});
+				},
+			}),
+		];
+
+		if (filterIds.length) {
+			toolbarItems.splice(
+				2,
+				0,
+				new IconButton({
+					icon: 'filter',
+					onPointerPress: () => {
+						const { label: selectLabel, select: filterSelect } = new LabeledSelect({ label: 'Current Filter', options: ['Unfiltered', ...filterNames], value: filterName || 'Unfiltered' });
+
+						new ModalDialog({
+							appendTo,
+							header: 'Change List Filter',
+							content: [selectLabel],
+							buttons: ['OK', 'Edit Filter', 'Cancel'],
+							onDismiss: ({ button, closeDialog }) => {
+								const selectedFilterId = filterIds[filterNames.indexOf(filterSelect.value)];
+
+								console.log('selectedFilterId', selectedFilterId);
+								console.log('filterNames.indexOf(filterSelect.value)', filterNames.indexOf(filterSelect.value));
+								console.log('filterSelect.value', filterSelect.value);
+
+								if (button === 'OK') {
+									router.path = filterSelect.value === 'Unfiltered' ? router.ROUTES.list : router.routeToPath(router.ROUTES.filteredList, { filterId: selectedFilterId });
+								} else if (button === 'Edit Filter' && selectedFilterId) {
+									router.path = router.routeToPath(router.ROUTES.filterEdit, { id: selectedFilterId });
+								}
+
+								closeDialog();
+							},
+						});
+					},
+				}),
+			);
+		}
 
 		new Toolbar({
 			appendTo,
-			appendChildren: [
-				new IconButton({ icon: 'back', onPointerPress: evt => checkDisabledPointer(evt, () => load('Lists', {})) }),
-				new IconButton({ icon: 'calendar', onPointerPress: evt => checkDisabledPointer(evt, () => load('ListCalendar', { listName })) }),
-				new IconButton({ icon: 'filter', onPointerPress: evt => checkDisabledPointer(evt, () => load('ListFilter', { listName })) }),
-				new IconButton({ icon: 'edit', onPointerPress: evt => checkDisabledPointer(evt, () => load('ListEdit', { listName })) }),
-				new PageHeader({ textContent: listName }),
-				new IconButton({ icon: 'add', className: 'right', onPointerPress: evt => checkDisabledPointer(evt, () => load('ListItemEdit', { listName })) }),
-			],
+			appendChildren: toolbarItems,
 		});
 
-		if (!items.length) {
-			new DomElem('div', { appendTo, textContent: 'No list items yet .. Create some with the + button above' });
+		if (!listItems?.length) {
+			new NoData({ appendTo, textContent: 'No list items yet .. Create them with the + button above' });
 		} else {
-			this.list = new List({ appendTo, appendChildren: items.map((item, index) => new ListItem({ index, item, listName })).sort((a, b) => new Date(a.due) - new Date(b.due)) });
+			this.list = new List({ appendTo, appendChildren: listItems.map(({ id }) => new ListItem({ id })) });
 		}
 	}
 
 	cleanup() {
 		console.log('SingleList CLEANUP');
 		socketClient.clearEventListeners();
-
-		dom.location.query.delete('listName');
-		console.log('SingleList CLEANUP 2');
 
 		if (this?.list?.cleanup) this.list.cleanup();
 		console.log('SingleList CLEANUP 3');

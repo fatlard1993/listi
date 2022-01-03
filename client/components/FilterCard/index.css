@@ -1,0 +1,20 @@
+@import '../../styles/colors';
+@import '../../styles/fonts';
+
+li.filterCard {
+	display: flex;
+	flex-direction: row;
+
+	> h2.cardTitle {
+		flex: 1;
+		text-indent: 6px;
+		margin: 0;
+		font-size: 20px;
+		line-height: 46px;
+		pointer-events: none;
+	}
+
+	> button.iconButton {
+		margin: 3px 3px 0 0;
+	}
+}
