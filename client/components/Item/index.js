@@ -8,12 +8,11 @@ import utils from '../../utils';
 import DomElem from '../DomElem';
 import TagList from '../TagList';
 import IconButton from '../IconButton';
-import state from '../../state';
 
-export default class ListItem extends DomElem {
-	constructor({ appendTo, className, id }) {
+export default class Item extends DomElem {
+	constructor({ appendTo, className, serverState, id }) {
 		const { dayDiff, dayCountName } = utils;
-		const item = state.listItems[id];
+		const item = serverState.items[id];
 		const { due: lastDue } = item;
 
 		const dueWrapper = new DomElem('div');
@@ -37,7 +36,7 @@ export default class ListItem extends DomElem {
 
 			// log('Complete', item);
 
-			if (action === 'Delete') return socketClient.reply('list_item_edit', { id, remove: true });
+			if (action === 'Delete') return socketClient.reply('item_edit', { id, remove: true });
 
 			item.lastComplete = `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()}`;
 			item.due = '';
@@ -58,21 +57,21 @@ export default class ListItem extends DomElem {
 				item.due = nextDue;
 			}
 
-			socketClient.reply('list_item_edit', { id, update: item });
+			socketClient.reply('item_edit', { id, update: item });
 		};
 
 		super('li', {
-			className: ['listItem', overdue && 'overdue', dueToday && 'dueToday', dueSoon && 'dueSoon', className],
+			className: ['item', overdue && 'overdue', dueToday && 'dueToday', dueSoon && 'dueSoon', className],
 			appendTo,
 			onPointerPress: () => {
-				router.path = router.routeToPath(router.ROUTES.listItemEdit, { id });
+				router.path = router.routeToPath(router.ROUTES.itemEdit, { id });
 			},
 			appendChildren: [
 				new DomElem('div', {
 					className: 'content',
 					appendChildren: [
 						new DomElem('h2', {
-							className: 'listItemTitle',
+							className: 'itemTitle',
 							textContent: item.summary,
 						}),
 						new DomElem('div', { textContent: item.description, className: 'description' }),

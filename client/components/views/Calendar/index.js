@@ -6,13 +6,13 @@ import router from '../../../router';
 import Toolbar from '../../Toolbar';
 import IconButton from '../../IconButton';
 import PageHeader from '../../PageHeader';
-import Calendar from '../../Calendar';
+import CalendarElem from '../../Calendar';
 import DomElem from '../../DomElem';
 import View from '../View';
 
-export default class ListCalendar extends View {
+export default class Calendar extends View {
 	constructor({ filterId, listName = dom.location.query.get('listName'), className, state, ...rest }) {
-		super({ className: ['listCalendar', className], ...rest });
+		super({ className: ['calendar', className], ...rest });
 
 		const { draw } = router;
 
@@ -22,9 +22,9 @@ export default class ListCalendar extends View {
 			return;
 		}
 
-		dom.location.query.set({ listName, view: 'ListCalendar' });
+		dom.location.query.set({ listName, view: 'Calendar' });
 
-		socketClient.on('state', newState => draw('ListCalendar', { listName, className, ...rest, state: newState }));
+		socketClient.on('state', newState => this.render({ listName, className, ...rest, state: newState }));
 
 		if (!state) return socketClient.reply('request_state', true);
 
@@ -33,7 +33,7 @@ export default class ListCalendar extends View {
 		const { items } = lists[listName];
 
 		const title = new PageHeader();
-		const calendar = new Calendar({ title });
+		const calendar = new CalendarElem({ title });
 
 		new Toolbar({
 			appendTo,
@@ -49,11 +49,11 @@ export default class ListCalendar extends View {
 		});
 
 		calendar.on('selectDay', evt => {
-			router.path = router.routeToPath(router.ROUTES.listItemEdit, { id: filterId, listItem: { due: evt.fullDate } });
+			router.path = router.routeToPath(router.ROUTES.itemEdit, { id: filterId, item: { due: evt.fullDate } });
 		});
 
 		calendar.on('selectEvent', evt => {
-			router.path = router.routeToPath(router.ROUTES.listItemEdit, { id: filterId, index: evt.index });
+			router.path = router.routeToPath(router.ROUTES.itemEdit, { id: filterId, index: evt.index });
 		});
 
 		calendar.render();

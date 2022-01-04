@@ -1,5 +1,6 @@
-const { nanoid } = require('nanoid');
-const database = require('./database');
+import { nanoid } from 'nanoid';
+
+import database from './database.js';
 
 const socketEndpoints = {
 	init({ log, socketServer }) {
@@ -17,38 +18,39 @@ const socketEndpoints = {
 			socketEndpoints.log(3)('Requested state');
 
 			this.reply('state', {
-				filterIds: Object.keys(database.state.filters),
-				filters: database.state.filters,
-				itemIds: Object.keys(database.state.items),
-				items: database.state.items,
+				filterIds: Object.keys(database.db.data.filters),
+				filters: database.db.data.filters,
+				itemIds: Object.keys(database.db.data.items),
+				items: database.db.data.items,
 			});
 		},
-		list_item_edit({ remove, index, listName, summary, update }) {
-			socketEndpoints.log(`${typeof index === 'number' ? (remove ? 'Delete' : 'Edit') : 'Create'} list item: ${summary || (update && update.summary) || index}`);
+		item_edit({ id, remove = false, update = {} }) {
+			socketEndpoints.log(`${typeof index === 'number' ? (remove ? 'Delete' : 'Edit') : 'Create'} item: ${update.summary || id}`);
 
-			if (remove) database.state.lists[listName].items.splice(index, 1);
-			else if (typeof index === 'number') database.state.lists[listName].items[index] = update;
-			else database.state.lists[listName].items.push(update);
+			if (id === 'new' && update.summary) {
+				id = nanoid(5);
+				database.db.data.items[id] = Object.assign({ id, tags: [] }, update);
+			} else if (remove) delete database.db.data.items[id];
+			else if (update) database.db.data.items[id] = Object.assign(database.db.data.items[id], update);
 
-			database.save();
+			database.db.write();
 
-			this.reply('list_item_edit', { success: true });
+			this.reply('item_edit', { success: true, id });
 		},
 		filter_edit({ id, update, remove }) {
-			socketEndpoints.log(`${id ? (remove ? 'Delete' : 'Edit') : 'Create'} filter: ${database.state.filters?.[id]?.name || update.name}`);
+			socketEndpoints.log(`${id ? (remove ? 'Delete' : 'Edit') : 'Create'} filter: ${database.db.data.filters?.[id]?.name || update.name}`);
 
-			if (!id) database.state.filters[nanoid(5)] = { tags: [], name: update.name };
-			else {
-				if (update?.filter) database.state.filters[id].filter = Object.assign(database.state.lists[id].filter, update.filter);
+			if (id === 'new' && update.name) {
+				id = nanoid(5);
+				database.db.data.filters[id] = Object.assign({ id, tags: [] }, update);
+			} else if (remove) delete database.db.data.filters[id];
+			else if (update) database.db.data.filters[id] = Object.assign(database.db.data.filters[id], update);
 
-				if (remove) delete database.state.filters[id];
-			}
-
-			database.save();
+			database.db.write();
 
 			this.reply('filter_edit', { success: true });
 		},
 	},
 };
 
-module.exports = socketEndpoints;
+export default socketEndpoints;

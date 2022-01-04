@@ -9,7 +9,7 @@ export default class DomElem {
 		this.nodeName = nodeName;
 		this.options = options || {};
 
-		this.render(nodeName, options);
+		this.render(nodeName, this.options);
 
 		return this.elem;
 	}

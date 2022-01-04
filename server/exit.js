@@ -18,4 +18,4 @@ const exit = {
 	},
 };
 
-module.exports = exit;
+export default exit;

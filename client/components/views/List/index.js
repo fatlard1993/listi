@@ -3,8 +3,8 @@ import socketClient from 'socket-client';
 import router from '../../../router';
 
 import Toolbar from '../../Toolbar';
-import List from '../../List';
-import ListItem from '../../ListItem';
+import ListElem from '../../List';
+import Item from '../../Item';
 import IconButton from '../../IconButton';
 import PageHeader from '../../PageHeader';
 import View from '../View';
@@ -12,7 +12,7 @@ import ModalDialog from '../../ModalDialog';
 import LabeledSelect from '../../LabeledSelect';
 import NoData from '../../NoData';
 
-export default class SingleList extends View {
+export default class List extends View {
 	constructor({ className, serverState, ...rest }) {
 		super();
 
@@ -30,10 +30,10 @@ export default class SingleList extends View {
 			return undefined;
 		}
 
-		super.render({ className: ['singleList', className], ...rest });
+		super.render({ className: ['list', className], ...rest });
 
 		const { filterId } = router.parseRouteParams();
-		const { name: filterName } = serverState.filters[filterId] || {};
+		const { name: filterName, tags: filterTags } = serverState.filters[filterId] || {};
 
 		if (!filterName && filterId) {
 			router.path = router.ROUTES.list;
@@ -44,9 +44,11 @@ export default class SingleList extends View {
 		console.log(`Loaded filter ${filterName}`);
 
 		const appendTo = this.elem;
-		const { filterIds, filters } = serverState;
+		const { filterIds, filters, itemIds, items } = serverState;
 		const filterNames = filterIds.map(id => filters[id]?.name);
-		const listItems = [].sort((a, b) => new Date(a.due) - new Date(b.due));
+		const itemList = itemIds.map(id => items[id]);
+		const filteredItems = filterTags?.length ? itemList.filter(({ tags }) => tags.some(tag => filterTags.includes(tag))) : itemList;
+		const sortedItems = filteredItems.sort((a, b) => new Date(a.due) - new Date(b.due));
 
 		const toolbarItems = [
 			new IconButton({
@@ -58,10 +60,10 @@ export default class SingleList extends View {
 			new IconButton({
 				icon: 'calendar-alt',
 				onPointerPress: () => {
-					router.path = router.routeToPath(router.ROUTES.listCalendar, { filterId });
+					router.path = router.routeToPath(router.ROUTES.calendar, { filterId });
 				},
 			}),
-			new PageHeader({ textContent: `${filterName ? 'Filtered ' : ''}List Items${filterName ? ` (${filterName})` : ''}` }),
+			new PageHeader({ textContent: `${filterName ? 'Filtered ' : ''}Items${filterName ? ` (${filterName})` : ''}` }),
 			new IconButton({
 				icon: 'plus',
 				className: 'right',
@@ -69,13 +71,13 @@ export default class SingleList extends View {
 					new ModalDialog({
 						appendTo,
 						header: 'Create',
-						content: 'Create a new Filter or List Item?',
-						buttons: ['Filter', 'List Item', 'Cancel'],
+						content: 'Create a new Filter or Item?',
+						buttons: ['Filter', 'Item', 'Cancel'],
 						onDismiss: ({ button, closeDialog }) => {
 							if (button === 'Filter') {
 								router.path = router.buildPath(router.ROUTES.filterEdit, { id: 'new' });
-							} else if (button === 'List Item') {
-								router.path = router.buildPath(router.ROUTES.listItemEdit, { id: 'new' });
+							} else if (button === 'Item') {
+								router.path = router.buildPath(router.ROUTES.itemEdit, { id: 'new' });
 							}
 
 							closeDialog();
@@ -125,21 +127,21 @@ export default class SingleList extends View {
 			appendChildren: toolbarItems,
 		});
 
-		if (!listItems?.length) {
-			new NoData({ appendTo, textContent: 'No list items yet .. Create them with the + button above' });
+		if (!itemIds?.length) {
+			new NoData({ appendTo, textContent: `No items${filterId ? ' that match this filter' : ''} yet .. Create them with the + button above` });
 		} else {
-			this.list = new List({ appendTo, appendChildren: listItems.map(({ id }) => new ListItem({ id })) });
+			this.list = new ListElem({ appendTo, appendChildren: sortedItems.map(({ id }) => new Item({ serverState, id })) });
 		}
 	}
 
 	cleanup() {
-		console.log('SingleList CLEANUP');
+		console.log('List CLEANUP');
 		socketClient.clearEventListeners();
 
 		if (this?.list?.cleanup) this.list.cleanup();
-		console.log('SingleList CLEANUP 3');
+		console.log('List CLEANUP 3');
 
 		super.cleanup();
-		console.log('SingleList CLEANUP 4');
+		console.log('List CLEANUP 4');
 	}
 }

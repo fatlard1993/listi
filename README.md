@@ -73,6 +73,7 @@ cache tags for quickly adding common ones allow for index sorting (drag and drop
 - everything as tags? (due dates, etc.)
 - multiselect/batch operations (complete, delete)
 - add saved sort & filter
+- priority
 - NEW FILTERS IDEA
 	- remove separate lists idea
 	- all list items are now one flat list

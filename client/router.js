@@ -12,18 +12,18 @@ const ROUTES = {
 	filteredList: '/list/:filterId',
 	list: '/list',
 	calendar: '/calendar/:filterId',
-	listItemEdit: '/listItem/:id',
-	listItemSchedule: '/listItem/:id/schedule',
+	itemEdit: '/items/:id',
+	itemSchedule: '/items/:id/schedule',
 };
 
 const VIEWS = {
 	[ROUTES.filters]: views.Filters,
 	[ROUTES.filterEdit]: views.FilterEdit,
-	[ROUTES.filteredList]: views.SingleList,
-	[ROUTES.list]: views.SingleList,
-	[ROUTES.calendar]: views.ListCalendar,
-	[ROUTES.listItemEdit]: views.ListItemEdit,
-	[ROUTES.listItemSchedule]: views.ListItemSchedule,
+	[ROUTES.filteredList]: views.List,
+	[ROUTES.list]: views.List,
+	[ROUTES.calendar]: views.Calendar,
+	[ROUTES.itemEdit]: views.ItemEdit,
+	[ROUTES.itemSchedule]: views.ItemSchedule,
 };
 
 const DEFAULT_PATH = ROUTES.filters;
@@ -109,7 +109,7 @@ const router = {
 		const appendTo = dom.getElemById('app');
 
 		if (!VIEWS[route]) {
-			log.warn()(`"${route}" is not a valid route .. Rerouting to the default route: ${DEFAULT_PATH}`);
+			log.warn()(`"${route}" is not a valid route .. Rerouting to the default route: ${DEFAULT_PATH}`, VIEWS);
 
 			router.path = DEFAULT_PATH;
 

@@ -3,7 +3,6 @@
 ul.tagList {
 	background-color: $grey-darkest;
 	margin: 1% auto;
-	width: 95%;
 	border-radius: 3px;
 	box-sizing: border-box;
 	border: inset 2px $grey-light;
@@ -21,5 +20,21 @@ ul.tagList {
 		background: none;
 		width: 100%;
 		margin: 0;
+	}
+
+	li.tag.addTag {
+		display: flex;
+		flex-direction: row;
+
+		input.textInput {
+			flex: 1;
+			margin: 3px;
+		}
+
+		button.iconButton {
+			width: 30px;
+			height: 30px;
+			margin: 3px 0 3px 3px;
+		}
 	}
 }

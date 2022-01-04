@@ -3,5 +3,6 @@
 	"integrationFolder": "test",
 	"pluginsFile": false,
 	"fixturesFolder": false,
-	"supportFile": false
+	"supportFile": false,
+	"testFiles": "**/*.test.js"
 }

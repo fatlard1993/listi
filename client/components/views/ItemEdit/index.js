@@ -8,22 +8,20 @@ import router from '../../../router';
 
 import Toolbar from '../../Toolbar';
 import TagList from '../../TagList';
-import Tag from '../../Tag';
 import Button from '../../Button';
 import IconButton from '../../IconButton';
 import PageHeader from '../../PageHeader';
 import LabeledElem from '../../LabeledElem';
-import EditForm from '../../EditForm';
+import Content from '../../Content';
 import ModalDialog from '../../ModalDialog';
 import Label from '../../Label';
 import LabeledTextInput from '../../LabeledTextInput';
 import LabeledNumberInput from '../../LabeledNumberInput';
 import DomElem from '../../DomElem';
-import TextInput from '../../TextInput';
 import UnloadAwareView from '../UnloadAwareView';
 import BeforePageChangeDialog from '../../BeforePageChangeDialog';
 
-export default class ListItemEdit extends UnloadAwareView {
+export default class ItemEdit extends UnloadAwareView {
 	constructor({ className, serverState, ...rest }) {
 		super();
 
@@ -51,10 +49,10 @@ export default class ListItemEdit extends UnloadAwareView {
 		}
 
 		const dirtyChecks = [];
-		const isDirty = () => dirtyChecks.every(isDirty => isDirty());
+		const isDirty = () => dirtyChecks.every(isDirty => typeof isDirty === 'function' ? isDirty() : true);
 
 		super.render({
-			className: ['listItemEdit', className],
+			className: ['itemEdit', className],
 			isDirty,
 			...rest,
 		});
@@ -62,7 +60,7 @@ export default class ListItemEdit extends UnloadAwareView {
 		const appendTo = this.elem;
 
 		const handleSave = () => {
-			socketClient.reply('list_item_edit', { id, update: buildListItemDocument() });
+			socketClient.reply('item_edit', { id, update: buildDocument() });
 
 			router.path = router.buildPath(router.ROUTES.list);
 		};
@@ -80,7 +78,7 @@ export default class ListItemEdit extends UnloadAwareView {
 					});
 				},
 			}),
-			new PageHeader({ textContent: `${summary ? 'Edit' : 'Create New'} List Item` }),
+			new PageHeader({ textContent: `${summary ? 'Edit' : 'Create New'} Item` }),
 			new IconButton({ icon: 'save', className: 'right', onPointerPress: handleSave }),
 		];
 
@@ -93,11 +91,11 @@ export default class ListItemEdit extends UnloadAwareView {
 						new ModalDialog({
 							appendTo,
 							header: 'Attention',
-							content: 'Are you sure you want to delete this list item?',
+							content: 'Are you sure you want to delete this item?',
 							buttons: ['yes', 'no'],
 							onDismiss: ({ button, closeDialog }) => {
 								if (button === 'yes') {
-									socketClient.reply('list_item_edit', { id, remove: true });
+									socketClient.reply('item_edit', { id, remove: true });
 
 									router.path = router.buildPath(router.ROUTES.list);
 								}
@@ -118,26 +116,7 @@ export default class ListItemEdit extends UnloadAwareView {
 		const { textInput: summaryInput, label: summaryLabel } = new LabeledTextInput({ label: 'Summary', value: summary || '' });
 		const { elem: descriptionInput, label: descriptionLabel } = new LabeledElem('textarea', { value: description || '', label: 'Description' });
 
-		const tagList = new TagList({ tags });
-		const tagAdd = new IconButton({
-			id: 'tagAdd',
-			icon: 'plus',
-			onPointerPress: () => {
-				const tags = Array.from(tagList.children).map(elem => elem.textContent);
-
-				if (tagInput.value.length < 2 || tags.includes(tagInput.value)) return;
-
-				new Tag({ appendTo: tagList, tag: tagInput.value });
-
-				tagAdd.parentElement.classList.remove('showTagAdd');
-
-				tagInput.value = '';
-			},
-		});
-		const tagInput = new TextInput({
-			placeholder: 'Add new tags',
-			onKeyUp: () => tagAdd.parentElement.classList[tagInput.value.length > 1 ? 'add' : 'remove']('showTagAdd'),
-		});
+		const tagList = new TagList({ tags, readOnly: false });
 
 		const { elem: completeAction, label: completeActionLabel } = new LabeledElem('select', {
 			label: 'Complete Action',
@@ -212,11 +191,13 @@ export default class ListItemEdit extends UnloadAwareView {
 			() => complete?.unit || 'Day' !== rescheduleUnit.value,
 		);
 
-		const buildListItemDocument = () => {
+		const buildDocument = () => {
 			return {
 				summary: summaryInput.value,
 				description: descriptionInput.value,
-				tags: Array.from(tagList.children).map(({ textContent }) => textContent),
+				tags: Array.from(tagList.children)
+					.filter(({ className }) => !className.includes('addTag'))
+					.map(({ textContent }) => textContent),
 				due,
 				complete: {
 					action: completeAction.value,
@@ -233,19 +214,21 @@ export default class ListItemEdit extends UnloadAwareView {
 			};
 		};
 
-		new EditForm({
+		new Content({
 			appendTo,
 			appendChildren: [
 				summaryLabel,
 				descriptionLabel,
-				new Label({ textContent: 'Tags', appendChildren: [tagInput, tagAdd, tagList] }),
-				new Label({ textContent: 'Due Date' }),
-				new Button({
-					textContent: due || 'Set',
-					className: 'dueDate postLabel',
-					onPointerPress: () => {
-						router.path = router.routeToPath(router.ROUTES.listItemSchedule, { id, listItem: buildListItemDocument() });
-					},
+				new Label({ textContent: 'Tags', appendChild: tagList }),
+				new Label({
+					textContent: 'Due Date',
+					appendChild: new Button({
+						textContent: due || 'Set',
+						className: 'dueDate postLabel',
+						onPointerPress: () => {
+							router.path = router.routeToPath(router.ROUTES.itemSchedule, { id, item: buildDocument() });
+						},
+					}),
 				}),
 				completeActionLabel,
 				tagContainer,
@@ -253,7 +236,7 @@ export default class ListItemEdit extends UnloadAwareView {
 			],
 		});
 
-		socketClient.on('list_item_edit', ({ success, error }) => {
+		socketClient.on('item_edit', ({ success, error }) => {
 			if (success) {
 				router.path = router.ROUTES.filters;
 

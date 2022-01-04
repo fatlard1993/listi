@@ -11,6 +11,8 @@ import ModalDialog from '../../ModalDialog';
 import Content from '../../Content';
 import UnloadAwareView from '../UnloadAwareView';
 import BeforePageChangeDialog from '../../BeforePageChangeDialog';
+import TagList from '../../TagList';
+import Label from '../../Label';
 
 export default class FilterEdit extends UnloadAwareView {
 	constructor({ className, state: serverState, ...rest }) {
@@ -31,7 +33,7 @@ export default class FilterEdit extends UnloadAwareView {
 		}
 
 		const { id } = router.parseRouteParams();
-		const { name, tag } = serverState.filters[id] || {};
+		const { name, tags } = serverState.filters[id] || {};
 
 		if (!name && id !== 'new') {
 			router.path = router.ROUTES.filters;
@@ -39,7 +41,7 @@ export default class FilterEdit extends UnloadAwareView {
 			return;
 		}
 
-		const isDirty = () => (saved ? false : nameInput.isDirty() && tagInput.isDirty());
+		const isDirty = () => (saved ? false : nameInput.isDirty() && tagList.tagInput.isDirty());
 
 		super.render({
 			className: ['filterEdit', className],
@@ -51,10 +53,18 @@ export default class FilterEdit extends UnloadAwareView {
 		let saved = false;
 
 		const { label: nameLabel, textInput: nameInput } = new LabeledTextInput({ label: 'Name', value: name });
-		const { label: tagLabel, textInput: tagInput } = new LabeledTextInput({ label: 'Tag', value: tag });
+		const tagList = new TagList({ tags, readOnly: false });
 
 		const handleSave = () => {
-			socketClient.reply('filter_edit', { filterId: id, update: { name: nameInput.value, tag: tagInput.value } });
+			socketClient.reply('filter_edit', {
+				id,
+				update: {
+					name: nameInput.value,
+					tags: Array.from(tagList.children)
+						.filter(({ className }) => !className.includes('addTag'))
+						.map(({ textContent }) => textContent),
+				},
+			});
 		};
 
 		socketClient.on('filter_edit', ({ success, error }) => {
@@ -104,7 +114,7 @@ export default class FilterEdit extends UnloadAwareView {
 							buttons: ['yes', 'no'],
 							onDismiss: ({ button, closeDialog }) => {
 								if (button === 'yes') {
-									socketClient.reply('filter_edit', { filterId: id, remove: true });
+									socketClient.reply('filter_edit', { id, remove: true });
 
 									router.path = router.ROUTES.filters;
 								}
@@ -122,7 +132,7 @@ export default class FilterEdit extends UnloadAwareView {
 			appendChildren: toolbarItems,
 		});
 
-		new Content({ appendTo, appendChildren: [nameLabel, tagLabel] });
+		new Content({ appendTo, appendChildren: [nameLabel, new Label({ textContent: 'Tags', appendChild: tagList })] });
 
 		nameInput.select();
 	}

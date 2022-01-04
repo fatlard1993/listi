@@ -11,9 +11,9 @@ import DomElem from '../../DomElem';
 import UnloadAwareView from '../UnloadAwareView';
 import BeforePageChangeDialog from '../../BeforePageChangeDialog';
 
-export default class ListItemSchedule extends UnloadAwareView {
-	constructor({ listName = dom.location.query.get('listName'), index = dom.location.query.get('index'), listItem, className, state, ...rest }) {
-		super({ className: ['listItemSchedule', className], ...rest });
+export default class ItemSchedule extends UnloadAwareView {
+	constructor({ listName = dom.location.query.get('listName'), index = dom.location.query.get('index'), item, className, state, ...rest }) {
+		super({ className: ['itemSchedule', className], ...rest });
 
 		const { draw } = router;
 
@@ -23,9 +23,9 @@ export default class ListItemSchedule extends UnloadAwareView {
 			return;
 		}
 
-		dom.location.query.set({ listName, index, view: 'ListItemSchedule' });
+		dom.location.query.set({ listName, index, view: 'ItemSchedule' });
 
-		socketClient.on('state', newState => draw('ListItemSchedule', { listName, index, listItem, className, ...rest, state: newState }));
+		socketClient.on('state', newState => this.render({ listName, index, item, className, ...rest, state: newState }));
 
 		if (!state) return socketClient.reply('request_state', true);
 
@@ -44,13 +44,19 @@ export default class ListItemSchedule extends UnloadAwareView {
 					onPointerPress: () => {
 						new BeforePageChangeDialog({
 							appendTo,
-							onYes: () => draw('ListItemEdit', { listName, index, listItem }),
+							onYes: () => {
+								router.path = router.buildPath(router.ROUTES.itemEdit, { id: 'new' });
+								// draw('ListItemEdit', { listName, index, item }),
+							},
 						});
 					},
 				}),
 				new IconButton({
 					icon: 'save',
-					onPointerPress: () => draw('ListItemEdit', { listName, index, listItem }),
+					onPointerPress: () => {
+						router.path = router.buildPath(router.ROUTES.itemEdit, { id: 'new' });
+						// draw('ListItemEdit', { listName, index, item }),
+					},
 				}),
 				title,
 			],
@@ -67,7 +73,7 @@ export default class ListItemSchedule extends UnloadAwareView {
 
 			evt.target.classList.add('selected');
 
-			listItem.due = evt.target.dataset.fullDate;
+			item.due = evt.target.dataset.fullDate;
 		});
 
 		calendar.render();

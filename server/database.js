@@ -1,16 +1,19 @@
-const Config = require('config-manager');
+import { Low, JSONFile } from 'lowdb';
 
 const database = {
 	default: {
 		filters: {},
 		items: {},
 	},
-	init({ persistent, path }) {
-		const config = new Config(path, database.default);
+	async init({ path }) {
+		database.db = new Low(new JSONFile(path));
 
-		database.state = config.current;
-		database.save = persistent ? config.save : () => {};
+		await database.db.read();
+
+		database.db.data = Object.assign(database.default, database.db.data || {});
+
+		await database.db.write();
 	},
 };
 
-module.exports = database;
+export default database;

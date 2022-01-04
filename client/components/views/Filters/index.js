@@ -46,7 +46,7 @@ export default class Filters extends View {
 				new IconButton({
 					icon: 'calendar-alt',
 					onPointerPress: () => {
-						router.path = router.buildPath(router.ROUTES.listCalendar);
+						router.path = router.buildPath(router.ROUTES.calendar);
 					},
 				}),
 				new PageHeader({ textContent: 'Filters' }),
@@ -57,13 +57,13 @@ export default class Filters extends View {
 						new ModalDialog({
 							appendTo,
 							header: 'Create',
-							content: 'Create a new Filter or List Item?',
-							buttons: ['Filter', 'List Item', 'Cancel'],
+							content: 'Create a new Filter or Item?',
+							buttons: ['Filter', 'Item', 'Cancel'],
 							onDismiss: ({ button, closeDialog }) => {
 								if (button === 'Filter') {
 									router.path = router.buildPath(router.ROUTES.filterEdit, { id: 'new' });
-								} else if (button === 'List Item') {
-									router.path = router.buildPath(router.ROUTES.listItemEdit, { id: 'new' });
+								} else if (button === 'Item') {
+									router.path = router.buildPath(router.ROUTES.itemEdit, { id: 'new' });
 								}
 
 								closeDialog();

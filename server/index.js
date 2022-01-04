@@ -1,10 +1,13 @@
 #!/usr/bin/env node
 
-const os = require('os');
-const path = require('path');
+import os from 'os';
+import path from 'path';
 
-const { Log } = require('log');
-const argi = require('argi');
+import { Log } from 'log';
+import argi from 'argi';
+
+import listi from './listi.js';
+import exit from './exit.js';
 
 const { options } = argi.parse({
 	verbosity: {
@@ -30,6 +33,6 @@ const log = new Log({ tag: 'listi', defaults: { verbosity: options.verbosity, co
 
 log(1)('Options', options);
 
-require('./listi').init({ log, options });
+listi.init({ log, options });
 
-require('./exit').init({ log });
+exit.init({ log });

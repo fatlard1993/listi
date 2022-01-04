@@ -3,14 +3,14 @@ import './styles/index.css';
 import dom from 'dom';
 import socketClient from 'socket-client';
 
-import { port } from '../constants.json';
+import constants from '../constants.js';
 import utils from './utils';
 import router from './router';
 
 dom.onLoad(() => {
 	dom.mobile.detect();
 
-	socketClient.init('/api', port);
+	socketClient.init('/api', constants.port);
 
 	// dom.interact.on('keyUp', evt => {
 	// 	const { key } = evt;
