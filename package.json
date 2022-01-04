@@ -33,7 +33,6 @@
 		"argi": "github:fatlard1993/argi",
 		"augmented-ui": "^2.0.0",
 		"calendar": "github:fatlard1993/calendar#main",
-		"config-manager": "github:fatlard1993/config-manager#2.x.x",
 		"dom": "github:fatlard1993/dom",
 		"express": "^4.17.1",
 		"js-util": "github:fatlard1993/js-util",

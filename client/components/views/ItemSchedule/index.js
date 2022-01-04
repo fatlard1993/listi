@@ -9,29 +9,40 @@ import PageHeader from '../../PageHeader';
 import Calendar from '../../Calendar';
 import DomElem from '../../DomElem';
 import UnloadAwareView from '../UnloadAwareView';
-import BeforePageChangeDialog from '../../BeforePageChangeDialog';
+import BeforePageChangeDialog from '../../dialogs/BeforePageChangeDialog';
 
 export default class ItemSchedule extends UnloadAwareView {
-	constructor({ listName = dom.location.query.get('listName'), index = dom.location.query.get('index'), item, className, state, ...rest }) {
-		super({ className: ['itemSchedule', className], ...rest });
+	constructor({ className, serverState, ...rest }) {
+		super();
 
-		const { draw } = router;
+		this.options = { className, ...rest };
 
-		if (!listName) {
-			router.path = router.ROUTES.filters;
+		socketClient.on('state', newState => this.render({ className, serverState: newState, ...rest }));
+
+		this.render({ className, serverState, ...rest });
+	}
+
+	render({ className, serverState, ...rest }) {
+		if (!serverState) {
+			socketClient.reply('request_state', true);
+
+			return undefined;
+		}
+
+		super.render({ className: ['itemSchedule', className], ...rest });
+
+		const { id } = router.parseRouteParams();
+
+		if (!id) {
+			router.path = router.ROUTES.list;
 
 			return;
 		}
 
-		dom.location.query.set({ listName, index, view: 'ItemSchedule' });
-
-		socketClient.on('state', newState => this.render({ listName, index, item, className, ...rest, state: newState }));
-
-		if (!state) return socketClient.reply('request_state', true);
-
 		const appendTo = this.elem;
-		const { lists } = state;
-		const { items } = lists[listName];
+		const { itemIds, items } = serverState;
+		const itemList = itemIds.map(id => items[id]);
+		const item = items[id];
 
 		const title = new PageHeader();
 		const calendar = new Calendar({ title });
@@ -80,7 +91,7 @@ export default class ItemSchedule extends UnloadAwareView {
 
 		new DomElem('div', { id: 'calendar', appendChild: calendar.elem, appendTo });
 
-		items.forEach(({ due: at, summary: label }, index) => {
+		itemList.forEach(({ due: at, summary: label }, index) => {
 			if (at) calendar.addEvent({ index, at, label });
 		});
 	}

@@ -7,10 +7,10 @@ import Toolbar from '../../Toolbar';
 import IconButton from '../../IconButton';
 import PageHeader from '../../PageHeader';
 import LabeledTextInput from '../../LabeledTextInput';
-import ModalDialog from '../../ModalDialog';
+import ModalDialog from '../../dialogs/ModalDialog';
 import Content from '../../Content';
 import UnloadAwareView from '../UnloadAwareView';
-import BeforePageChangeDialog from '../../BeforePageChangeDialog';
+import BeforePageChangeDialog from '../../dialogs/BeforePageChangeDialog';
 import TagList from '../../TagList';
 import Label from '../../Label';
 

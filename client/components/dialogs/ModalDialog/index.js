@@ -1,6 +1,6 @@
 import dom from 'dom';
 
-import Modal from '../Modal';
+import Modal from '../../Modal';
 import Dialog from '../Dialog';
 
 export default class ModalDialog {

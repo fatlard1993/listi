@@ -1,4 +1,4 @@
-@import '../../styles/colors';
+@import '../../../styles/colors';
 
 div.dialog {
 	margin: 33% auto 0;

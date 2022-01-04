@@ -9,7 +9,7 @@ import PageHeader from '../../PageHeader';
 import View from '../View';
 import NoData from '../../NoData';
 import FilterCard from '../../FilterCard';
-import ModalDialog from '../../ModalDialog';
+import CreateDialog from '../../dialogs/CreateDialog';
 
 export default class Filters extends View {
 	constructor({ className, state: serverState, ...rest }) {
@@ -53,23 +53,7 @@ export default class Filters extends View {
 				new IconButton({
 					icon: 'plus',
 					className: 'right',
-					onPointerPress: () => {
-						new ModalDialog({
-							appendTo,
-							header: 'Create',
-							content: 'Create a new Filter or Item?',
-							buttons: ['Filter', 'Item', 'Cancel'],
-							onDismiss: ({ button, closeDialog }) => {
-								if (button === 'Filter') {
-									router.path = router.buildPath(router.ROUTES.filterEdit, { id: 'new' });
-								} else if (button === 'Item') {
-									router.path = router.buildPath(router.ROUTES.itemEdit, { id: 'new' });
-								}
-
-								closeDialog();
-							},
-						});
-					},
+					onPointerPress: () => new CreateDialog({ appendTo }),
 				}),
 			],
 		});

@@ -13,13 +13,13 @@ import IconButton from '../../IconButton';
 import PageHeader from '../../PageHeader';
 import LabeledElem from '../../LabeledElem';
 import Content from '../../Content';
-import ModalDialog from '../../ModalDialog';
+import ModalDialog from '../../dialogs/ModalDialog';
 import Label from '../../Label';
 import LabeledTextInput from '../../LabeledTextInput';
 import LabeledNumberInput from '../../LabeledNumberInput';
 import DomElem from '../../DomElem';
 import UnloadAwareView from '../UnloadAwareView';
-import BeforePageChangeDialog from '../../BeforePageChangeDialog';
+import BeforePageChangeDialog from '../../dialogs/BeforePageChangeDialog';
 
 export default class ItemEdit extends UnloadAwareView {
 	constructor({ className, serverState, ...rest }) {
@@ -49,7 +49,7 @@ export default class ItemEdit extends UnloadAwareView {
 		}
 
 		const dirtyChecks = [];
-		const isDirty = () => dirtyChecks.every(isDirty => typeof isDirty === 'function' ? isDirty() : true);
+		const isDirty = () => dirtyChecks.every(isDirty => (typeof isDirty === 'function' ? isDirty() : true));
 
 		super.render({
 			className: ['itemEdit', className],

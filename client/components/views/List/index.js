@@ -8,9 +8,9 @@ import Item from '../../Item';
 import IconButton from '../../IconButton';
 import PageHeader from '../../PageHeader';
 import View from '../View';
-import ModalDialog from '../../ModalDialog';
-import LabeledSelect from '../../LabeledSelect';
+import CreateDialog from '../../dialogs/CreateDialog';
 import NoData from '../../NoData';
+import ChangeFilterDialog from '../../dialogs/ChangeFilterDialog';
 
 export default class List extends View {
 	constructor({ className, serverState, ...rest }) {
@@ -44,8 +44,7 @@ export default class List extends View {
 		console.log(`Loaded filter ${filterName}`);
 
 		const appendTo = this.elem;
-		const { filterIds, filters, itemIds, items } = serverState;
-		const filterNames = filterIds.map(id => filters[id]?.name);
+		const { filterIds, itemIds, items } = serverState;
 		const itemList = itemIds.map(id => items[id]);
 		const filteredItems = filterTags?.length ? itemList.filter(({ tags }) => tags.some(tag => filterTags.includes(tag))) : itemList;
 		const sortedItems = filteredItems.sort((a, b) => new Date(a.due) - new Date(b.due));
@@ -67,23 +66,7 @@ export default class List extends View {
 			new IconButton({
 				icon: 'plus',
 				className: 'right',
-				onPointerPress: () => {
-					new ModalDialog({
-						appendTo,
-						header: 'Create',
-						content: 'Create a new Filter or Item?',
-						buttons: ['Filter', 'Item', 'Cancel'],
-						onDismiss: ({ button, closeDialog }) => {
-							if (button === 'Filter') {
-								router.path = router.buildPath(router.ROUTES.filterEdit, { id: 'new' });
-							} else if (button === 'Item') {
-								router.path = router.buildPath(router.ROUTES.itemEdit, { id: 'new' });
-							}
-
-							closeDialog();
-						},
-					});
-				},
+				onPointerPress: () => new CreateDialog({ appendTo }),
 			}),
 		];
 
@@ -93,31 +76,7 @@ export default class List extends View {
 				0,
 				new IconButton({
 					icon: 'filter',
-					onPointerPress: () => {
-						const { label: selectLabel, select: filterSelect } = new LabeledSelect({ label: 'Current Filter', options: ['Unfiltered', ...filterNames], value: filterName || 'Unfiltered' });
-
-						new ModalDialog({
-							appendTo,
-							header: 'Change List Filter',
-							content: [selectLabel],
-							buttons: ['OK', 'Edit Filter', 'Cancel'],
-							onDismiss: ({ button, closeDialog }) => {
-								const selectedFilterId = filterIds[filterNames.indexOf(filterSelect.value)];
-
-								console.log('selectedFilterId', selectedFilterId);
-								console.log('filterNames.indexOf(filterSelect.value)', filterNames.indexOf(filterSelect.value));
-								console.log('filterSelect.value', filterSelect.value);
-
-								if (button === 'OK') {
-									router.path = filterSelect.value === 'Unfiltered' ? router.ROUTES.list : router.routeToPath(router.ROUTES.filteredList, { filterId: selectedFilterId });
-								} else if (button === 'Edit Filter' && selectedFilterId) {
-									router.path = router.routeToPath(router.ROUTES.filterEdit, { id: selectedFilterId });
-								}
-
-								closeDialog();
-							},
-						});
-					},
+					onPointerPress: () => new ChangeFilterDialog({ serverState, filterName, appendTo }),
 				}),
 			);
 		}

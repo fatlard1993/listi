@@ -11,7 +11,8 @@ const ROUTES = {
 	filterEdit: '/filters/:id',
 	filteredList: '/list/:filterId',
 	list: '/list',
-	calendar: '/calendar/:filterId',
+	filteredCalendar: '/calendar/:filterId',
+	calendar: '/calendar',
 	itemEdit: '/items/:id',
 	itemSchedule: '/items/:id/schedule',
 };
@@ -21,6 +22,7 @@ const VIEWS = {
 	[ROUTES.filterEdit]: views.FilterEdit,
 	[ROUTES.filteredList]: views.List,
 	[ROUTES.list]: views.List,
+	[ROUTES.filteredCalendar]: views.Calendar,
 	[ROUTES.calendar]: views.Calendar,
 	[ROUTES.itemEdit]: views.ItemEdit,
 	[ROUTES.itemSchedule]: views.ItemSchedule,
@@ -38,7 +40,9 @@ const router = {
 		return window.location.hash.replace(/^#\/?/, '/');
 	},
 	set path(path) {
-		log()('set path', path);
+		const route = router.pathToRoute(path);
+
+		log()('set path', { path, route, regex: router.routeToRegex(route) });
 
 		if (!VIEWS[router.pathToRoute(path)]) path = DEFAULT_PATH;
 
@@ -60,13 +64,13 @@ const router = {
 				path = path.replace(new RegExp(`:${key}`), params[key]);
 			});
 		} else {
-			path = path.replace(/\/?:.+/g, '');
+			path = path.replace(/\/?:[^/]+/g, '');
 		}
 
 		return path;
 	},
 	routeToRegex(route) {
-		return new RegExp(`^${route.replace(/\//g, '\\/').replace(/:[^/]+/g, '(.+)')}$`);
+		return new RegExp(`^${route.replace(/\//g, '\\/').replace(/:[^/]+/g, '([^/]+)')}$`);
 	},
 	buildPath(route, params) {
 		if (!VIEWS[route]) route = DEFAULT_PATH;

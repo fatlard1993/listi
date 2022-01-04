@@ -1,7 +1,7 @@
 import './index.css';
 
-import DomElem from '../DomElem';
-import Button from '../Button';
+import DomElem from '../../DomElem';
+import Button from '../../Button';
 
 export default class Dialog extends DomElem {
 	constructor({ className, header, content, footer, buttons, onDismiss = () => {}, ...rest }) {
