@@ -1,4 +1,3 @@
-import dom from 'dom';
 import socketClient from 'socket-client';
 
 import router from '../../../router';
@@ -11,7 +10,7 @@ import DomElem from '../../DomElem';
 import View from '../View';
 import ChangeFilterDialog from '../../dialogs/ChangeFilterDialog';
 
-export default class Calendar extends View {
+export class Calendar extends View {
 	constructor({ className, serverState, ...rest }) {
 		super();
 
@@ -101,8 +100,6 @@ export default class Calendar extends View {
 
 	cleanup() {
 		socketClient.clearEventListeners();
-
-		dom.location.query.delete('listName');
 
 		super.cleanup();
 	}

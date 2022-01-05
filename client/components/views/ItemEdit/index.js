@@ -21,7 +21,7 @@ import DomElem from '../../DomElem';
 import UnloadAwareView from '../UnloadAwareView';
 import BeforePageChangeDialog from '../../dialogs/BeforePageChangeDialog';
 
-export default class ItemEdit extends UnloadAwareView {
+export class ItemEdit extends UnloadAwareView {
 	constructor({ className, serverState, ...rest }) {
 		super();
 

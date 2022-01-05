@@ -14,7 +14,7 @@ import BeforePageChangeDialog from '../../dialogs/BeforePageChangeDialog';
 import TagList from '../../TagList';
 import Label from '../../Label';
 
-export default class FilterEdit extends UnloadAwareView {
+export class FilterEdit extends UnloadAwareView {
 	constructor({ className, state: serverState, ...rest }) {
 		super();
 

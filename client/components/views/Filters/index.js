@@ -11,7 +11,7 @@ import NoData from '../../NoData';
 import FilterCard from '../../FilterCard';
 import CreateDialog from '../../dialogs/CreateDialog';
 
-export default class Filters extends View {
+export class Filters extends View {
 	constructor({ className, state: serverState, ...rest }) {
 		super();
 

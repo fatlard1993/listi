@@ -11,7 +11,7 @@ import DomElem from '../../DomElem';
 import UnloadAwareView from '../UnloadAwareView';
 import BeforePageChangeDialog from '../../dialogs/BeforePageChangeDialog';
 
-export default class ItemSchedule extends UnloadAwareView {
+export class ItemSchedule extends UnloadAwareView {
 	constructor({ className, serverState, ...rest }) {
 		super();
 
@@ -98,9 +98,6 @@ export default class ItemSchedule extends UnloadAwareView {
 
 	cleanup() {
 		socketClient.clearEventListeners();
-
-		dom.location.query.delete('listName');
-		dom.location.query.delete('index');
 
 		super.cleanup();
 	}

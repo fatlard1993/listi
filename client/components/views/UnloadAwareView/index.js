@@ -26,6 +26,7 @@ export default class UnloadAwareView extends View {
 		this.onBeforeunload(evt);
 
 		evt.returnValue = null;
+
 		return null;
 	}
 }

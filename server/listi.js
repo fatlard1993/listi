@@ -1,7 +1,7 @@
 import express from 'express';
 import WebsocketServer from 'websocket-server';
 
-import constants from '../constants.js';
+import { port } from '../constants.js';
 import database from './database.js';
 import router from './router.js';
 import socketEndpoints from './socketEndpoints.js';
@@ -9,7 +9,7 @@ import socketEndpoints from './socketEndpoints.js';
 const listi = {
 	init({ log, options }) {
 		const app = express();
-		const server = app.listen(constants.port, () => log(`Server listening on port: ${constants.port}`));
+		const server = app.listen(port, () => log(`Server listening on port: ${port}`));
 		const socketServer = new WebsocketServer({ server });
 
 		router.init({ express, app });

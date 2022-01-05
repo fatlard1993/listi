@@ -2,7 +2,7 @@ import { Log } from 'log';
 import dom from 'dom';
 import socketClient from 'socket-client';
 
-import views from './components/views';
+import { FilterEdit, Filters, Calendar, ItemEdit, ItemSchedule, List } from './components/views';
 
 const log = new Log({ tag: 'listi', verbosity: parseInt(dom.storage.get('logVerbosity') || 0) });
 
@@ -18,14 +18,14 @@ const ROUTES = {
 };
 
 const VIEWS = {
-	[ROUTES.filters]: views.Filters,
-	[ROUTES.filterEdit]: views.FilterEdit,
-	[ROUTES.filteredList]: views.List,
-	[ROUTES.list]: views.List,
-	[ROUTES.filteredCalendar]: views.Calendar,
-	[ROUTES.calendar]: views.Calendar,
-	[ROUTES.itemEdit]: views.ItemEdit,
-	[ROUTES.itemSchedule]: views.ItemSchedule,
+	[ROUTES.filters]: Filters,
+	[ROUTES.filterEdit]: FilterEdit,
+	[ROUTES.filteredList]: List,
+	[ROUTES.list]: List,
+	[ROUTES.filteredCalendar]: Calendar,
+	[ROUTES.calendar]: Calendar,
+	[ROUTES.itemEdit]: ItemEdit,
+	[ROUTES.itemSchedule]: ItemSchedule,
 };
 
 const DEFAULT_PATH = ROUTES.filters;

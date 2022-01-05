@@ -12,7 +12,7 @@ import CreateDialog from '../../dialogs/CreateDialog';
 import NoData from '../../NoData';
 import ChangeFilterDialog from '../../dialogs/ChangeFilterDialog';
 
-export default class List extends View {
+export class List extends View {
 	constructor({ className, serverState, ...rest }) {
 		super();
 
@@ -94,13 +94,10 @@ export default class List extends View {
 	}
 
 	cleanup() {
-		console.log('List CLEANUP');
 		socketClient.clearEventListeners();
 
 		if (this?.list?.cleanup) this.list.cleanup();
-		console.log('List CLEANUP 3');
 
 		super.cleanup();
-		console.log('List CLEANUP 4');
 	}
 }
