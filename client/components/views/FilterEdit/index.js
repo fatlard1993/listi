@@ -13,6 +13,7 @@ import UnloadAwareView from '../UnloadAwareView';
 import BeforePageChangeDialog from '../../dialogs/BeforePageChangeDialog';
 import TagList from '../../TagList';
 import Label from '../../Label';
+import LabeledSelect from '../../LabeledSelect';
 
 export class FilterEdit extends UnloadAwareView {
 	constructor({ className, state: serverState, ...rest }) {
@@ -33,7 +34,7 @@ export class FilterEdit extends UnloadAwareView {
 		}
 
 		const { id } = router.parseRouteParams();
-		const { name, tags } = serverState.filters[id] || {};
+		const { name, tags, sort } = serverState.filters[id] || {};
 
 		if (!name && id !== 'new') {
 			router.path = router.ROUTES.filters;
@@ -41,7 +42,7 @@ export class FilterEdit extends UnloadAwareView {
 			return;
 		}
 
-		const isDirty = () => (saved ? false : nameInput.isDirty() && tagList.tagInput.isDirty());
+		const isDirty = () => (saved ? false : nameInput.isDirty() || tagList.tagInput.isDirty() || sortSelect.isDirty());
 
 		super.render({
 			className: ['filterEdit', className],
@@ -54,6 +55,7 @@ export class FilterEdit extends UnloadAwareView {
 
 		const { label: nameLabel, textInput: nameInput } = new LabeledTextInput({ label: 'Name', value: name });
 		const tagList = new TagList({ tags, readOnly: false });
+		const { label: sortSelectLabel, select: sortSelect } = new LabeledSelect({ label: 'Sort', options: ['Due Date', 'Priority'], value: sort });
 
 		const handleSave = () => {
 			socketClient.reply('filter_edit', {
@@ -63,6 +65,7 @@ export class FilterEdit extends UnloadAwareView {
 					tags: Array.from(tagList.children)
 						.filter(({ className }) => !className.includes('addTag'))
 						.map(({ textContent }) => textContent),
+					sort: sortSelect.value,
 				},
 			});
 		};
@@ -132,7 +135,7 @@ export class FilterEdit extends UnloadAwareView {
 			appendChildren: toolbarItems,
 		});
 
-		new Content({ appendTo, appendChildren: [nameLabel, new Label({ textContent: 'Tags', appendChild: tagList })] });
+		new Content({ appendTo, appendChildren: [nameLabel, new Label({ textContent: 'Tags', appendChild: tagList }), sortSelectLabel] });
 
 		nameInput.select();
 	}

@@ -1,6 +1,5 @@
-import { nanoid } from 'nanoid';
-
-import database from './database.js';
+import filter from './filter.js';
+import item from './item.js';
 
 const socketEndpoints = {
 	init({ log, socketServer }) {
@@ -17,38 +16,25 @@ const socketEndpoints = {
 		request_state() {
 			socketEndpoints.log(3)('Requested state');
 
-			this.reply('state', {
-				filterIds: Object.keys(database.db.data.filters),
-				filters: database.db.data.filters,
-				itemIds: Object.keys(database.db.data.items),
-				items: database.db.data.items,
-			});
+			this.reply('state', { ...filter.read(), ...item.read() });
 		},
 		item_edit({ id, remove = false, update = {} }) {
 			socketEndpoints.log(`${typeof index === 'number' ? (remove ? 'Delete' : 'Edit') : 'Create'} item: ${update.summary || id}`);
 
-			if (id === 'new' && update.summary) {
-				id = nanoid(5);
-				database.db.data.items[id] = Object.assign({ id, tags: [] }, update);
-			} else if (remove) delete database.db.data.items[id];
-			else if (update) database.db.data.items[id] = Object.assign(database.db.data.items[id], update);
-
-			database.db.write();
+			if (id === 'new' && update.name) id = item.create({ update });
+			else if (update) id = item.update({ id, update });
+			else if (remove) id = item.remove({ id });
 
 			this.reply('item_edit', { success: true, id });
 		},
 		filter_edit({ id, update, remove }) {
-			socketEndpoints.log(`${id ? (remove ? 'Delete' : 'Edit') : 'Create'} filter: ${database.db.data.filters?.[id]?.name || update.name}`);
+			socketEndpoints.log(`${id ? (remove ? 'Delete' : 'Edit') : 'Create'} filter: ${filter.read({ id })?.name || update.name}`);
 
-			if (id === 'new' && update.name) {
-				id = nanoid(5);
-				database.db.data.filters[id] = Object.assign({ id, tags: [] }, update);
-			} else if (remove) delete database.db.data.filters[id];
-			else if (update) database.db.data.filters[id] = Object.assign(database.db.data.filters[id], update);
+			if (id === 'new' && update.name) id = filter.create(update);
+			else if (update) id = filter.update({ id, update });
+			else if (remove) id = filter.remove({ id });
 
-			database.db.write();
-
-			this.reply('filter_edit', { success: true });
+			this.reply('filter_edit', { success: true, id });
 		},
 	},
 };

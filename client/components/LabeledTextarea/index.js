@@ -2,17 +2,17 @@ import './index.css';
 
 import dom from 'dom';
 
-import DomElem from '../DomElem';
 import Label from '../Label';
+import Textarea from '../Textarea';
 
-export default class LabeledSelect {
+export default class LabeledTextarea {
 	constructor({ label, value = '', appendTo, ...rest }) {
 		const initialValue = value;
 
 		this.label = new Label({ label, appendTo });
-		this.select = new DomElem('select', { appendTo: this.label, ...rest, value });
+		this.textarea = new Textarea({ appendTo: this.label, ...rest, value });
 
-		this.select.isDirty = () => initialValue !== this.select.value;
+		this.textarea.isDirty = () => initialValue !== this.textarea.value;
 
 		return this;
 	}

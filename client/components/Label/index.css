@@ -1,6 +1,6 @@
 @import '../../styles/colors';
 
-label.label {
+div.label {
 	position: relative;
 	display: block;
 	font-size: 1em;

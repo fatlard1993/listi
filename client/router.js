@@ -40,10 +40,6 @@ const router = {
 		return window.location.hash.replace(/^#\/?/, '/');
 	},
 	set path(path) {
-		const route = router.pathToRoute(path);
-
-		log()('set path', { path, route, regex: router.routeToRegex(route) });
-
 		if (!VIEWS[router.pathToRoute(path)]) path = DEFAULT_PATH;
 
 		window.location.hash = path;

@@ -75,9 +75,5 @@ cache tags for quickly adding common ones allow for index sorting (drag and drop
 - add saved sort & filter
 - priority
 - NEW FILTERS IDEA
-	- remove separate lists idea
-	- all list items are now one flat list
-	- lists view replaced with a filters view
 	- filters contain a set of criteria for curating the list view
-	- MVP filter - tags only
 	- these new filters will consume the previously planned filter and sort feature
