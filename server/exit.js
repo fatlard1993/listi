@@ -1,6 +1,6 @@
 const exit = {
 	init({ log }) {
-		process.on('exit', function (code) {
+		process.on('exit', code => {
 			log.error('EXIT', code);
 		});
 
