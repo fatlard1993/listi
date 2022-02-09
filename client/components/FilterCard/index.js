@@ -3,7 +3,7 @@ import './index.css';
 import router from '../../router';
 
 import DomElem from '../DomElem';
-import IconButton from '../IconButton';
+import { IconButton } from '../inputs';
 
 export default class FilterCard extends DomElem {
 	constructor({ className, filterId, filter }) {

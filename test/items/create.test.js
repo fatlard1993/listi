@@ -8,7 +8,9 @@ context('Listi - Items :: Create', () => {
 	});
 
 	it('Creates a new item', () => {
-		cy.contains('.content .label', /summary/i).children('.textInput').type('test-item');
+		cy.contains('.content .label', /summary/i)
+			.children('.textInput')
+			.type('test-item');
 
 		cy.get('.toolbar .iconButton.fa-save').click();
 

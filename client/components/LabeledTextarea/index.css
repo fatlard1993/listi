@@ -1,5 +1,0 @@
-@import '../input.css';
-
-div.label textarea {
-	@mixin Input;
-}

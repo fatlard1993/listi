@@ -1,8 +1,8 @@
 import './index.css';
 
-import DomElem from '../DomElem';
+import DomElem from '../../DomElem';
 
-export default class TextInput extends DomElem {
+export class TextInput extends DomElem {
 	constructor({ className, value = '', ...rest }) {
 		const initialValue = value;
 

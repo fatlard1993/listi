@@ -35,4 +35,12 @@ export default class DomElem {
 	cleanup() {
 		dom.remove(this);
 	}
+
+	appendChild(child) {
+		dom.appendChild(this, child);
+	}
+
+	prependChild(child) {
+		dom.prependChild(this, child);
+	}
 }

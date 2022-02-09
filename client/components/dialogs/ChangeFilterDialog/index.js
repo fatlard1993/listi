@@ -1,6 +1,7 @@
 import router from '../../../router';
 
-import LabeledSelect from '../../LabeledSelect';
+import { Select } from '../../inputs';
+import Label from '../../Label';
 import ModalDialog from '../ModalDialog';
 
 export default class ChangeFilterDialog extends ModalDialog {
@@ -8,11 +9,11 @@ export default class ChangeFilterDialog extends ModalDialog {
 		const { filterIds, filters } = serverState;
 		const filterNames = filterIds.map(id => filters[id]?.name);
 
-		const { label: selectLabel, select: filterSelect } = new LabeledSelect({ label: 'Current Filter', options: ['Unfiltered', ...filterNames], value: filterName || 'Unfiltered' });
+		const filterSelect = new Select({ options: ['Unfiltered', ...filterNames], value: filterName || 'Unfiltered' });
 
 		super({
 			header: 'Change Filter',
-			content: [selectLabel],
+			content: [new Label({ label: 'Current Filter', appendChild: filterSelect })],
 			buttons: ['OK', 'Edit Filter', 'New Filter', 'Cancel'],
 			onDismiss: ({ button, closeDialog }) => {
 				const selectedFilterId = filterIds[filterNames.indexOf(filterSelect.value)];
@@ -30,7 +31,6 @@ export default class ChangeFilterDialog extends ModalDialog {
 			...rest,
 		});
 
-		this.selectLabel = selectLabel;
 		this.filterSelect = filterSelect;
 	}
 }

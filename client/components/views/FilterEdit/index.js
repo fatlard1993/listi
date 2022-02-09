@@ -3,17 +3,15 @@ import socketClient from 'socket-client';
 
 import router from '../../../router';
 
-import Toolbar from '../../Toolbar';
-import IconButton from '../../IconButton';
+import { Toolbar, Content } from '../../layout';
+import { IconButton, Select } from '../../inputs';
 import PageHeader from '../../PageHeader';
 import LabeledTextInput from '../../LabeledTextInput';
 import ModalDialog from '../../dialogs/ModalDialog';
-import Content from '../../Content';
 import UnloadAwareView from '../UnloadAwareView';
 import BeforePageChangeDialog from '../../dialogs/BeforePageChangeDialog';
 import TagList from '../../TagList';
 import Label from '../../Label';
-import LabeledSelect from '../../LabeledSelect';
 
 export class FilterEdit extends UnloadAwareView {
 	constructor({ className, state: serverState, ...rest }) {
@@ -55,7 +53,7 @@ export class FilterEdit extends UnloadAwareView {
 
 		const { label: nameLabel, textInput: nameInput } = new LabeledTextInput({ label: 'Name', value: name });
 		const tagList = new TagList({ tags, readOnly: false });
-		const { label: sortSelectLabel, select: sortSelect } = new LabeledSelect({ label: 'Sort', options: ['Due Date', 'Priority'], value: sort });
+		const { label: sortSelectLabel, select: sortSelect } = new Label({ label: 'Sort', options: ['Due Date', 'Priority'], value: sort });
 
 		const handleSave = () => {
 			socketClient.reply('filter_edit', {
@@ -135,7 +133,7 @@ export class FilterEdit extends UnloadAwareView {
 			appendChildren: toolbarItems,
 		});
 
-		new Content({ appendTo, appendChildren: [nameLabel, new Label({ textContent: 'Tags', appendChild: tagList }), sortSelectLabel] });
+		new Content({ appendTo, appendChildren: [nameLabel, new Label({ label: 'Tags', appendChild: tagList }), sortSelectLabel] });
 
 		nameInput.select();
 	}

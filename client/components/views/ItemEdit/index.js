@@ -6,13 +6,10 @@ import socketClient from 'socket-client';
 
 import router from '../../../router';
 
-import Toolbar from '../../Toolbar';
+import { Toolbar, Content } from '../../layout';
+import { Textarea, Select, Button, IconButton } from '../../inputs';
 import TagList from '../../TagList';
-import Button from '../../Button';
-import IconButton from '../../IconButton';
 import PageHeader from '../../PageHeader';
-import LabeledTextarea from '../../LabeledTextarea';
-import Content from '../../Content';
 import ModalDialog from '../../dialogs/ModalDialog';
 import Label from '../../Label';
 import LabeledTextInput from '../../LabeledTextInput';
@@ -20,7 +17,6 @@ import LabeledNumberInput from '../../LabeledNumberInput';
 import DomElem from '../../DomElem';
 import UnloadAwareView from '../UnloadAwareView';
 import BeforePageChangeDialog from '../../dialogs/BeforePageChangeDialog';
-import LabeledSelect from '../../LabeledSelect';
 
 export class ItemEdit extends UnloadAwareView {
 	constructor({ className, serverState, ...rest }) {
@@ -115,12 +111,12 @@ export class ItemEdit extends UnloadAwareView {
 		});
 
 		const { textInput: summaryInput, label: summaryLabel } = new LabeledTextInput({ label: 'Summary', value: summary || '' });
-		const { textarea: descriptionInput, label: descriptionLabel } = new LabeledTextarea('textarea', { value: description || '', label: 'Description' });
+		// const { textarea: descriptionInput, label: descriptionLabel } = new LabeledTextarea('textarea', { value: description || '', label: 'Description' });
+		const descriptionInput = new Textarea({ value: description || '', label: 'Description' });
 
 		const tagList = new TagList({ tags, readOnly: false });
 
-		const { select: completeAction, label: completeActionLabel } = new LabeledSelect({
-			label: 'Complete Action',
+		const completeAction = new Select({
 			options: ['Add Tag', 'Remove Tag', 'Toggle Tag', 'Delete', 'Reschedule'],
 			value: complete?.action || 'Add Tag',
 			onChange: evt => {
@@ -138,17 +134,25 @@ export class ItemEdit extends UnloadAwareView {
 			appendTo: tagContainer,
 		});
 
-		const { select: rescheduleBase } = new LabeledSelect({
-			label: 'Date Base',
+		const rescheduleBase = new Select({
 			options: ['Last Due', 'Last Completed'],
 			value: complete?.base || 'Last Due',
+		});
+
+		new Label({
+			label: 'Date Base',
+			appendChild: rescheduleBase,
 			appendTo: schedulingContainer,
 		});
 
-		const { select: rescheduleUnit } = new LabeledSelect({
-			label: 'Unit',
+		const rescheduleUnit = new Select({
 			options: ['Day', 'Week', 'Month', 'Year'],
 			value: complete?.unit || 'Day',
+		});
+
+		new Label({
+			label: 'Unit',
+			appendChild: rescheduleUnit,
 			appendTo: schedulingContainer,
 		});
 
@@ -219,10 +223,10 @@ export class ItemEdit extends UnloadAwareView {
 			appendTo,
 			appendChildren: [
 				summaryLabel,
-				descriptionLabel,
-				new Label({ textContent: 'Tags', appendChild: tagList }),
+				new Label({ label: 'Description', appendChild: descriptionInput }),
+				new Label({ label: 'Tags', appendChild: tagList }),
 				new Label({
-					textContent: 'Due Date',
+					label: 'Due Date',
 					appendChild: new Button({
 						textContent: due || 'Set',
 						className: 'dueDate postLabel',
@@ -231,9 +235,7 @@ export class ItemEdit extends UnloadAwareView {
 						},
 					}),
 				}),
-				completeActionLabel,
-				tagContainer,
-				schedulingContainer,
+				new Label({ label: 'Complete Action', appendChildren: [completeAction, tagContainer, schedulingContainer] }),
 			],
 		});
 

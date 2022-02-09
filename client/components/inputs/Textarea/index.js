@@ -1,8 +1,8 @@
 import './index.css';
 
-import DomElem from '../DomElem';
+import DomElem from '../../DomElem';
 
-export default class Textarea extends DomElem {
+export class Textarea extends DomElem {
 	constructor({ className, value = '', ...rest }) {
 		const initialValue = value;
 

@@ -1,5 +1,5 @@
 @import '../input.css';
 
-div.label select {
+select.select {
 	@mixin Input;
 }

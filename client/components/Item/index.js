@@ -7,7 +7,7 @@ import utils from '../../utils';
 
 import DomElem from '../DomElem';
 import TagList from '../TagList';
-import IconButton from '../IconButton';
+import { IconButton } from '../inputs';
 
 export default class Item extends DomElem {
 	constructor({ appendTo, className, serverState, id }) {

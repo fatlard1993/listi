@@ -2,9 +2,9 @@ import socketClient from 'socket-client';
 
 import router from '../../../router';
 
-import Toolbar from '../../Toolbar';
+import { Toolbar } from '../../layout';
+import { IconButton } from '../../inputs';
 import List from '../../List';
-import IconButton from '../../IconButton';
 import PageHeader from '../../PageHeader';
 import View from '../View';
 import NoData from '../../NoData';

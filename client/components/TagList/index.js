@@ -3,8 +3,7 @@ import './index.css';
 import DomElem from '../DomElem';
 
 import Tag from '../Tag';
-import TextInput from '../TextInput';
-import IconButton from '../IconButton';
+import { TextInput, IconButton } from '../inputs';
 
 export default class TagList extends DomElem {
 	constructor({ tags = [], readOnly = true, className, ...rest }) {

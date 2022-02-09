@@ -2,10 +2,10 @@ import socketClient from 'socket-client';
 
 import router from '../../../router';
 
-import Toolbar from '../../Toolbar';
+import { Toolbar } from '../../layout';
+import { IconButton } from '../../inputs';
 import ListElem from '../../List';
 import Item from '../../Item';
-import IconButton from '../../IconButton';
 import PageHeader from '../../PageHeader';
 import View from '../View';
 import CreateDialog from '../../dialogs/CreateDialog';

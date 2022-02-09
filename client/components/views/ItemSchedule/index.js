@@ -3,8 +3,8 @@ import socketClient from 'socket-client';
 
 import router from '../../../router';
 
-import Toolbar from '../../Toolbar';
-import IconButton from '../../IconButton';
+import { Toolbar } from '../../layout';
+import { IconButton } from '../../inputs';
 import PageHeader from '../../PageHeader';
 import Calendar from '../../Calendar';
 import DomElem from '../../DomElem';

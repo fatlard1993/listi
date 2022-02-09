@@ -1,9 +1,7 @@
-import './index.css';
-
 import dom from 'dom';
 
 import Label from '../Label';
-import Textarea from '../Textarea';
+import { Textarea } from '../inputs';
 
 export default class LabeledTextarea {
 	constructor({ label, value = '', appendTo, ...rest }) {
