@@ -1,39 +1,19 @@
-import './styles/index.css';
+import process from 'process';
+import { Page } from 'vanilla-bean-components';
 
-import dom from 'dom';
-import socketClient from 'socket-client';
-
-import { port } from '../constants.js';
-import utils from './utils';
+import context from './context';
 import router from './router';
 
-dom.onLoad(() => {
-	dom.mobile.detect();
+import './hotReload';
 
-	socketClient.init('/api', port);
+window.process = process;
 
-	// dom.interact.on('keyUp', evt => {
-	// 	const { key } = evt;
-
-	// 	// log(3)(key);
-
-	// 	if (key === 'Enter' && (utils.isEditingText() || evt.ctrlKey)) {
-	// 		if (document.getElementsByClassName('showTagAdd').length) document.getElementById('tagAdd').pointerPressFunction();
-	// 		else if (typeof listi.save === 'function') listi.save();
-	// 	}
-	// });
-
-	dom.interact.on('keyDown', utils.stayConnected);
-
-	dom.interact.on('pointerDown', utils.stayConnected);
-
-	router.init();
-
-	document.oncontextmenu = evt => {
-		evt.preventDefault();
-	};
-
-	document.addEventListener('visibilitychange', () => {
-		if (document.visibilityState) utils.stayConnected();
-	});
+document.addEventListener('keypress', event => {
+	if (!context.searchElem) context.preRenderSearch += event.key;
+	else if (event.key === '/' && document.activeElement !== context.searchElem) {
+		event.preventDefault();
+		context.searchElem.focus();
+	}
 });
+
+new Page({ appendTo: document.body, append: router });
